@@ -9,17 +9,17 @@ void drawCyl()
 {
    GLUquadricObj* cyl;
    
-   glMatrixMode (GL_PROJECTION);
+   /*glMatrixMode (GL_PROJECTION);
    glLoadIdentity();
    gluPerspective(	// GLdouble fovy
-					35.0, 
+					35.0, // угол визуального охвата 
 					// GLdouble aspect
-					1.0, 
+					1.0,  // это отношение ширины пирамиды к ее высоте
 					// GLdouble near
-					1.0, 
+					1.0,  // дистанция от точки наблюдения до ближней плоскости отсечения
 					// GLdouble far
-					100.0
-				 );
+					100.0 // дистанция от точки наблюдения до дальней плоскости отсечения
+				 ); */
    
    glMatrixMode (GL_MODELVIEW);
    glLoadIdentity();
@@ -59,9 +59,9 @@ void init (void)
 {
    glClearColor (0.5, 0.5, 0.5, 0.0);
    glEnable(GL_DEPTH_TEST); //enabling z-buffer
-   glMatrixMode (GL_PROJECTION);
+   /*glMatrixMode (GL_PROJECTION);
    glLoadIdentity();
-   gluPerspective(35.0, 1.0, 1.0, 100.0);
+   gluPerspective(35.0, 1.0, 1.0, 100.0);*/
    glMatrixMode (GL_MODELVIEW);
    glLoadIdentity();
    gluLookAt (30.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
