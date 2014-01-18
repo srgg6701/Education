@@ -8,17 +8,45 @@ static double deg	= Deg;
 void drawCyl()
 {
    GLUquadricObj* cyl;
+   
    glMatrixMode (GL_PROJECTION);
    glLoadIdentity();
-   gluPerspective(35.0, 1.0, 1.0, 100.0);
+   gluPerspective(	// GLdouble fovy
+					35.0, 
+					// GLdouble aspect
+					1.0, 
+					// GLdouble near
+					1.0, 
+					// GLdouble far
+					100.0
+				 );
+   
    glMatrixMode (GL_MODELVIEW);
    glLoadIdentity();
-   gluLookAt (30.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-   glColor3f(1.0f, 1.0f, 0.5f); //Defining color
-   glRotatef(deg, 1.0, 0.0, 0.0); // Rotate by deg
+   gluLookAt (	30.0, 
+				0.0, 
+				10.0, 
+				0.0, 
+				0.0, 
+				0.0, 
+				0.0, 
+				0.0, 
+				1.0
+			 );
+   
+   glColor3f(1.0f, 1.0f, 0.5f);		// Defining color
+   
+   glRotatef(	deg, 
+				1.0, 
+				0.0, 
+				0.0
+			);	// Rotate by deg
+   
    cyl = gluNewQuadric();
    gluQuadricDrawStyle(cyl, GLU_LINE);
+   
    gluCylinder(cyl, 1.0, 1.0, 5, 35, 15);
+   
    glFlush();
 }
 void display(void)
