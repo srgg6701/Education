@@ -14,6 +14,7 @@
     <ProjectGuid>{C55F22F4-4B5A-4693-AFAB-9E1204034B46}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Shape1</RootNamespace>
+    <ProjectName>Grid</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

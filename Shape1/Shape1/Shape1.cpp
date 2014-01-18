@@ -1,11 +1,7 @@
-// prototype.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "windows.h"
-#include <gl/GL.h>
-#include <GL/glu.h>
 #include <GL/glut.h>
+#include <iostream>
 using namespace std;
 
 float WinW=400.0;
@@ -40,7 +36,13 @@ void Initialize()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	//сетка
-	glOrtho(-ww2,ww2,-wh2,wh2,-200.0,200.0); 
+	glOrtho(-ww2,	// левый
+		     ww2,	// правый
+			-wh2,	// нижний
+			 wh2,	// верхний
+			-200.0,	// ближняя плоскость отсечений
+			 200.0	// задняя плоскость отсечения
+		   ); 
 }
 int _tmain(int argc, char** argv)
 {
@@ -50,7 +52,7 @@ int _tmain(int argc, char** argv)
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
 	glutInitWindowSize(WinW,WinH);
 	glutInitWindowPosition(100,100);
-	glutCreateWindow("Shape 1");
+	glutCreateWindow("Grid");
 	// регистрация
 	glutDisplayFunc(Draw);
 	Initialize();
