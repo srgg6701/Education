@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{25EB48A0-4549-414C-B80C-F69248920415}</ProjectGuid>
+    <ProjectGuid>{4B400519-9D84-4FDE-84F9-905EA3451DA0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Cube</RootNamespace>
   </PropertyGroup>

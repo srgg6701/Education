@@ -5,7 +5,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Grid", "..\Shape1\Shape1\Sh
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Transform_rotation", "..\Transform_rotation\Transform_rotation.vcxproj", "{EFB5188C-5572-441E-9D86-4F9C076BACF5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cube", "Cube\Cube.vcxproj", "{25EB48A0-4549-414C-B80C-F69248920415}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Square", "Square\Square.vcxproj", "{25EB48A0-4549-414C-B80C-F69248920415}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cube", "Cube\Cube.vcxproj", "{4B400519-9D84-4FDE-84F9-905EA3451DA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{25EB48A0-4549-414C-B80C-F69248920415}.Debug|Win32.Build.0 = Debug|Win32
 		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.ActiveCfg = Release|Win32
 		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.Build.0 = Release|Win32
+		{4B400519-9D84-4FDE-84F9-905EA3451DA0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4B400519-9D84-4FDE-84F9-905EA3451DA0}.Debug|Win32.Build.0 = Debug|Win32
+		{4B400519-9D84-4FDE-84F9-905EA3451DA0}.Release|Win32.ActiveCfg = Release|Win32
+		{4B400519-9D84-4FDE-84F9-905EA3451DA0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

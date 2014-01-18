@@ -4,44 +4,48 @@
 #include <iostream>
 using namespace std;
 
+//Инициализация
 void init(void)
 {
-	//Выбрать фоновый (очищающий) цвет
-	glClearColor(0.4,0.0,0.0,0.0);
-	//Установить проекцию
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0.0,1.0,0.0,1.0,-1.0,1.0);
+	glClearColor(0.3,0.0,0.2,1.0);
+	glShadeModel(GL_FLAT);
 }
+//Отображение
 void display(void)
 {
-	//Очистить экран 
 	glClear(GL_COLOR_BUFFER_BIT);
-	//Нарисовать белый полигон (квадрат) с углами //в (0.25, 0.25, 0.0) и (0.75, 0.75, 0.0)
 	glColor3f(1.0,1.0,1.0);
-	glBegin(GL_POLYGON);
-		glVertex3f(0.25,0.25,0.0);
-		glVertex3f(0.75,0.25,0.0);
-		glVertex3f(0.75,0.75,0.0);
-		glVertex3f(0.25,0.75,0.0);
-	glEnd();
-	//Не ждем. Начинаем выполнять буферизованные
-	//команды OpenGL
+	//Очистить матрицу
+	glLoadIdentity();
+	//Видовая трансформация(камера)
+	gluLookAt(0.0,0.0,5.0,0.0,0.0,0.0,0.0,1.0,0.0);
+	//Модельная трансформация
+	glScalef( 1.5,
+			  1.5,
+			  1.5
+			);
+	glutWireCube(1.0);
 	glFlush();
 }
-//Установить начальные характеристики окна,
-//открыть окно с заголовком «hello».
-//Зарегистрировать дисплейную функцию обратного вызова
-//Войти в главный цикл
-int main(int argc, char **argv)
+//Изменение размеров окна
+void reshape(int w, int h)
+{
+	glViewport(0,0,(GLsizei) w, (GLsizei) h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glFrustum(-1.0,1.0,-1.0,1.0,1.5,20.0);
+	glMatrixMode(GL_MODELVIEW);
+}
+int main(int argc, char** argv)
 {
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
-	glutInitWindowSize(250,250);
-	glutInitWindowPosition(100,100);
-	glutCreateWindow("Square");
+	glutInitWindowSize(500,500);
+	glutInitWindowPosition(800,100);
+	glutCreateWindow("Transformed Cube");
 	init();
 	glutDisplayFunc(display);
+	glutReshapeFunc(reshape);
 	glutMainLoop();
 	return 0;
 }
