@@ -4,9 +4,12 @@
 #include "vars.h"
 #include <iostream>
 using namespace std;
+// показать вывод
 void showLog()
 {
-	cout<<"Rotation data:"<<endl
+	cout<<"Move it: left - 4, right - 6, up - 8, down - 2"
+		<<endl
+		<<"Rotation data:"<<endl
 		<<"axis - "<<endl
 		<<"rX (x): "<<rX<<endl
 		<<"rY (y): "<<rY<<endl
@@ -16,8 +19,6 @@ void showLog()
 		<<"aY: "<<aY<<endl
 		<<"aZ: "<<aZ<<endl;
 }
-
-
 // установить правильную проекцию перед преобразованиями
 void prepareTranslation()
 {
@@ -37,12 +38,28 @@ void init(void)
 	glClearColor(0.4,0.0,0.0,0.0);
 	//Установить проекцию
 	prepareTranslation();
+	//Задать освещение
+	GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
+	GLfloat mat_shininess[]={50.0};
+	GLfloat light_position[]={1.0,1.0,1.0,0.0};
+	GLfloat white_light[]={1.0,1.0,1.0,1.0};
+	glClearColor(0.0,0.0,0.0,0.0);
+	glShadeModel(GL_SMOOTH);
+	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
+	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+	glLightfv(GL_LIGHT0,GL_POSITION,light_position);
+	glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
+	glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_DEPTH_TEST);
 }
 void display(void)
 {
 	showLog();
 	//Очистить экран 
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	//Нарисовать белый полигон (квадрат) с углами //в (0.25, 0.25, 0.0) и (0.75, 0.75, 0.0)
 	glColor3f(1.0,1.0,1.0);
 	
