@@ -43,12 +43,11 @@ void display(void)
 	if(scl<0)	glColor3f(1.0,1.0,0.0);
 	// иначе - белым
 	else		glColor3f(1.0,1.0,1.0);
-	
-	//Очистить матрицу
-	glLoadIdentity();
 
 	if(lookAt)
 	{
+		//Очистить матрицу
+		glLoadIdentity();
 		//Видовая трансформация(камера)
 		gluLookAt(	// Задает видовую матрицу и умножает на нее текущую матрицу
 					// позиция наблюдателя; точка наблюдения
@@ -67,6 +66,9 @@ void display(void)
 	}
 	else
 	{
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0.0,1.0,0.0,1.0,-1.0,1.0);
 		//Модельная трансформация
 		glScalef( scl, scl, scl	);
 		glTranslatef ( trnslX, trnslY, trnslZ );
