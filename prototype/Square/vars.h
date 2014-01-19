@@ -6,4 +6,13 @@ float trnslX = trnslInit;
 float trnslY = trnslInit;
 float trnslZ = trnslInit;
 
-float stepTransform	= 0.2;	
+float stepTransform	= 0.05;
+
+const float angleStep = 10.0;
+float rAngle = 0.0;
+float aX = 0.0;
+float aY = 0.0;
+float aZ = 0.0;
+float rX = 0.0;
+float rY = 0.0;
+float rZ = 0.0;
