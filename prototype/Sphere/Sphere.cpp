@@ -44,12 +44,7 @@ void display(void)
 	glTranslatef ( trnslX, trnslY, trnslZ );
 	glRotatef(rAngle,rX,rY,rZ);
 	
-	glBegin(GL_POLYGON);
-		glVertex3f(0.25,0.25,0.0);
-		glVertex3f(0.75,0.25,0.0);
-		glVertex3f(0.75,0.75,0.0);
-		glVertex3f(0.25,0.75,0.0);
-	glEnd();
+	glutSolidSphere(0.2,5,5);
 	//Не ждем. Начинаем выполнять буферизованные
 	//команды OpenGL
 	glFlush();
