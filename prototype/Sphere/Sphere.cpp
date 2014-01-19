@@ -2,6 +2,7 @@
 #include "windows.h"
 #include <GL/glut.h>
 #include "vars.h"
+#include "light.h"
 #include <iostream>
 using namespace std;
 // показать вывод
@@ -17,9 +18,18 @@ void showLog()
 		<<"angles for axis (rAngle, no keys) - "<<endl
 		<<"aX: "<<aX<<endl
 		<<"aY: "<<aY<<endl
-		<<"aZ: "<<aZ<<endl;
+		<<"aZ: "<<aZ<<endl
+		<<"Lights:"<<endl
+		<<"left:"<<endl
+		<<"x (l:L): "<<lposLeft[0]<<endl
+		<<"y (;::): "<<lposLeft[1]<<endl
+		<<"z (':\"): "<<lposLeft[2]<<endl
+		<<"right:"<<endl
+		<<"x (a:A): "<<lposLeft[0]<<endl // l:L ;:: ':"
+		<<"y (s:S): "<<lposLeft[1]<<endl //
+		<<"z (d:D): "<<lposLeft[2]<<endl;//
 }
-// установить правильную проекцию перед преобразованиями
+//Установить правильную проекцию перед преобразованиями
 void prepareTranslation()
 {
 	glMatrixMode(GL_PROJECTION);
@@ -32,46 +42,88 @@ void prepareTranslation()
 			  1.0  // far
 		   );
 }
-void init(void)
+//Подготовить материал
+void prepareMaterial()
 {
 	//Выбрать фоновый (очищающий) цвет
-	glClearColor(0.4,0.0,0.0,0.0);
-	//Установить проекцию
-	prepareTranslation();
-	//Задать освещение
-	GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
-	GLfloat mat_shininess[]={50.0};
-	GLfloat light_position[]={1.0,1.0,1.0,0.0};
-	GLfloat white_light[]={1.0,1.0,1.0,1.0};
-	glClearColor(0.0,0.0,0.0,0.0);
+	glClearColor(0.1,0.0,0.3,1.0);
+	//Задать тип затененеия
 	glShadeModel(GL_SMOOTH);
+	//Задать материал
 	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
 	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
-	glLightfv(GL_LIGHT0,GL_POSITION,light_position);
-	glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
-	glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
+}
+//Включить освещение
+void enableLight()
+{
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
 }
+//Задать освещение
+//слева
+void setLightLeft()
+{
+	//Задать материал и освещение
+	GLfloat light_position[]={lposLeft[0],lposLeft[1],lposLeft[2],lposLeft[3]}; // x,y,z,w
+	GLfloat light_color[]	={0.8,0.6,1.0,1.0};
+	//Подготовить материал
+	prepareMaterial();
+	//Задать освещение
+	glLightfv(GL_LIGHT0,GL_POSITION,light_position);
+	glLightfv(GL_LIGHT0,GL_DIFFUSE,light_color);
+	glLightfv(GL_LIGHT0,GL_SPECULAR,light_color);
+	enableLight();
+	glEnable(GL_LIGHT0);
+}
+//справа
+void setLightRight()
+{
+	//Задать материал и освещение
+	GLfloat light_position[]={lposRight[0],lposRight[1],lposRight[2],lposRight[3]}; // x,y,z,w
+	GLfloat light_color[]	={1.0,0.6,0.8,1.0};
+	//Подготовить материал
+	prepareMaterial();
+	//Задать освещение
+	glLightfv(GL_LIGHT1,GL_POSITION,light_position);
+	glLightfv(GL_LIGHT1,GL_DIFFUSE,light_color);
+	glLightfv(GL_LIGHT1,GL_SPECULAR,light_color);
+	//Включить свет
+	enableLight();
+	glEnable(GL_LIGHT1);
+}
+//Задать начальные установки
+void init(void)
+{
+	//Установить проекцию
+	prepareTranslation();
+	//Установить освещение
+	setLightLeft();
+	setLightRight();
+}
+//Начать шоу
 void display(void)
 {
 	showLog();
 	//Очистить экран 
-	//glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	//Нарисовать белый полигон (квадрат) с углами //в (0.25, 0.25, 0.0) и (0.75, 0.75, 0.0)
+	//Задать цвет объекта
 	glColor3f(1.0,1.0,1.0);
-	
+	//Установить освещение
+	setLightLeft();
+	setLightRight();
+	//Подготовиться к трансформациям
 	prepareTranslation();
+	//Переместить влево-вправо
 	glTranslatef ( trnslX, trnslY, trnslZ );
+	//Поворот вокруг выбранной оси
 	glRotatef(rAngle,rX,rY,rZ);
-	
+	//Создать объект
 	glutSolidSphere(0.2,50,15);
 	//Не ждем. Начинаем выполнять буферизованные
 	//команды OpenGL
 	glFlush();
 }
+//Управлять углом освещения
 void setRotationAngle(float &aXYZ, float &rXYZ)
 {	
 	// сбросить все оси
@@ -86,6 +138,13 @@ void setRotationAngle(float &aXYZ, float &rXYZ)
 	соответствующей глобальной переменной (по ссылке)	*/
 	rAngle=aXYZ;		
 }
+//Модифицировать параметры источника света
+void setLightRightPos(float &light, int sign)
+{
+	if(sign==1) light+=lposStep;
+	if(sign==-1)light-=lposStep;
+}
+//Обработать нажатие клавиш управления
 void Keyboard(unsigned char key, int x, int y)
 {
 	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
@@ -112,6 +171,43 @@ void Keyboard(unsigned char key, int x, int y)
 		case 122:	// z
 			setRotationAngle(aZ,rZ);
 			break;
+		//-------------------------
+		case 97:	//a
+			setLightRightPos(lposLeft[0],-1);
+			break;
+		case 65:	//A
+			setLightRightPos(lposLeft[0],1);
+			break;
+		case 115:	//s
+			setLightRightPos(lposLeft[1],-1);
+			break;
+		case 83:	//S
+			setLightRightPos(lposLeft[1],1);
+			break;
+		case 100:	//d
+			setLightRightPos(lposLeft[2],-1);
+			break;
+		case 68:	//D
+			setLightRightPos(lposLeft[2],1);
+			break;
+		case 108:	//l
+			setLightRightPos(lposRight[0],-1);
+			break;
+		case 76:	//L
+			setLightRightPos(lposRight[0],1);
+			break;
+		case 59:	//;
+			setLightRightPos(lposRight[1],-1);
+			break;
+		case 58:	//:
+			setLightRightPos(lposRight[1],1);
+			break;
+		case 39:	//'
+			setLightRightPos(lposRight[2],-1);
+			break;
+		case 34:	//"
+			setLightRightPos(lposRight[2],1);
+			break;
 		//..................
 		case 61: // = вернуться к первоначальным значениям
 			trnslX = trnslY = trnslZ = trnslInit;
@@ -122,6 +218,16 @@ void Keyboard(unsigned char key, int x, int y)
 			glRotatef(0.0,1.0,0.0,0.0);
 			glRotatef(0.0,0.0,1.0,0.0);
 			glRotatef(0.0,0.0,0.0,1.0);
+			//--------------------------
+			lposLeft[0]=LPLeft[0];
+			lposLeft[1]=LPLeft[1];
+			lposLeft[2]=LPLeft[2];
+			lposLeft[3]=LPLeft[3];
+			//--------------------------
+			lposRight[0]=LPRight[0];
+			lposRight[1]=LPRight[1];
+			lposRight[2]=LPRight[2];
+			lposRight[3]=LPRight[3];
 			break;
 			// Закрыть окно по нажатию кл. "Пробел":
 		case 32: exit(0);
@@ -138,7 +244,7 @@ int main(int argc, char **argv)
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
 	glutInitWindowSize(250,250);
-	glutInitWindowPosition(100,100);
+	glutInitWindowPosition(1000,100);
 	glutCreateWindow("Square");
 	init();
 	glutDisplayFunc(display);
