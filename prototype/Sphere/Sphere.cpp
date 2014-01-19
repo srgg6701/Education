@@ -23,7 +23,13 @@ void prepareTranslation()
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0.0,1.0,0.0,1.0,-1.0,1.0);
+	glOrtho( -0.5, // left
+			  0.5, // right
+			 -0.5, // bottom
+			  0.5, // top
+			 -1.0, // near
+			  1.0  // far
+		   );
 }
 void init(void)
 {
@@ -44,7 +50,7 @@ void display(void)
 	glTranslatef ( trnslX, trnslY, trnslZ );
 	glRotatef(rAngle,rX,rY,rZ);
 	
-	glutSolidSphere(0.2,5,5);
+	glutSolidSphere(0.2,50,15);
 	//Не ждем. Начинаем выполнять буферизованные
 	//команды OpenGL
 	glFlush();
