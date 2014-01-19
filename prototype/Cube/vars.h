@@ -14,3 +14,13 @@ float centerZ = CnZ;
 
 float stepXY = 0.5;
 float stepCZ = 2.0;
+
+const float scaleInit = 1.0;
+float scl = scaleInit;
+
+const float trnslInit = 0.0;
+float trnslX = trnslInit;
+float trnslY = trnslInit;
+float trnslZ = trnslInit;
+
+float stepTransform	= 0.2;	

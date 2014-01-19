@@ -3,13 +3,20 @@
 #include <GL/glut.h>
 #include <iostream>
 using namespace std;
+
 const float Deg		= 0.0;
 static double deg	= Deg;
+
+const float OffSet	= 0.0;
+static double offsetX = OffSet;
+static double offsetY = OffSet;
+static double offsetZ = OffSet;
+
 void drawCyl()
 {
    GLUquadricObj* cyl;
    
-   /*glMatrixMode (GL_PROJECTION);
+   glMatrixMode (GL_PROJECTION);
    glLoadIdentity();
    gluPerspective(	// GLdouble fovy
 					35.0, // угол визуального охвата 
@@ -19,7 +26,7 @@ void drawCyl()
 					1.0,  // дистанци€ от точки наблюдени€ до ближней плоскости отсечени€
 					// GLdouble far
 					100.0 // дистанци€ от точки наблюдени€ до дальней плоскости отсечени€
-				 ); */
+				 ); /**/
    
    glMatrixMode (GL_MODELVIEW);
    glLoadIdentity();
@@ -42,6 +49,12 @@ void drawCyl()
 				0.0
 			);	// Rotate by deg
    
+   glTranslatef(
+				offsetX,
+				offsetY,
+				offsetZ
+			);
+
    cyl = gluNewQuadric();
    gluQuadricDrawStyle(cyl, GLU_LINE);
    
@@ -59,9 +72,10 @@ void init (void)
 {
    glClearColor (0.5, 0.5, 0.5, 0.0);
    glEnable(GL_DEPTH_TEST); //enabling z-buffer
-   /*glMatrixMode (GL_PROJECTION);
+   /**/
+   glMatrixMode (GL_PROJECTION);
    glLoadIdentity();
-   gluPerspective(35.0, 1.0, 1.0, 100.0);*/
+   gluPerspective(35.0, 1.0, 1.0, 100.0);
    glMatrixMode (GL_MODELVIEW);
    glLoadIdentity();
    gluLookAt (30.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
@@ -78,8 +92,14 @@ void keyboard(unsigned char key, int x, int y)
 		case 61:
 			deg = Deg;
 			break;
+		case 60:	// <
+			offsetX+=5.0;
+			break;
+		case 62:	// >
+			offsetX-=5.0;
+			break;
     }
-	if(key!=27) 
+	if(key!=32) 
 		glutPostRedisplay();
 	else // УescФ on keyboard
 		exit(0);
