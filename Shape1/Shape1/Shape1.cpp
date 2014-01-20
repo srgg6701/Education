@@ -2,15 +2,11 @@
 #include "windows.h"
 #include <GL/glut.h>
 #include <iostream>
+#include "funx.h"
+#include "vars.h"
 using namespace std;
 
-float WinW=400.0;
-float ww2=WinW/2;
-
-float WinH=400.0;
-float wh2=WinH/2;
-
-void Draw()
+/*void Draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(0.8,0.8,0.8);
@@ -29,7 +25,7 @@ void Draw()
 		}
 	glEnd();
 	glFlush();
-}
+}*/
 void Initialize()
 {
 	glClearColor(0.4,0.4,0.4,1.0);

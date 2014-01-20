@@ -111,6 +111,7 @@ void display(void)
 	//Установить освещение
 	setLightLeft();
 	setLightRight();
+
 	//Подготовиться к трансформациям
 	prepareTranslation();
 	//Переместить влево-вправо

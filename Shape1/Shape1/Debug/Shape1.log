@@ -1,14 +1,17 @@
-﻿Build started 19.01.2014 1:42:37.
+﻿Build started 20.01.2014 2:26:06.
      1>Project "B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\Shape1\Shape1\Shape1.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         B:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Grid.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Shape1.cpp
+         B:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Grid.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Shape1.cpp funx.cpp
+         funx.cpp
+     1>b:\lisa\a-71\ит, технология программирования\c++\code c++\opengl\shape1\shape1\funx.cpp(1): warning C4627: '#include "funx.h"': skipped when looking for precompiled header use
+                 Add directive to 'stdafx.h' or rebuild precompiled header
+     1>b:\lisa\a-71\ит, технология программирования\c++\code c++\opengl\shape1\shape1\funx.cpp(2): warning C4627: '#include "vars.h"': skipped when looking for precompiled header use
+                 Add directive to 'stdafx.h' or rebuild precompiled header
+     1>b:\lisa\a-71\ит, технология программирования\c++\code c++\opengl\shape1\shape1\funx.cpp(23): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "stdafx.h"' to your source?
          Shape1.cpp
-       Link:
-         B:\Program Files\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\Debug\Grid.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\Debug\Grid.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\Debug\Grid.lib" /MACHINE:X86 Debug\Shape1.obj
-         Debug\stdafx.obj
-         Shape1.vcxproj -> B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\Debug\Grid.exe
-     1>Done Building Project "B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\Shape1\Shape1\Shape1.vcxproj" (Build target(s)).
+         Generating Code...
+     1>Done Building Project "B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\Shape1\Shape1\Shape1.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
 Time Elapsed 00:00:01.92
