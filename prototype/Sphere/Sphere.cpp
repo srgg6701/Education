@@ -5,31 +5,33 @@
 #include "light.h"
 #include <iostream>
 using namespace std;
-//Индикатор выбора проекции (перспективная/ортографическая)
-bool lookAt = false;
 // показать вывод
 void showLog()
 {
-	cout<<"Move it: left - 4, right - 6, up - 8, down - 2"
-		<<endl
-		<<"Rotation data:"<<endl
-		<<"axis - "<<endl
-		<<"rX (x): "<<rX<<endl
-		<<"rY (y): "<<rY<<endl
-		<<"rZ (z): "<<rZ<<endl
-		<<"angles for axis (rAngle, no keys) - "<<endl
+	cout<<"MOVING"<<endl
+		<<"left:\t4, right:\t6"<<endl
+		<<"up:\t8, down:\t2"<<endl
+		<<"..........................."<<endl
+		<<"ROTATION around axis:"<<endl
+		<<"X (x/X): "<<rX<<endl
+		<<"Y (y/Y): "<<rY<<endl
+		<<"Z (z/Z): "<<rZ<<endl
+		/*<<"angles for axis (rAngle, no keys) - "<<endl
 		<<"aX: "<<aX<<endl
 		<<"aY: "<<aY<<endl
-		<<"aZ: "<<aZ<<endl
-		<<"Lights:"<<endl
-		<<"left:"<<endl
-		<<"x (l:L): "<<lposLeft[0]<<endl
-		<<"y (;::): "<<lposLeft[1]<<endl
-		<<"z (':\"): "<<lposLeft[2]<<endl
-		<<"right:"<<endl
-		<<"x (a:A): "<<lposLeft[0]<<endl // l:L ;:: ':"
-		<<"y (s:S): "<<lposLeft[1]<<endl //
-		<<"z (d:D): "<<lposLeft[2]<<endl;//
+		<<"aZ: "<<aZ<<endl*/
+		/*
+		<<"..........................."<<endl
+		<<"LIGHTING:"<<endl
+		<<"Left light:"<<endl
+		<<"Move left/right (l:L):\t"<<lposLeft[0]<<endl
+		<<"Move up/down (;::):\t"<<lposLeft[1]<<endl
+		//<<"z (':\"): "<<lposLeft[2]<<endl
+		<<"Right light:"<<endl
+		<<"Move left/right (a:A):\t"<<lposLeft[0]<<endl // l:L ;:: ':"
+		<<"Move up/down (s:S):\t"<<lposLeft[1]<<endl //
+		//<<"z (d:D): "<<lposLeft[2]<<endl */
+		<<endl;//
 }
 //Установить правильную проекцию перед преобразованиями
 void prepareTranslation()
@@ -66,6 +68,7 @@ void enableLight()
 void setLightLeft()
 {
 	//Задать материал и освещение
+	//Положение источника света (x,y,z,w)
 	GLfloat light_position[]={lposLeft[0],lposLeft[1],lposLeft[2],lposLeft[3]}; // x,y,z,w
 	GLfloat light_color[]	={0.8,0.6,1.0,1.0};
 	//Подготовить материал
@@ -81,6 +84,7 @@ void setLightLeft()
 void setLightRight()
 {
 	//Задать материал и освещение
+	//Положение источника света (x,y,z,w)
 	GLfloat light_position[]={lposRight[0],lposRight[1],lposRight[2],lposRight[3]}; // x,y,z,w
 	GLfloat light_color[]	={1.0,0.6,0.8,1.0};
 	//Подготовить материал
@@ -97,7 +101,7 @@ void setLightRight()
 void init(void)
 {
 	//Установить проекцию
-	//prepareTranslation();
+	prepareTranslation();
 	//Установить освещение
 	setLightLeft();
 	setLightRight();
@@ -114,45 +118,20 @@ void display(void)
 	setLightLeft();
 	setLightRight();
 
-	if(lookAt)
-	{
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(50.0, 1.0, 3.0, 7.0);
-
-		glMatrixMode(GL_MODELVIEW);/**/
-		//Очистить матрицу
-		glLoadIdentity();
-		//Видовая трансформация(камера); задает видовую матрицу и умножает на нее текущую матрицу
-		gluLookAt(	eyeX,	eyeY,	eyeZ, // позиция наблюдателя; точка наблюдения
-					centerX,centerY,centerZ, // направление камеры (взгляда наблюдателя)
-					0.0,	1.0,	0.0 
-				 );
-		//Модельная трансформация
-		glScalef( scl, scl, scl	);
-		glRotatef(rAngle,0.0,0.0,1.0);
-		glutWireCube(1.0);
-		//Создать объект
-		glutSolidSphere(1.0,50,15);
-	}
-	else
-	{
-		//Подготовиться к трансформациям
-		prepareTranslation();
-	
-		//Переместить влево-вправо
-		glTranslatef ( trnslX, trnslY, trnslZ );
-		//Поворот вокруг выбранной оси
-		glRotatef(rAngle,rX,rY,rZ);
-		//Создать объект
-		glutSolidSphere(0.2,50,15);
-	}
+	//Подготовиться к трансформациям
+	prepareTranslation();
+	//Переместить влево-вправо
+	glTranslatef ( trnslX, trnslY, trnslZ );
+	//Поворот вокруг выбранной оси
+	glRotatef(rAngle,rX,rY,rZ);
+	//Создать объект
+	glutSolidSphere(0.2,50,15);
 	//Не ждем. Начинаем выполнять буферизованные
 	//команды OpenGL
 	glFlush();
 }
 //Управлять углом освещения
-void setRotationAngle(float &aXYZ, float &rXYZ)
+void setRotationAngle(float &aXYZ, float &rXYZ, int d)
 {	
 	// сбросить все оси
 	rX=rY=rZ=0.0;		
@@ -161,13 +140,14 @@ void setRotationAngle(float &aXYZ, float &rXYZ)
 	(передаётся по ссылке)	*/
 	rXYZ = 1.0;			
 	// суммировать угол поворота для выбранной оси 
-	aXYZ+=angleStep;	
+	if(d==1) aXYZ+=angleStep;	
+	if(d==-1)aXYZ-=angleStep;	
 	/* сохранить значение угла поворота для выбранной оси в 
 	соответствующей глобальной переменной (по ссылке)	*/
 	rAngle=aXYZ;		
 }
 //Модифицировать параметры источника света
-void setLightRightPos(float &light, int sign)
+void setLightPos(float &light, int sign)
 {
 	if(sign==1) light+=lposStep;
 	if(sign==-1)light-=lposStep;
@@ -177,45 +157,6 @@ void Keyboard(unsigned char key, int x, int y)
 {
 	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
 	{	
-		// Перспективная проекция
-				case 60:	// <
-			eyeX-=stepXY;
-			break;
-		case 62:	// >
-			eyeX+=stepXY;
-			break;
-		case 44:	// ,
-			eyeY-=stepXY;
-			break;
-		case 46:	// .
-			eyeY+=stepXY;
-			break;
-		case 91:	// [
-			eyeZ-=stepXY;
-			break;
-		case 93:	// ]
-			eyeZ+=stepXY;
-			break;
-		//..................
-		case 120:	// x
-			centerX-=stepXY;
-			break;
-		case 88:	// X
-			centerX+=stepXY;
-			break;
-		case 121:	// y
-			centerY-=stepXY;
-			break;
-		case 89:	// Y
-			centerY+=stepXY;
-			break;
-		case 122:	// z
-			centerZ-=stepCZ;
-			break;
-		case 90:	// Z
-			centerZ+=stepCZ;			
-			break;
-		// Ортографическая проекция
 		case 52:	// 4
 			trnslX-=stepTransform;
 			break;
@@ -229,69 +170,71 @@ void Keyboard(unsigned char key, int x, int y)
 			trnslY-=stepTransform;
 			break;
 		//-------------------------
-		case 113:	// q
-			setRotationAngle(aX, rX);
+		case 120:	// x
+			setRotationAngle(aX, rX, 1);
 			break;
-		case 119:	// w
-			setRotationAngle(aY,rY);
+		case 88:	// X
+			setRotationAngle(aX, rX, -1);
 			break;
-		case 101:	// e
-			setRotationAngle(aZ,rZ);
+		
+		case 121:	// y
+			setRotationAngle(aY, rY, 1);
+			break;
+		case 89:	// Y
+			setRotationAngle(aY, rY, -1);
+			break;
+		
+		case 122:	// z
+			setRotationAngle(aZ, rZ, 1);
+			break;
+		case 90:	// Z
+			setRotationAngle(aZ, rZ, -1);
 			break;
 		//-------------------------
+		// изменить положение источника левого света
+		// ось X
 		case 97:	//a
-			setLightRightPos(lposLeft[0],-1);
+			setLightPos(lposLeft[0],-1); // уменьшить
 			break;
 		case 65:	//A
-			setLightRightPos(lposLeft[0],1);
+			setLightPos(lposLeft[0],1);  // увеличить
 			break;
+		// ось Y
 		case 115:	//s
-			setLightRightPos(lposLeft[1],-1);
+			setLightPos(lposLeft[1],-1); // уменьшить
 			break;
 		case 83:	//S
-			setLightRightPos(lposLeft[1],1);
+			setLightPos(lposLeft[1],1); // увеличить
 			break;
+		// ось Z
 		case 100:	//d
-			setLightRightPos(lposLeft[2],-1);
+			setLightPos(lposLeft[2],-1); // уменьшить
 			break;
 		case 68:	//D
-			setLightRightPos(lposLeft[2],1);
+			setLightPos(lposLeft[2],1); // увеличить
 			break;
+		
+		// right lighting
 		case 108:	//l
-			setLightRightPos(lposRight[0],-1);
+			setLightPos(lposRight[0],-1);
 			break;
 		case 76:	//L
-			setLightRightPos(lposRight[0],1);
+			setLightPos(lposRight[0],1);
 			break;
 		case 59:	//;
-			setLightRightPos(lposRight[1],-1);
+			setLightPos(lposRight[1],-1);
 			break;
 		case 58:	//:
-			setLightRightPos(lposRight[1],1);
+			setLightPos(lposRight[1],1);
 			break;
 		case 39:	//'
-			setLightRightPos(lposRight[2],-1);
+			setLightPos(lposRight[2],-1);
 			break;
 		case 34:	//"
-			setLightRightPos(lposRight[2],1);
-			break;
-		// переключиться между проекциями
-		case 96: // `
-			lookAt=(lookAt)? false:true;
+			setLightPos(lposRight[2],1);
 			break;
 		//..................
 		case 61: // = вернуться к первоначальным значениям
-			// Перспективная проекция:
-			eyeX	= EX;
-			eyeY	= EY;
-			eyeZ	= EZ;
-			centerX	= CnX;
-			centerY	= CnY;
-			centerZ	= CnZ;
-			//-------------------------------------------
-			scl		= scaleInit;
-			rAngle	= 0.0;
-			
 			trnslX = trnslY = trnslZ = trnslInit;
 			//-----------------------------------
 			// сбросить все значения поворота:
