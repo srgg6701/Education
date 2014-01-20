@@ -5,6 +5,8 @@
 #include "light.h"
 #include <iostream>
 using namespace std;
+//Индикатор выбора проекции (перспективная/ортографическая)
+bool lookAt = false;
 // показать вывод
 void showLog()
 {
@@ -95,7 +97,7 @@ void setLightRight()
 void init(void)
 {
 	//Установить проекцию
-	prepareTranslation();
+	//prepareTranslation();
 	//Установить освещение
 	setLightLeft();
 	setLightRight();
@@ -112,14 +114,39 @@ void display(void)
 	setLightLeft();
 	setLightRight();
 
-	//Подготовиться к трансформациям
-	prepareTranslation();
-	//Переместить влево-вправо
-	glTranslatef ( trnslX, trnslY, trnslZ );
-	//Поворот вокруг выбранной оси
-	glRotatef(rAngle,rX,rY,rZ);
-	//Создать объект
-	glutSolidSphere(0.2,50,15);
+	if(lookAt)
+	{
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective(50.0, 1.0, 3.0, 7.0);
+
+		glMatrixMode(GL_MODELVIEW);/**/
+		//Очистить матрицу
+		glLoadIdentity();
+		//Видовая трансформация(камера); задает видовую матрицу и умножает на нее текущую матрицу
+		gluLookAt(	eyeX,	eyeY,	eyeZ, // позиция наблюдателя; точка наблюдения
+					centerX,centerY,centerZ, // направление камеры (взгляда наблюдателя)
+					0.0,	1.0,	0.0 
+				 );
+		//Модельная трансформация
+		glScalef( scl, scl, scl	);
+		glRotatef(rAngle,0.0,0.0,1.0);
+		glutWireCube(1.0);
+		//Создать объект
+		glutSolidSphere(1.0,50,15);
+	}
+	else
+	{
+		//Подготовиться к трансформациям
+		prepareTranslation();
+	
+		//Переместить влево-вправо
+		glTranslatef ( trnslX, trnslY, trnslZ );
+		//Поворот вокруг выбранной оси
+		glRotatef(rAngle,rX,rY,rZ);
+		//Создать объект
+		glutSolidSphere(0.2,50,15);
+	}
 	//Не ждем. Начинаем выполнять буферизованные
 	//команды OpenGL
 	glFlush();
@@ -150,6 +177,45 @@ void Keyboard(unsigned char key, int x, int y)
 {
 	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
 	{	
+		// Перспективная проекция
+				case 60:	// <
+			eyeX-=stepXY;
+			break;
+		case 62:	// >
+			eyeX+=stepXY;
+			break;
+		case 44:	// ,
+			eyeY-=stepXY;
+			break;
+		case 46:	// .
+			eyeY+=stepXY;
+			break;
+		case 91:	// [
+			eyeZ-=stepXY;
+			break;
+		case 93:	// ]
+			eyeZ+=stepXY;
+			break;
+		//..................
+		case 120:	// x
+			centerX-=stepXY;
+			break;
+		case 88:	// X
+			centerX+=stepXY;
+			break;
+		case 121:	// y
+			centerY-=stepXY;
+			break;
+		case 89:	// Y
+			centerY+=stepXY;
+			break;
+		case 122:	// z
+			centerZ-=stepCZ;
+			break;
+		case 90:	// Z
+			centerZ+=stepCZ;			
+			break;
+		// Ортографическая проекция
 		case 52:	// 4
 			trnslX-=stepTransform;
 			break;
@@ -163,13 +229,13 @@ void Keyboard(unsigned char key, int x, int y)
 			trnslY-=stepTransform;
 			break;
 		//-------------------------
-		case 120:	// x
+		case 113:	// q
 			setRotationAngle(aX, rX);
 			break;
-		case 121:	// y
+		case 119:	// w
 			setRotationAngle(aY,rY);
 			break;
-		case 122:	// z
+		case 101:	// e
 			setRotationAngle(aZ,rZ);
 			break;
 		//-------------------------
@@ -209,8 +275,23 @@ void Keyboard(unsigned char key, int x, int y)
 		case 34:	//"
 			setLightRightPos(lposRight[2],1);
 			break;
+		// переключиться между проекциями
+		case 96: // `
+			lookAt=(lookAt)? false:true;
+			break;
 		//..................
 		case 61: // = вернуться к первоначальным значениям
+			// Перспективная проекция:
+			eyeX	= EX;
+			eyeY	= EY;
+			eyeZ	= EZ;
+			centerX	= CnX;
+			centerY	= CnY;
+			centerZ	= CnZ;
+			//-------------------------------------------
+			scl		= scaleInit;
+			rAngle	= 0.0;
+			
 			trnslX = trnslY = trnslZ = trnslInit;
 			//-----------------------------------
 			// сбросить все значения поворота:

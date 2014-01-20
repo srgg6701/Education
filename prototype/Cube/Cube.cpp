@@ -6,7 +6,6 @@
 using namespace std;
 
 bool lookAt = true;
-//bool lookAt = false;
 
 void showLog()
 {
@@ -161,8 +160,7 @@ void Keyboard(unsigned char key, int x, int y)
 			centerZ-=stepCZ;
 			break;
 		case 90:	// Z
-			centerZ+=stepCZ;
-			
+			centerZ+=stepCZ;			
 			break;
 		// --------------------------------------
 		// transformations beyound gluLookAt():
