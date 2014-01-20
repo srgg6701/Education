@@ -54,8 +54,14 @@ void prepareMaterial()
 	//Задать тип затененеия
 	glShadeModel(GL_SMOOTH);
 	//Задать материал
-	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+	glMaterialfv(	GL_FRONT,
+					GL_SPECULAR,	// зеркальный свет материала
+					mat_specular
+				);
+	glMaterialfv(	GL_FRONT,
+					GL_SHININESS,	// показатель зеркального отражения
+					mat_shininess
+				);
 }
 //Включить освещение
 void enableLight()
@@ -105,6 +111,28 @@ void init(void)
 	//Установить освещение
 	setLightLeft();
 	setLightRight();
+}
+//Обработать изменение размера окна
+void Reshape(int w, int h)
+{
+	glViewport(0,0,(GLsizei) w, (GLsizei) h);
+	
+	prepareTranslation();
+
+	/*glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	if (w<=h)
+		glOrtho(-0.5,0.5,-0.5*(GLfloat)h/(GLfloat)w,
+				0.5*(GLfloat)h/(GLfloat)w,-1.0,1.0);
+	else
+		glOrtho(	-0.5*(GLfloat)w/(GLfloat)h,
+					0.5*(GLfloat)w/(GLfloat)h,
+					-0.5,
+					0.5,-1.0,10.0 );
+	*/
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 //Начать шоу
 void display(void)
@@ -274,6 +302,7 @@ int main(int argc, char **argv)
 	init();
 	glutDisplayFunc(display);
 	glutKeyboardFunc(Keyboard);
+	glutReshapeFunc(Reshape);
 	glutMainLoop();
 	return 0;
 }

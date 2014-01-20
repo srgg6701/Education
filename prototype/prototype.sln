@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cube", "Cube\Cube.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sphere", "Sphere\Sphere.vcxproj", "{D2363A66-3B6F-4D3F-A216-CF48520AB556}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sphere2", "Sphere2\Sphere2.vcxproj", "{78CF0E1B-CFD6-4B3C-B300-6647714B1010}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -37,6 +39,10 @@ Global
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Debug|Win32.Build.0 = Debug|Win32
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Release|Win32.ActiveCfg = Release|Win32
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Release|Win32.Build.0 = Release|Win32
+		{78CF0E1B-CFD6-4B3C-B300-6647714B1010}.Debug|Win32.ActiveCfg = Debug|Win32
+		{78CF0E1B-CFD6-4B3C-B300-6647714B1010}.Debug|Win32.Build.0 = Debug|Win32
+		{78CF0E1B-CFD6-4B3C-B300-6647714B1010}.Release|Win32.ActiveCfg = Release|Win32
+		{78CF0E1B-CFD6-4B3C-B300-6647714B1010}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
