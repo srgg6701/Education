@@ -18,6 +18,8 @@ float stepCZ = 2.0;
 const float scaleInit = 1.0;
 float scl = scaleInit;
 
+float rAngle = 0.0;
+
 const float trnslInit = 0.0;
 float trnslX = trnslInit;
 float trnslY = trnslInit;

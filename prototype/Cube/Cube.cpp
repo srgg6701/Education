@@ -10,18 +10,23 @@ bool lookAt = true;
 
 void showLog()
 {
-	cout<<"lookAt: "<<lookAt<<endl
-		<<"CAMERA:"<<endl
-		<<"eyeX (<:>) : "<<eyeX<<endl
-		<<"eyeY (,:.) : "<<eyeY<<endl
-		<<"eyeZ ([:]) : "<<eyeZ<<endl
-		<<"centerX (x:X) : "<<centerX<<endl
-		<<"centerY (y:Y) : "<<centerY<<endl
-		<<"centerZ (z:Z) : "<<centerZ<<endl
-		<<"TRANSFORMATIONS:"<<endl
-		<<"scl (+:-) : "<<scl<<endl
-		<<"trnslX (4:6) : "<<trnslX<<endl
-		<<"trnslY (8:2) : "<<trnslY<<endl;
+	cout<<"Switch between projections (`)"<<endl
+		<<"Drop state to default: = "
+		<<"++++++++++++++++++++++++++++++"<<endl
+		<<"Perspective projection:"<<endl
+		<<".............................."<<endl
+		<<"Position X (<:>) :\t"<<eyeX<<endl
+		<<"Position Y (,:.) :\t"<<eyeY<<endl
+		<<"Position Z ([:]) :\t"<<eyeZ<<endl
+		<<"Direction X (x:X) :\t"<<centerX<<endl
+		<<"Direction Y (y:Y) :\t"<<centerY<<endl
+		<<"Direction Z (z:Z) :\t"<<centerZ<<endl
+		<<"------------------------------"<<endl
+		<<"Ortographic projection:"<<endl
+		<<".............................."<<endl
+		<<"Scaling (+:-) :\t\t"<<scl<<endl
+		<<"Move left/right (4:6) :\t"<<trnslX<<endl
+		<<"Move up/down (8:2) :\t"<<trnslY<<endl<<endl;
 }
 //Инициализация
 void init(void)
@@ -49,6 +54,11 @@ void display(void)
 
 	if(lookAt)
 	{
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective(50.0, 1.0, 3.0, 7.0);
+
+		glMatrixMode(GL_MODELVIEW);/**/
 		//Очистить матрицу
 		glLoadIdentity();
 		//Видовая трансформация(камера)
@@ -66,20 +76,23 @@ void display(void)
 					1.0,
 					0.0 
 				 );
+		//Модельная трансформация
+		glScalef( scl, scl, scl	);
+		glRotatef(rAngle,0.0,0.0,1.0);
 		glutWireCube(1.0);
 	}
 	else
 	{
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		// left, right, bottom, top, near, far
 		glOrtho(-1.0,1.0,-1.0,1.0,-5.0,1.0);
-		//glMatrixMode(GL_MODELVIEW);
-		//glLoadIdentity();
 		//Модельная трансформация
 		glScalef( scl, scl, scl	);
 		glTranslatef ( trnslX, trnslY, trnslZ );
-		glutWireCube(0.25);
+		glutWireCube(0.5);
 	}
 	/**/
 	showLog();
@@ -94,106 +107,96 @@ void reshape(int w, int h)
 	glFrustum(-1.0,1.0,-1.0,1.0,1.5,20.0);
 	glMatrixMode(GL_MODELVIEW);
 }
+//Сбросить всё на состояние по умолчанию
+void setDefaultState()
+{
+	eyeX	= EX;
+	eyeY	= EY;
+	eyeZ	= EZ;
+	centerX	= CnX;
+	centerY	= CnY;
+	centerZ	= CnZ;
+	//-------------------------------------------
+	scl		= scaleInit;
+	rAngle	= 0.0;
+	trnslX	= trnslY = trnslZ = trnslInit;
+}
+//Оработать события клавиатуры
 void Keyboard(unsigned char key, int x, int y)
 {
 	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
 	{
-		case 96: // `
-			lookAt=(lookAt)? false:true;
-			break;
 		case 60:	// <
 			eyeX-=stepXY;
-			//lookAt=true;
 			break;
 		case 62:	// >
 			eyeX+=stepXY;
-			//lookAt=true;
 			break;
 		case 44:	// ,
 			eyeY-=stepXY;
-			//lookAt=true;
 			break;
 		case 46:	// .
 			eyeY+=stepXY;
-			//lookAt=true;
 			break;
 		case 91:	// [
 			eyeZ-=stepXY;
-			//lookAt=true;
 			break;
 		case 93:	// ]
 			eyeZ+=stepXY;
-			//lookAt=true;
 			break;
 		//..................
 		case 120:	// x
 			centerX-=stepXY;
-			//lookAt=true;
 			break;
 		case 88:	// X
 			centerX+=stepXY;
-			//lookAt=true;
 			break;
 		case 121:	// y
 			centerY-=stepXY;
-			//lookAt=true;
 			break;
 		case 89:	// Y
 			centerY+=stepXY;
-			//lookAt=true;
 			break;
 		case 122:	// z
 			centerZ-=stepCZ;
-			//lookAt=true;
 			break;
 		case 90:	// Z
 			centerZ+=stepCZ;
-			//lookAt=true;
+			
 			break;
 		// --------------------------------------
 		// transformations beyound gluLookAt():
 		case 43: // +
 			scl+=stepTransform;
-			//lookAt=false;
 			break;
 		case 45: // -
 			scl-=stepTransform;
-			//lookAt=false;
 			break;
 		case 52:	// 4
 			trnslX-=stepTransform;
-			//lookAt=false;
 			break;
 		case 54:	// 6
 			trnslX+=stepTransform;
-			//lookAt=false;
 			break;
 		case 56:	// 8
 			trnslY+=stepTransform;
-			//lookAt=false;
 			break;
 		case 50:	// 2
 			trnslY-=stepTransform;
-			//lookAt=false;
 			break;
-		/*case :
-
+		case 47:	// /
+			rAngle -=5.0;
 			break;
-		case :
-
+		case 42:	// *
+			rAngle +=5.0;
 			break;
-		*/
-		case 61: // вернуться к первоначальным значениям
-			eyeX	= EX;
-			eyeY	= EY;
-			eyeZ	= EZ;
-			centerX	= CnX;
-			centerY	= CnY;
-			centerZ	= CnZ;
-			//-------------------------------------------
-			scl		= scaleInit;
-			//lookAt	= true;
-			trnslX	= trnslY = trnslZ = trnslInit;
+		// переключиться между проекциями
+		case 96: // `
+			lookAt=(lookAt)? false:true;
+			break;
+		/**/
+		case 61: // = 
+			setDefaultState();
 			break;
 		// Закрыть окно по нажатию кл. "Пробел":
 		case 32: exit(0);
