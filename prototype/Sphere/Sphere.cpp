@@ -38,13 +38,37 @@ void prepareTranslation()
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho( -0.5, // left
-			  0.5, // right
-			 -0.5, // bottom
-			  0.5, // top
-			 -1.0, // near
-			  1.0  // far
+	
+	int w = glutGet(GLUT_WINDOW_WIDTH);
+	int h = glutGet(GLUT_WINDOW_HEIGHT);
+
+	if (w<=h)
+		glOrtho( oL,
+				 oR,
+				 oB*(GLfloat)h/(GLfloat)w,
+				 oT*(GLfloat)h/(GLfloat)w,
+				 oNear,
+				 oFar
+			   );
+	else
+		glOrtho( oL*(GLfloat)w/(GLfloat)h,
+				 oR*(GLfloat)w/(GLfloat)h,
+				 oB,
+				 oT,
+				 oNear,
+				 oFar
+			   );
+
+	/*glOrtho( oL, // left
+			 oR, // right
+			 oB, // bottom
+			 oT, // top
+			 oNear, // near
+			 oFar // far
 		   );
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();*/
 }
 //Подготовить материал
 void prepareMaterial()
@@ -106,8 +130,15 @@ void setLightRight()
 //Задать начальные установки
 void init(void)
 {
+	/*glOrtho( oL, // left
+			 oR, // right
+			 oB, // bottom
+			 oT, // top
+			 oNear, // near
+			 oFar // far
+		   );*/
 	//Установить проекцию
-	prepareTranslation();
+	//prepareTranslation();
 	//Установить освещение
 	setLightLeft();
 	setLightRight();
@@ -117,26 +148,38 @@ void Reshape(int w, int h)
 {
 	glViewport(0,0,(GLsizei) w, (GLsizei) h);
 	
-	prepareTranslation();
+	//prepareTranslation();
 
-	/*glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
 	if (w<=h)
-		glOrtho(-0.5,0.5,-0.5*(GLfloat)h/(GLfloat)w,
-				0.5*(GLfloat)h/(GLfloat)w,-1.0,1.0);
+		glOrtho( oL,
+				 oR,
+				 oB*(GLfloat)h/(GLfloat)w,
+				 oT*(GLfloat)h/(GLfloat)w,
+				 oNear,
+				 oFar
+			   );
 	else
-		glOrtho(	-0.5*(GLfloat)w/(GLfloat)h,
-					0.5*(GLfloat)w/(GLfloat)h,
-					-0.5,
-					0.5,-1.0,10.0 );
-	*/
+		glOrtho( oL*(GLfloat)w/(GLfloat)h,
+				 oR*(GLfloat)w/(GLfloat)h,
+				 oB,
+				 oT,
+				 oNear,
+				 oFar
+			   );
+	/**/
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 //Начать шоу
 void display(void)
 {
+	cout<<"Display!"<<endl
+		<<"width: "<<glutGet(GLUT_WINDOW_WIDTH)<<endl
+		<<"height:"<<glutGet(GLUT_WINDOW_HEIGHT)
+		<<endl;
 	showLog();
 	//Очистить экран 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -147,7 +190,7 @@ void display(void)
 	setLightRight();
 
 	//Подготовиться к трансформациям
-	prepareTranslation();
+	//prepareTranslation();   
 	//Переместить влево-вправо
 	glTranslatef ( trnslX, trnslY, trnslZ );
 	//Поворот вокруг выбранной оси
@@ -286,7 +329,11 @@ void Keyboard(unsigned char key, int x, int y)
 		case 32: exit(0);
 			break;
 	}
-	if(key!=32) glutPostRedisplay(); // перерисовать окно  
+	if(key!=32) 
+	{
+		prepareTranslation();
+		glutPostRedisplay(); // перерисовать окно  
+	}
 }
 //Установить начальные характеристики окна,
 //открыть окно с заголовком «hello».

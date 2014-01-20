@@ -16,3 +16,10 @@ float aZ = 0.0;
 float rX = 0.0;
 float rY = 0.0;
 float rZ = 0.0;
+
+float oL = -0.5; 
+float oB = -0.5;
+float oR =  0.5; 
+float oT =  0.5;
+float oNear = -1;
+float oFar	=  1;
