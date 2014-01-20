@@ -33,8 +33,9 @@ void showLog()
 		//<<"z (d:D): "<<lposLeft[2]<<endl */
 		<<endl;//
 }
-//Установить правильную проекцию перед преобразованиями
-void prepareTranslation()
+/*	Установить правильную проекцию перед преобразованиями и рассчитать 
+	пропорциональные (неискажённые) параметры объектов сцены.	*/
+void prepareProjection()
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -42,33 +43,20 @@ void prepareTranslation()
 	int w = glutGet(GLUT_WINDOW_WIDTH);
 	int h = glutGet(GLUT_WINDOW_HEIGHT);
 
-	if (w<=h)
-		glOrtho( oL,
-				 oR,
-				 oB*(GLfloat)h/(GLfloat)w,
-				 oT*(GLfloat)h/(GLfloat)w,
-				 oNear,
-				 oFar
-			   );
-	else
-		glOrtho( oL*(GLfloat)w/(GLfloat)h,
-				 oR*(GLfloat)w/(GLfloat)h,
-				 oB,
-				 oT,
-				 oNear,
-				 oFar
-			   );
-
-	/*glOrtho( oL, // left
-			 oR, // right
-			 oB, // bottom
-			 oT, // top
-			 oNear, // near
-			 oFar // far
-		   );
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();*/
+	if (w<=h) glOrtho(	oL,
+						oR,
+						oB*(GLfloat)h/(GLfloat)w,
+						oT*(GLfloat)h/(GLfloat)w,
+						oNear,
+						oFar
+					 );
+	else	  glOrtho(  oL*(GLfloat)w/(GLfloat)h,
+						oR*(GLfloat)w/(GLfloat)h,
+						oB,
+						oT,
+						oNear,
+						oFar
+					 );
 }
 //Подготовить материал
 void prepareMaterial()
@@ -130,15 +118,6 @@ void setLightRight()
 //Задать начальные установки
 void init(void)
 {
-	/*glOrtho( oL, // left
-			 oR, // right
-			 oB, // bottom
-			 oT, // top
-			 oNear, // near
-			 oFar // far
-		   );*/
-	//Установить проекцию
-	//prepareTranslation();
 	//Установить освещение
 	setLightLeft();
 	setLightRight();
@@ -147,39 +126,17 @@ void init(void)
 void Reshape(int w, int h)
 {
 	glViewport(0,0,(GLsizei) w, (GLsizei) h);
-	
-	//prepareTranslation();
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	if (w<=h)
-		glOrtho( oL,
-				 oR,
-				 oB*(GLfloat)h/(GLfloat)w,
-				 oT*(GLfloat)h/(GLfloat)w,
-				 oNear,
-				 oFar
-			   );
-	else
-		glOrtho( oL*(GLfloat)w/(GLfloat)h,
-				 oR*(GLfloat)w/(GLfloat)h,
-				 oB,
-				 oT,
-				 oNear,
-				 oFar
-			   );
-	/**/
+	prepareProjection();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 //Начать шоу
 void display(void)
 {
-	cout<<"Display!"<<endl
+	/*cout<<"Display!"<<endl
 		<<"width: "<<glutGet(GLUT_WINDOW_WIDTH)<<endl
 		<<"height:"<<glutGet(GLUT_WINDOW_HEIGHT)
-		<<endl;
+		<<endl; */
 	showLog();
 	//Очистить экран 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -188,17 +145,14 @@ void display(void)
 	//Установить освещение
 	setLightLeft();
 	setLightRight();
-
 	//Подготовиться к трансформациям
-	//prepareTranslation();   
 	//Переместить влево-вправо
 	glTranslatef ( trnslX, trnslY, trnslZ );
 	//Поворот вокруг выбранной оси
 	glRotatef(rAngle,rX,rY,rZ);
 	//Создать объект
 	glutSolidSphere(0.2,50,15);
-	//Не ждем. Начинаем выполнять буферизованные
-	//команды OpenGL
+	//Выполнять буферизованные команды незамедлительно
 	glFlush();
 }
 //Управлять углом освещения
@@ -331,8 +285,8 @@ void Keyboard(unsigned char key, int x, int y)
 	}
 	if(key!=32) 
 	{
-		prepareTranslation();
-		glutPostRedisplay(); // перерисовать окно  
+		prepareProjection();	// задать параметры проекции
+		glutPostRedisplay();	// перерисовать окно  
 	}
 }
 //Установить начальные характеристики окна,
