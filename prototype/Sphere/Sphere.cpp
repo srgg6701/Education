@@ -66,11 +66,11 @@ void prepareMaterial()
 	//Задать тип затененеия
 	glShadeModel(GL_SMOOTH);
 	//Задать материал
-	glMaterialfv(	GL_FRONT,
+	glMaterialfv(	GL_FRONT_AND_BACK,
 					GL_SPECULAR,	// зеркальный свет материала
 					mat_specular
 				);
-	glMaterialfv(	GL_FRONT,
+	glMaterialfv(	GL_FRONT_AND_BACK,
 					GL_SHININESS,	// показатель зеркального отражения
 					mat_shininess
 				);
@@ -85,6 +85,7 @@ void enableLight()
 //слева
 void setLightLeft()
 {
+	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	//Задать материал и освещение
 	//Положение источника света (x,y,z,w)
 	GLfloat light_position[]={
@@ -128,21 +129,18 @@ void setLightRight()
 //Задать начальные установки
 void init(void)
 {
-	//setLightLeft();
-	//setLightRight();
+	setLightLeft();
+	setLightRight();
 	//Выбрать фоновый (очищающий) цвет
 	glClearColor(0.1,0.0,0.3,1.0);
-	//Установить глобальное освещение
+	//рассеянный свет
 	GLfloat dlight_power[]={ 1.0,0.9,0.8,1.0 };	// rgba
-	GLfloat dlight_position[]={ 0.0,100.0,0.5,1.0 }; // x, y, z, w
+	GLfloat dlight_position[]={ 0.0,10.0,4.5,1.0 }; // x, y, z, w
 	glLightfv(GL_LIGHT2,GL_DIFFUSE,dlight_power);
 	glLightfv(GL_LIGHT2,GL_POSITION,dlight_position);
-	
+	// фоновый свет
 	GLfloat alight_power[]={ 1.0,1.0,1.0,1.0 };	// rgba
-	//GLfloat alight_position[]={ 0.0,100.0,0.5,1.0 }; // x, y, z, w
 	glLightfv(GL_LIGHT3,GL_AMBIENT,alight_power);
-	//glLightfv(GL_LIGHT3,GL_POSITION,alight_position);
-
 
 	enableLight();
 	glEnable(GL_LIGHT2);
@@ -170,14 +168,10 @@ void display(void)
 	//Задать цвет объекта
 	glColor3f(1.0,1.0,1.0);
 	//Установить освещение
-	//setLightLeft();
-	//setLightRight();
+	setLightLeft();
+	setLightRight();
 	
-	// установить глобальный фоновый свет (белый)
-	//GLfloat dlight_power[]={ 1.0,1.0,0.0,1.0 };
-	//GLfloat dlight_position[]={ 0.5,0.0,0.5,1.0 };
-	//glLightfv(GL_LIGHT2,GL_DIFFUSE,dlight_power);
-	//glLightfv(GL_LIGHT2,GL_POSITION,dlight_position);
+	//glEnable(GL_LIGHTING);
 	
 	//Подготовиться к трансформациям
 	//Переместить влево-вправо
