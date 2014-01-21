@@ -87,7 +87,12 @@ void setLightLeft()
 {
 	//Задать материал и освещение
 	//Положение источника света (x,y,z,w)
-	GLfloat light_position[]={lposLeft[0],lposLeft[1],lposLeft[2],lposLeft[3]}; // x,y,z,w
+	GLfloat light_position[]={
+						lposLeft[0],
+						lposLeft[1],
+						lposLeft[2],
+						lposLeft[3]
+					}; // x,y,z,w
 	GLfloat light_color[]	={0.8,0.6,1.0,1.0};
 	//Подготовить материал
 	prepareMaterial();
@@ -103,7 +108,12 @@ void setLightRight()
 {
 	//Задать материал и освещение
 	//Положение источника света (x,y,z,w)
-	GLfloat light_position[]={lposRight[0],lposRight[1],lposRight[2],lposRight[3]}; // x,y,z,w
+	GLfloat light_position[]={
+						lposRight[0],
+						lposRight[1],
+						lposRight[2],
+						lposRight[3]
+					}; // x,y,z,w
 	GLfloat light_color[]	={1.0,0.6,0.8,1.0};
 	//Подготовить материал
 	prepareMaterial();
@@ -118,9 +128,26 @@ void setLightRight()
 //Задать начальные установки
 void init(void)
 {
-	//Установить освещение
-	setLightLeft();
-	setLightRight();
+	//setLightLeft();
+	//setLightRight();
+	//Выбрать фоновый (очищающий) цвет
+	glClearColor(0.1,0.0,0.3,1.0);
+	//Установить глобальное освещение
+	GLfloat dlight_power[]={ 1.0,0.9,0.8,1.0 };	// rgba
+	GLfloat dlight_position[]={ 0.0,100.0,0.5,1.0 }; // x, y, z, w
+	glLightfv(GL_LIGHT2,GL_DIFFUSE,dlight_power);
+	glLightfv(GL_LIGHT2,GL_POSITION,dlight_position);
+	
+	GLfloat alight_power[]={ 1.0,1.0,1.0,1.0 };	// rgba
+	//GLfloat alight_position[]={ 0.0,100.0,0.5,1.0 }; // x, y, z, w
+	glLightfv(GL_LIGHT3,GL_AMBIENT,alight_power);
+	//glLightfv(GL_LIGHT3,GL_POSITION,alight_position);
+
+
+	enableLight();
+	glEnable(GL_LIGHT2);
+	glEnable(GL_LIGHT3);
+	/**/
 }
 //Обработать изменение размера окна
 void Reshape(int w, int h)
@@ -143,8 +170,15 @@ void display(void)
 	//Задать цвет объекта
 	glColor3f(1.0,1.0,1.0);
 	//Установить освещение
-	setLightLeft();
-	setLightRight();
+	//setLightLeft();
+	//setLightRight();
+	
+	// установить глобальный фоновый свет (белый)
+	//GLfloat dlight_power[]={ 1.0,1.0,0.0,1.0 };
+	//GLfloat dlight_position[]={ 0.5,0.0,0.5,1.0 };
+	//glLightfv(GL_LIGHT2,GL_DIFFUSE,dlight_power);
+	//glLightfv(GL_LIGHT2,GL_POSITION,dlight_position);
+	
 	//Подготовиться к трансформациям
 	//Переместить влево-вправо
 	glTranslatef ( trnslX, trnslY, trnslZ );
