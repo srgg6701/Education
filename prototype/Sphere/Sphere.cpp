@@ -13,7 +13,11 @@ unsigned int textures[1];
 //Вывести лог
 void showLog()
 {
-	cout<<"MOVING"<<endl
+	cout<<"In order to set the state by default, please, push the \"=\" key."
+		<<endl
+		<<"-------------------------------------------------------------------"
+		<<endl
+		<<"MOVING"<<endl
 		<<"left:\t4, right:\t6"<<endl
 		<<"up:\t8, down:\t2"<<endl
 		<<"..........................."<<endl
@@ -41,8 +45,27 @@ void showLog()
 //Загрузить текстуру
 void loadTextures()
 {
+	int txtr;
+	cout<<"Choose the texture: 1 - stone, 2 (or any another value) - wood"<<endl;
+	cin>>txtr;
+	const int Tx = txtr;
+	cout<<"You have choosen: ";
+	
+	LPCSTR pic;
+	
+	if(Tx==1)	
+	{
+		cout<<"stone";
+		pic="stone2.bmp";
+	}
+	else
+	{
+		cout<<"wood";
+		pic="wood.bmp";
+	}
+	cout<<endl;
 	// образ текстуры 
-	AUX_RGBImageRec *texture1 = auxDIBImageLoadA("stone2.bmp");
+	AUX_RGBImageRec *texture1 = auxDIBImageLoadA(pic);
 	glGenTextures(1, &textures[0]);
 	glBindTexture(GL_TEXTURE_2D,textures[0]);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
@@ -111,13 +134,14 @@ void setLightLeft()
 						lposLeft[2],
 						lposLeft[3]
 					}; // x,y,z,w
-	GLfloat light_color[]	={0.8,0.6,1.0,1.0};
+	GLfloat light_diffuse[]		={1.0,0.0,0.0,1.0};
+	GLfloat light_specular[]	={1.0,1.0,1.0,1.0};
 	// 
 	prepareMaterial();
 	// 
 	glLightfv(GL_LIGHT0,GL_POSITION,light_position);
-	glLightfv(GL_LIGHT0,GL_DIFFUSE,light_color);
-	glLightfv(GL_LIGHT0,GL_SPECULAR,light_color);
+	glLightfv(GL_LIGHT0,GL_DIFFUSE,light_diffuse);
+	glLightfv(GL_LIGHT0,GL_SPECULAR,light_specular);
 	enableLight();
 	glEnable(GL_LIGHT0);
 }
@@ -132,13 +156,14 @@ void setLightRight()
 						lposRight[2],
 						lposRight[3]
 					}; // x,y,z,w
-	GLfloat light_color[]	={1.0,0.6,0.8,1.0};
+	GLfloat light_diffuse[]		={0.0,0.0,1.0,1.0};
+	GLfloat light_specular[]	={1.0,1.0,1.0,1.0};
 	// 
 	prepareMaterial();
 	// 
 	glLightfv(GL_LIGHT1,GL_POSITION,light_position);
-	glLightfv(GL_LIGHT1,GL_DIFFUSE,light_color);
-	glLightfv(GL_LIGHT1,GL_SPECULAR,light_color);
+	glLightfv(GL_LIGHT1,GL_DIFFUSE,light_diffuse);
+	glLightfv(GL_LIGHT1,GL_SPECULAR,light_specular);
 	// 
 	enableLight();
 	glEnable(GL_LIGHT1);
@@ -169,8 +194,6 @@ void init(void)
 	glLoadIdentity();
 	glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0); // left right bottom top
 	glMatrixMode(GL_MODELVIEW);
-
-	/**/
 }
 //   
 void Reshape(int w, int h)
@@ -208,6 +231,7 @@ void display(void)
 	glRotatef(rAngle,rX,rY,rZ);
 	// 
 	//---------------------------------
+	glScalef(sX,sY,sZ);
 	qobj = gluNewQuadric();
 	gluQuadricDrawStyle(qobj,GLU_FILL);
 	gluQuadricNormals(qobj,GLU_SMOOTH);
@@ -224,15 +248,12 @@ void setRotationAngle(float &aXYZ, float &rXYZ, int d)
 {	
 	//   
 	rX=rY=rZ=0.0;		
-	/* rX, rY, rZ	   - 
-	      
-	(  )	*/
+	// назначить ось вращения (x/y/z)
 	rXYZ = 1.0;			
-	//       
+	// рассчитать угол вращения для выбранной оси
 	if(d==1) aXYZ+=angleStep;	
 	if(d==-1)aXYZ-=angleStep;	
-	/*         
-	   ( )	*/
+	// установить угол вращения для выбранной оси
 	rAngle=aXYZ;		
 }
 //   
@@ -246,6 +267,7 @@ void Keyboard(unsigned char key, int x, int y)
 {
 	switch(key) // .    ASCII : http://www.theasciicode.com.ar/
 	{	
+		// передвижение вправо/влево
 		case 52:	// 4
 			trnslX-=stepTransform;
 			break;
@@ -259,28 +281,28 @@ void Keyboard(unsigned char key, int x, int y)
 			trnslY-=stepTransform;
 			break;
 		//-------------------------
+		// вращение
 		case 120:	// x
 			setRotationAngle(aX, rX, 1);
 			break;
 		case 88:	// X
 			setRotationAngle(aX, rX, -1);
 			break;
-		
 		case 121:	// y
 			setRotationAngle(aY, rY, 1);
 			break;
 		case 89:	// Y
 			setRotationAngle(aY, rY, -1);
-			break;
-		
+			break;		
 		case 122:	// z
 			setRotationAngle(aZ, rZ, 1);
 			break;
 		case 90:	// Z
 			setRotationAngle(aZ, rZ, -1);
 			break;
-		//-------------------------
-		//     
+		//----------------------------
+		// изменение позиции освещения
+		// свет СЛЕВА
 		//  X
 		case 97:	//a
 			setLightPos(lposLeft[0],-1); // 
@@ -297,15 +319,13 @@ void Keyboard(unsigned char key, int x, int y)
 			break;
 		//  Z
 		case 100:	//d
-			setLightPos(lposLeft[2],-1); // 
-			
+			setLightPos(lposLeft[2],-1); // 			
 			break;
 		case 68:	//D
-			setLightPos(lposLeft[2],1); // 
-			
+			setLightPos(lposLeft[2],1); // 			
 			break;
 		
-		// right lighting
+		// свет СПРАВА
 		case 108:	//l
 			setLightPos(lposRight[0],-1);
 			break;
@@ -324,23 +344,36 @@ void Keyboard(unsigned char key, int x, int y)
 		case 34:	//"
 			setLightPos(lposRight[2],1);
 			break;
-		//..................
+		//............................
+		// масштабирование
+		case 43: // +
+			sX+=zoom;
+			sY+=zoom;
+			break;
+		case 45: // -
+			sX-=zoom;
+			sY-=zoom;
+			break;
+		//----------------------------
 		case 61: // = 
 		
 			trnslX = trnslY = trnslZ = trnslInit;
 			//-----------------------------------
-
+			// сбросить значения активной оси и угла вращения 
 			aX = aY = aZ = rX = rY = rZ = rAngle = 0.0;
-
+			// приенить угол вращения по умолчанию ко всем осям
 			glRotatef(0.0,1.0,0.0,0.0);
 			glRotatef(0.0,0.0,1.0,0.0);
 			glRotatef(0.0,0.0,0.0,1.0);
-			//--------------------------
+			// сбросить масштаб
+			sX=sY=sZ=sDefault;
+			// сбросить параметры освещения
+			//------------------------------
 			lposLeft[0]=LPLeft[0];
 			lposLeft[1]=LPLeft[1];
 			lposLeft[2]=LPLeft[2];
 			lposLeft[3]=LPLeft[3];
-			//--------------------------
+			//------------------------------
 			lposRight[0]=LPRight[0];
 			lposRight[1]=LPRight[1];
 			lposRight[2]=LPRight[2];
