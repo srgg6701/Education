@@ -14,6 +14,7 @@
     <ProjectGuid>{D2363A66-3B6F-4D3F-A216-CF48520AB556}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Sphere</RootNamespace>
+    <ProjectName>Lab 1 - Sphere</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

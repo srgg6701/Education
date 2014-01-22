@@ -1,19 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Grid", "..\Shape1\Shape1\Shape1.vcxproj", "{C55F22F4-4B5A-4693-AFAB-9E1204034B46}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Transform_rotation", "..\Transform_rotation\Transform_rotation.vcxproj", "{EFB5188C-5572-441E-9D86-4F9C076BACF5}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Square", "Square\Square.vcxproj", "{25EB48A0-4549-414C-B80C-F69248920415}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cube", "Cube\Cube.vcxproj", "{4B400519-9D84-4FDE-84F9-905EA3451DA0}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sphere", "Sphere\Sphere.vcxproj", "{D2363A66-3B6F-4D3F-A216-CF48520AB556}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sphere2", "Sphere2\Sphere2.vcxproj", "{78CF0E1B-CFD6-4B3C-B300-6647714B1010}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab 1 - Sphere", "Sphere\Sphere.vcxproj", "{D2363A66-3B6F-4D3F-A216-CF48520AB556}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Textures", "Textures\Textures.vcxproj", "{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab 3 - Gift Wrapper", "Lab 3 - Gift Wrapper\Lab 3 - Gift Wrapper.vcxproj", "{CBA36EDD-F762-4DDF-9E06-F550338B6131}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,34 +13,18 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C55F22F4-4B5A-4693-AFAB-9E1204034B46}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C55F22F4-4B5A-4693-AFAB-9E1204034B46}.Debug|Win32.Build.0 = Debug|Win32
-		{C55F22F4-4B5A-4693-AFAB-9E1204034B46}.Release|Win32.ActiveCfg = Release|Win32
-		{C55F22F4-4B5A-4693-AFAB-9E1204034B46}.Release|Win32.Build.0 = Release|Win32
-		{EFB5188C-5572-441E-9D86-4F9C076BACF5}.Debug|Win32.ActiveCfg = Debug|Win32
-		{EFB5188C-5572-441E-9D86-4F9C076BACF5}.Debug|Win32.Build.0 = Debug|Win32
-		{EFB5188C-5572-441E-9D86-4F9C076BACF5}.Release|Win32.ActiveCfg = Release|Win32
-		{EFB5188C-5572-441E-9D86-4F9C076BACF5}.Release|Win32.Build.0 = Release|Win32
-		{25EB48A0-4549-414C-B80C-F69248920415}.Debug|Win32.ActiveCfg = Debug|Win32
-		{25EB48A0-4549-414C-B80C-F69248920415}.Debug|Win32.Build.0 = Debug|Win32
-		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.ActiveCfg = Release|Win32
-		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.Build.0 = Release|Win32
-		{4B400519-9D84-4FDE-84F9-905EA3451DA0}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4B400519-9D84-4FDE-84F9-905EA3451DA0}.Debug|Win32.Build.0 = Debug|Win32
-		{4B400519-9D84-4FDE-84F9-905EA3451DA0}.Release|Win32.ActiveCfg = Release|Win32
-		{4B400519-9D84-4FDE-84F9-905EA3451DA0}.Release|Win32.Build.0 = Release|Win32
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Debug|Win32.Build.0 = Debug|Win32
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Release|Win32.ActiveCfg = Release|Win32
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Release|Win32.Build.0 = Release|Win32
-		{78CF0E1B-CFD6-4B3C-B300-6647714B1010}.Debug|Win32.ActiveCfg = Debug|Win32
-		{78CF0E1B-CFD6-4B3C-B300-6647714B1010}.Debug|Win32.Build.0 = Debug|Win32
-		{78CF0E1B-CFD6-4B3C-B300-6647714B1010}.Release|Win32.ActiveCfg = Release|Win32
-		{78CF0E1B-CFD6-4B3C-B300-6647714B1010}.Release|Win32.Build.0 = Release|Win32
 		{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}.Debug|Win32.ActiveCfg = Debug|Win32
 		{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}.Debug|Win32.Build.0 = Debug|Win32
 		{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}.Release|Win32.ActiveCfg = Release|Win32
 		{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}.Release|Win32.Build.0 = Release|Win32
+		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Debug|Win32.Build.0 = Debug|Win32
+		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Release|Win32.ActiveCfg = Release|Win32
+		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
