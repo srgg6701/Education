@@ -11,7 +11,7 @@ const float sDefault = 1.0;
 	  float sX=sDefault;
 	  float sY=sDefault;
 	  float sZ=sDefault;
-	  float zoom		= 0.1;
+	  float zoom	 = 0.1;
 
 //rotation
 const float angleStep = 10.0;

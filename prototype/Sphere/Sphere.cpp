@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "windows.h"
 #include <GL/glut.h>
 #include "vars.h"
@@ -10,7 +10,7 @@ using namespace std;
 #pragma comment (lib, "glaux.lib") 
 
 unsigned int textures[1];
-//Вывести лог
+//Р’С‹РІРµСЃС‚Рё Р»РѕРі
 void showLog()
 {
 	cout<<"In order to set the state by default, please, push the \"=\" key."
@@ -25,6 +25,9 @@ void showLog()
 		<<"X (x/X): "<<rX<<endl
 		<<"Y (y/Y): "<<rY<<endl
 		<<"Z (z/Z): "<<rZ<<endl
+		<<"SCALE:"<<endl
+		<<"by X (x/X): "<<sX<<endl
+		<<"by Y (y/Y): "<<sY<<endl
 		/*<<"angles for axis (rAngle, no keys) - "<<endl
 		<<"aX: "<<aX<<endl
 		<<"aY: "<<aY<<endl
@@ -42,11 +45,11 @@ void showLog()
 		//<<"z (d:D): "<<lposLeft[2]<<endl */
 		<<endl;//
 }
-//Загрузить текстуру
+//Р—Р°РіСЂСѓР·РёС‚СЊ С‚РµРєСЃС‚СѓСЂСѓ
 void loadTextures()
 {
 	int txtr;
-	cout<<"Choose the texture: 1 - stone, 2 (or any another value) - wood"<<endl;
+	cout<<"Choose the texture:\n1 - stone\n2 (or any another value) - wood"<<endl;
 	cin>>txtr;
 	const int Tx = txtr;
 	cout<<"You have choosen: ";
@@ -61,10 +64,10 @@ void loadTextures()
 	else
 	{
 		cout<<"wood";
-		pic="wood.bmp";
+		pic="wood11.bmp";
 	}
 	cout<<endl;
-	// образ текстуры 
+	// РѕР±СЂР°Р· С‚РµРєСЃС‚СѓСЂС‹ 
 	AUX_RGBImageRec *texture1 = auxDIBImageLoadA(pic);
 	glGenTextures(1, &textures[0]);
 	glBindTexture(GL_TEXTURE_2D,textures[0]);
@@ -224,6 +227,9 @@ void display(void)
 	
 	//glEnable(GL_LIGHTING);
 	
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	
 	//  
 	// -
 	glTranslatef ( trnslX, trnslY, trnslZ );
@@ -248,12 +254,12 @@ void setRotationAngle(float &aXYZ, float &rXYZ, int d)
 {	
 	//   
 	rX=rY=rZ=0.0;		
-	// назначить ось вращения (x/y/z)
+	// РЅР°Р·РЅР°С‡РёС‚СЊ РѕСЃСЊ РІСЂР°С‰РµРЅРёСЏ (x/y/z)
 	rXYZ = 1.0;			
-	// рассчитать угол вращения для выбранной оси
+	// СЂР°СЃСЃС‡РёС‚Р°С‚СЊ СѓРіРѕР» РІСЂР°С‰РµРЅРёСЏ РґР»СЏ РІС‹Р±СЂР°РЅРЅРѕР№ РѕСЃРё
 	if(d==1) aXYZ+=angleStep;	
 	if(d==-1)aXYZ-=angleStep;	
-	// установить угол вращения для выбранной оси
+	// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ СѓРіРѕР» РІСЂР°С‰РµРЅРёСЏ РґР»СЏ РІС‹Р±СЂР°РЅРЅРѕР№ РѕСЃРё
 	rAngle=aXYZ;		
 }
 //   
@@ -267,7 +273,7 @@ void Keyboard(unsigned char key, int x, int y)
 {
 	switch(key) // .    ASCII : http://www.theasciicode.com.ar/
 	{	
-		// передвижение вправо/влево
+		// РїРµСЂРµРґРІРёР¶РµРЅРёРµ РІРїСЂР°РІРѕ/РІР»РµРІРѕ
 		case 52:	// 4
 			trnslX-=stepTransform;
 			break;
@@ -281,7 +287,7 @@ void Keyboard(unsigned char key, int x, int y)
 			trnslY-=stepTransform;
 			break;
 		//-------------------------
-		// вращение
+		// РІСЂР°С‰РµРЅРёРµ
 		case 120:	// x
 			setRotationAngle(aX, rX, 1);
 			break;
@@ -301,8 +307,8 @@ void Keyboard(unsigned char key, int x, int y)
 			setRotationAngle(aZ, rZ, -1);
 			break;
 		//----------------------------
-		// изменение позиции освещения
-		// свет СЛЕВА
+		// РёР·РјРµРЅРµРЅРёРµ РїРѕР·РёС†РёРё РѕСЃРІРµС‰РµРЅРёСЏ
+		// СЃРІРµС‚ РЎР›Р•Р’Рђ
 		//  X
 		case 97:	//a
 			setLightPos(lposLeft[0],-1); // 
@@ -325,7 +331,7 @@ void Keyboard(unsigned char key, int x, int y)
 			setLightPos(lposLeft[2],1); // 			
 			break;
 		
-		// свет СПРАВА
+		// СЃРІРµС‚ РЎРџР РђР’Рђ
 		case 108:	//l
 			setLightPos(lposRight[0],-1);
 			break;
@@ -345,7 +351,7 @@ void Keyboard(unsigned char key, int x, int y)
 			setLightPos(lposRight[2],1);
 			break;
 		//............................
-		// масштабирование
+		// РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёРµ
 		case 43: // +
 			sX+=zoom;
 			sY+=zoom;
@@ -359,15 +365,15 @@ void Keyboard(unsigned char key, int x, int y)
 		
 			trnslX = trnslY = trnslZ = trnslInit;
 			//-----------------------------------
-			// сбросить значения активной оси и угла вращения 
+			// СЃР±СЂРѕСЃРёС‚СЊ Р·РЅР°С‡РµРЅРёСЏ Р°РєС‚РёРІРЅРѕР№ РѕСЃРё Рё СѓРіР»Р° РІСЂР°С‰РµРЅРёСЏ 
 			aX = aY = aZ = rX = rY = rZ = rAngle = 0.0;
-			// приенить угол вращения по умолчанию ко всем осям
+			// РїСЂРёРµРЅРёС‚СЊ СѓРіРѕР» РІСЂР°С‰РµРЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РєРѕ РІСЃРµРј РѕСЃСЏРј
 			glRotatef(0.0,1.0,0.0,0.0);
 			glRotatef(0.0,0.0,1.0,0.0);
 			glRotatef(0.0,0.0,0.0,1.0);
-			// сбросить масштаб
+			// СЃР±СЂРѕСЃРёС‚СЊ РјР°СЃС€С‚Р°Р±
 			sX=sY=sZ=sDefault;
-			// сбросить параметры освещения
+			// СЃР±СЂРѕСЃРёС‚СЊ РїР°СЂР°РјРµС‚СЂС‹ РѕСЃРІРµС‰РµРЅРёСЏ
 			//------------------------------
 			lposLeft[0]=LPLeft[0];
 			lposLeft[1]=LPLeft[1];
