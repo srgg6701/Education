@@ -52,7 +52,7 @@ void Display()
 	showLog();
 	
 	GLUquadricObj* qobj;
-	
+	//Очистить экран 
 	glClear(GL_COLOR_BUFFER_BIT);
 	//glColor3f(0.0,0.0,0.0); - если раскомментировать, пропадёт текстура.
 	glMatrixMode(GL_PROJECTION);

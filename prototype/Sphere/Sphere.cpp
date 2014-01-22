@@ -151,12 +151,12 @@ void init(void)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-	/*
-	//setLightLeft();
-	//setLightRight();
+	setLightLeft();
+	setLightRight();
 	
 	//Выбрать фоновый (очищающий) цвет
 	glClearColor(0.1,0.0,0.3,1.0);
+	
 	//рассеянный свет
 	GLfloat dlight_power[]={ 1.0,0.9,0.8,1.0 };	// rgba
 	GLfloat dlight_position[]={ 0.0,10.0,4.5,1.0 }; // x, y, z, w
@@ -165,10 +165,10 @@ void init(void)
 	// фоновый свет
 	GLfloat alight_power[]={ 1.0,1.0,1.0,1.0 };	// rgba
 	glLightfv(GL_LIGHT3,GL_AMBIENT,alight_power);
-	*/
-	//enableLight();
-	//glEnable(GL_LIGHT2);
-	//glEnable(GL_LIGHT3);
+	/**/
+	enableLight();
+	glEnable(GL_LIGHT2);
+	glEnable(GL_LIGHT3);
 	/**/
 
 	glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0); // left right bottom top
@@ -188,10 +188,11 @@ void display(void)
 {
 	GLUquadricObj* qobj;
 
-	/*cout<<"Display!"<<endl
+	cout<<"Display!"<<endl
 		<<"width: "<<glutGet(GLUT_WINDOW_WIDTH)<<endl
 		<<"height:"<<glutGet(GLUT_WINDOW_HEIGHT)
-		<<endl; */
+		<<endl; /**/
+
 	showLog();
 	//Очистить экран 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -203,10 +204,10 @@ void display(void)
 	glLoadIdentity();
 	
 	//Установить освещение
-	//setLightLeft();
-	//setLightRight();
+	setLightLeft();
+	setLightRight();
 	
-	//glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 	
 	//Подготовиться к трансформациям
 	//Переместить влево-вправо
@@ -219,8 +220,10 @@ void display(void)
 	gluQuadricNormals(qobj,GLU_SMOOTH);
 	gluQuadricTexture(qobj, true);
 	
+	gluSphere(qobj,0.33,50,20);
+
 	//Создать объект
-	glutSolidSphere(0.2,50,15);
+	//glutSolidSphere(0.2,50,15);
 	
 	//Выполнять буферизованные команды незамедлительно
 	glFlush();
