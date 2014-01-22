@@ -3,9 +3,14 @@
 #include <GL/glut.h>
 #include "vars.h"
 #include "light.h"
+#include <GL/glaux.h>
 #include <iostream>
 using namespace std;
-//  
+
+#pragma comment (lib, "glaux.lib") 
+
+unsigned int textures[1];
+//Вывести лог
 void showLog()
 {
 	cout<<"MOVING"<<endl
@@ -32,6 +37,18 @@ void showLog()
 		<<"Move up/down (s:S):\t"<<lposLeft[1]<<endl //
 		//<<"z (d:D): "<<lposLeft[2]<<endl */
 		<<endl;//
+}
+//Загрузить текстуру
+void loadTextures()
+{
+	// образ текстуры 
+	AUX_RGBImageRec *texture1 = auxDIBImageLoadA("stone2.bmp");
+	glGenTextures(1, &textures[0]);
+	glBindTexture(GL_TEXTURE_2D,textures[0]);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture1->sizeX, texture1->sizeY,
+		0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
 }
 /*	       
 	 ()   .	*/
@@ -145,6 +162,14 @@ void init(void)
 	enableLight();
 	glEnable(GL_LIGHT2);
 	glEnable(GL_LIGHT3);
+	//---------------------------
+	loadTextures();
+	glEnable(GL_TEXTURE_2D);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0); // left right bottom top
+	glMatrixMode(GL_MODELVIEW);
+
 	/**/
 }
 //   
@@ -163,6 +188,9 @@ void display(void)
 		<<"height:"<<glutGet(GLUT_WINDOW_HEIGHT)
 		<<endl; */
 	showLog();
+	
+	GLUquadricObj* qobj;
+	
 	//  
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	//  
@@ -179,7 +207,15 @@ void display(void)
 	//   
 	glRotatef(rAngle,rX,rY,rZ);
 	// 
-	glutSolidSphere(0.2,50,15);
+	//---------------------------------
+	qobj = gluNewQuadric();
+	gluQuadricDrawStyle(qobj,GLU_FILL);
+	gluQuadricNormals(qobj,GLU_SMOOTH);
+	gluQuadricTexture(qobj, true);
+	gluSphere(qobj,0.33,50,20);
+	//---------------------------------
+	
+	//glutSolidSphere(0.2,50,15);
 	//   
 	glFlush();
 }

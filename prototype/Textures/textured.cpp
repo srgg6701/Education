@@ -35,7 +35,6 @@ void loadTextures()
 		0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
 }
 
-
 void init()
 {
 	loadTextures();
