@@ -2,9 +2,14 @@
 #include "windows.h"
 #include <GL/glut.h>
 #include "vars.h"
+#include <GL/glaux.h>
 #include "light.h"
 #include <iostream>
 using namespace std;
+
+#pragma comment (lib, "glaux.lib") 
+unsigned int textures[1];
+
 // показать вывод
 void showLog()
 {
@@ -32,6 +37,18 @@ void showLog()
 		<<"Move up/down (s:S):\t"<<lposLeft[1]<<endl //
 		//<<"z (d:D): "<<lposLeft[2]<<endl */
 		<<endl;//
+}
+// загрузить текстуры
+void loadTextures()
+{
+	// образ текстуры 
+	AUX_RGBImageRec *texture1 = auxDIBImageLoadA("stone2.bmp");
+	glGenTextures(1, &textures[0]);
+	glBindTexture(GL_TEXTURE_2D,textures[0]);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture1->sizeX, texture1->sizeY,
+		0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
 }
 /*	Установить правильную проекцию перед преобразованиями и рассчитать 
 	пропорциональные (неискажённые) параметры объектов сцены.	*/
@@ -129,8 +146,15 @@ void setLightRight()
 //Задать начальные установки
 void init(void)
 {
-	setLightLeft();
-	setLightRight();
+	loadTextures();
+	glEnable(GL_TEXTURE_2D);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	
+	/*
+	//setLightLeft();
+	//setLightRight();
+	
 	//Выбрать фоновый (очищающий) цвет
 	glClearColor(0.1,0.0,0.3,1.0);
 	//рассеянный свет
@@ -141,11 +165,15 @@ void init(void)
 	// фоновый свет
 	GLfloat alight_power[]={ 1.0,1.0,1.0,1.0 };	// rgba
 	glLightfv(GL_LIGHT3,GL_AMBIENT,alight_power);
-
-	enableLight();
-	glEnable(GL_LIGHT2);
-	glEnable(GL_LIGHT3);
+	*/
+	//enableLight();
+	//glEnable(GL_LIGHT2);
+	//glEnable(GL_LIGHT3);
 	/**/
+
+	glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0); // left right bottom top
+	glMatrixMode(GL_MODELVIEW);
+
 }
 //Обработать изменение размера окна
 void Reshape(int w, int h)
@@ -158,6 +186,8 @@ void Reshape(int w, int h)
 //Начать шоу
 void display(void)
 {
+	GLUquadricObj* qobj;
+
 	/*cout<<"Display!"<<endl
 		<<"width: "<<glutGet(GLUT_WINDOW_WIDTH)<<endl
 		<<"height:"<<glutGet(GLUT_WINDOW_HEIGHT)
@@ -166,10 +196,15 @@ void display(void)
 	//Очистить экран 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	//Задать цвет объекта
-	glColor3f(1.0,1.0,1.0);
+	
+	//glColor3f(1.0,1.0,1.0);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	
 	//Установить освещение
-	setLightLeft();
-	setLightRight();
+	//setLightLeft();
+	//setLightRight();
 	
 	//glEnable(GL_LIGHTING);
 	
@@ -178,8 +213,15 @@ void display(void)
 	glTranslatef ( trnslX, trnslY, trnslZ );
 	//Поворот вокруг выбранной оси
 	glRotatef(rAngle,rX,rY,rZ);
+	
+	qobj = gluNewQuadric();
+	gluQuadricDrawStyle(qobj,GLU_FILL);
+	gluQuadricNormals(qobj,GLU_SMOOTH);
+	gluQuadricTexture(qobj, true);
+	
 	//Создать объект
 	glutSolidSphere(0.2,50,15);
+	
 	//Выполнять буферизованные команды незамедлительно
 	glFlush();
 }
