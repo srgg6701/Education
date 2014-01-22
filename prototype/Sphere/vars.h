@@ -29,3 +29,6 @@ const float angleStep = 10.0;
 	  float oT =  0.5;
 	  float oNear = -1;
 	  float oFar  =  1;
+
+// Textures
+	  int Tx =0;

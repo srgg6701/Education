@@ -48,33 +48,50 @@ void showLog()
 //Загрузить текстуру
 void loadTextures()
 {
-	int txtr;
-	cout<<"Choose the texture:\n1 - stone\n2 (or any another value) - wood"<<endl;
-	cin>>txtr;
-	const int Tx = txtr;
+	cout<<"Choose the texture:"<<endl
+		<<"1 -\t\t\tstone"<<endl
+		<<"2 -\t\t\twood"<<endl
+		<<"any another value -\t"<<"specular"<<endl;
+	cin>>Tx;
+	
 	cout<<"You have choosen: ";
 	
-	LPCSTR pic;
+	LPCSTR pic="default.bmp";
 	
-	if(Tx==1)	
+	switch (Tx)
 	{
-		cout<<"stone";
-		pic="stone2.bmp";
+		case 1:
+			cout<<"stone";
+			pic="stone2.bmp";
+			break;
+		case 2:
+			cout<<"wood";
+			pic="wood11.bmp";
+			break;
+		default:
+			cout<<"specular";
+			break;
+	}
+	cout<<endl;
+	if(Tx==1||Tx==2)
+	{	
+		// образ текстуры 
+		AUX_RGBImageRec *texture1 = auxDIBImageLoadA(pic);
+		glGenTextures(1, &textures[0]);
+		glBindTexture(GL_TEXTURE_2D,textures[0]);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, texture1->sizeX, texture1->sizeY,
+			0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
+		glEnable(GL_TEXTURE_2D);
 	}
 	else
 	{
-		cout<<"wood";
-		pic="wood11.bmp";
+		const GLdouble s_coeffs[] ={1,0,0,1};
+		glEnable (GL_TEXTURE_GEN_S);
+		glTexGeni (GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+		glTexGendv (GL_S, GL_EYE_PLANE,s_coeffs);
 	}
-	cout<<endl;
-	// образ текстуры 
-	AUX_RGBImageRec *texture1 = auxDIBImageLoadA(pic);
-	glGenTextures(1, &textures[0]);
-	glBindTexture(GL_TEXTURE_2D,textures[0]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture1->sizeX, texture1->sizeY,
-		0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
 }
 /*	       
 	 ()   .	*/
@@ -176,7 +193,7 @@ void init(void)
 {
 	setLightLeft();
 	setLightRight();
-	//  () 
+	//
 	glClearColor(0.1,0.0,0.3,1.0);
 	// 
 	GLfloat dlight_power[]={ 1.0,0.9,0.8,1.0 };	// rgba
@@ -192,7 +209,6 @@ void init(void)
 	glEnable(GL_LIGHT3);
 	//---------------------------
 	loadTextures();
-	glEnable(GL_TEXTURE_2D);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0); // left right bottom top
