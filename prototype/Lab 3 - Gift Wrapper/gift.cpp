@@ -104,17 +104,41 @@ int main(int argvc, char**argv)
 	glutMainLoop();
     return 0;
 }
+float pX[100];
+float pY[100];
+float r[100];
+float g[100];
+float b[100];
+	
 void init()
 {
 	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glOrtho(0.0,winWidth,0.0,winHeight,-10.0,10.0);
+	glOrtho(10.0,winWidth-10.0,10.0,winHeight-10.0,-10.0,10.0);
+	for (int i = 0; i < 100; i++)
+	{
+		pX[i]	= getRandom(winWidth);
+		pY[i]	= getRandom(winHeight);
+		r[i]	= getRandom(0.5);
+		g[i]	= getRandom(0.5);
+		b[i]	= getRandom(0.5);
+		/*float pX = getRandom(winWidth);
+		float pY = getRandom(winHeight);
+		float r = getRandom(0.5);
+		float g = getRandom(0.5);
+		float b = getRandom(0.5);
+		//cout<<"pX = "<<pX<<", pY = "<<pY<<"; r: "<<r<<", g: "<<g<<", b: "<<b<<endl;
+		glColor3f(r,g,b);
+		glVertex2f(pX,pY);*/
+	}
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_COLOR_ARRAY);
 	//glMatrixMode(GL_PROJECTION);
 	//glLoadIdentity();
 	//glMatrixMode(GL_MODELVIEW);
 	//glLoadIdentity();
 }
-//
+// get the trully random value
 float getRandom(float val)
 {	
 	return static_cast <float> (rand()) / (static_cast <float> (RAND_MAX)) * val;
@@ -122,30 +146,27 @@ float getRandom(float val)
 // show gets here!
 void Display()
 {
-	//glClearColor(1.0,1.0,1.0,1.0);
-	//glColor3f(0.0,1.0,0.0);	
+	glClearColor(1.0,1.0,1.0,1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
 	//cout<<"Look at it, Dude: "<<endl;
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 	//glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0); // left right bottom top
 	//glMatrixMode(GL_MODELVIEW);
 	//Очистить матрицу
-	//glLoadIdentity();
+	glLoadIdentity();
+	glScalef(0.9,0.9,0.9);
+	
 	srand(time(NULL));
     setlocale(LC_ALL, "rus");
+
 	glPointSize(6.0);
 	glBegin(GL_POINTS);
-		glColor3f(0.0,0.0,0.0);
 		for (int i = 0; i < 100; i++)
 		{
-			float pX = getRandom(winWidth);
-			float pY = getRandom(winHeight);
-			float r = getRandom(0.5);
-			float g = getRandom(0.5);
-			float b = getRandom(0.5);
 			//cout<<"pX = "<<pX<<", pY = "<<pY<<"; r: "<<r<<", g: "<<g<<", b: "<<b<<endl;
-			glColor3f(r,g,b);
-			glVertex2f(pX,pY);
+			glColor3f(r[i],g[i],b[i]);
+			glVertex2f(pX[i],pY[i]);
 		}
 	glEnd();
 	//Видовая трансформация(камера)
