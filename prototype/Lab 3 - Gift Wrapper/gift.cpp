@@ -222,10 +222,52 @@ void Display()
 	glBegin(GL_POINTS);
 		for (int i = 0; i < starsCounter; i++)
 		{
-			//cout<<"pX = "<<pX<<", pY = "<<pY<<"; r: "<<r<<", g: "<<g<<", b: "<<b<<endl;
+			cout<<"pX = "<<pX[i]<<", pY = "<<pY[i]
+			<<"; r: "<<r[i]<<", g: "<<g[i]<<", b: "<<b[i]<<endl;
 			glColor3f(r[i],g[i],b[i]);
 			glVertex2f(pX[i],pY[i]);
 		}
+	glEnd();/**/
+	glLineWidth(4.0);
+	float clrs[12][3]={
+		{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0},
+		{1.0,0.0,0.0},{1.0,0.0,1.0}/*,{0.0,0.0,1.0},{1.0,1.0,0.0},
+		{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0}*/
+	};
+	glBegin(GL_LINE_LOOP);
+			glColor3f(1.0,0.0,1.0);
+		/*glVertex2f(10.0,10.0);
+		glVertex2f(10.0,100.0);
+		glVertex2f(100.0,100.0);
+		glVertex2f(200.0,50.0);
+		//glVertex2f(200.0,90.0);
+		glVertex2f(100.0,10.0);
+		
+		glVertex2f(0.0,0.0);
+		glVertex2f(0.0,30.0);
+		glVertex2f(40.0,30.0);
+		glVertex2f(60.0,15.0);
+		glVertex2f(40.0,0.0);*/	
+		
+		int cnt=0;
+		int ccnt=0;
+		for (size_t i=0; i<data.size(); i++)
+		{
+			glColor3f(1.0,0.0,1.0);
+			if( clrs[ccnt] && (!i || i%2==0) )
+			{   ccnt=i-cnt;
+				cout<<endl<<"SHOW COLORS: i = "<<i<<", ccnt = "<<ccnt<<", colors: "
+					<<clrs[ccnt][0]<<","
+					<<clrs[ccnt][1]<<","
+					<<clrs[ccnt][2];
+				glColor3f(clrs[ccnt][0],clrs[ccnt][1],clrs[ccnt][2]);
+				cnt++; 
+			}
+			cout<<endl<<"index: "<<data[i]
+				<<", pX: "<<pX[data[i]]
+				<<", pY: "<<pY[data[i]];
+			glVertex2f(pX[data[i]],pY[data[i]]);
+		}/**/
 	glEnd();
 	glFlush();
 }
