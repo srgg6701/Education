@@ -3,13 +3,15 @@
 // Refer http://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 // for explanation of orientation()
 #include "stdafx.h"
-//#include "windows.h"
+#include "windows.h"
+#include <GL/glut.h>
 #include <iostream>
+#include "funx.h"
 using namespace std;
 
 // Define Infinite (Using INT_MAX caused overflow problems)
 #define INF 10000
- 
+
 struct Point
 {
     int x;
@@ -80,17 +82,51 @@ void convexHull(Point points[], int n)
 }
  
 // Driver program to test above functions
-int main()
+int main(int argvc, char**argv)
 {
-    Point points[] = {
+    /*Point points[] = {
 						{0, 3}, {2, 2}, {1, 1}, {2, 1},
 						{3, 0}, {0, 0}, {3, 3}
 					};
-    int n = sizeof(points)/sizeof(points[0]);
-    cout<<"Look at it: "<<endl;
-	convexHull(points, n);
+    int n = sizeof(points)/sizeof(points[0]);*/
+    
+	//convexHull(points, n);
+	glutInit(&argvc, argv);
+	glutInitWindowSize(600,400);
+	glutInitWindowPosition(800,400);
+	glutCreateWindow("Dots");
+	glutDisplayFunc(Display);
+	//init();
+	glutMainLoop();
     return 0;
 }
+void init()
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.1,0.0,0.3,1.0);
+	glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+}
+// show gets here!
+void Display()
+{
+	//glClearColor(1.0,1.0,4.0,1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	//glColor3f(0.0,1.0,0.0);	
+	//cout<<"Look at it, Dude: "<<endl;
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0); // left right bottom top
+	//glMatrixMode(GL_MODELVIEW);
+	//Очистить матрицу
+	//glLoadIdentity();
+	//Видовая трансформация(камера)
+	//gluLookAt(0.0,0.0,5.0,0.0,0.0,0.0,0.0,1.0,0.0);
+	glFlush;
+}
+
 // материалы:
 // http://habrahabr.ru/post/144921/ -> http://habrahabr.ru/post/144571/
 // http://marknelson.us/2007/08/22/convex/

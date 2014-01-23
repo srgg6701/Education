@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Textures", "Textures\Textur
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab 3 - Gift Wrapper", "Lab 3 - Gift Wrapper\Lab 3 - Gift Wrapper.vcxproj", "{CBA36EDD-F762-4DDF-9E06-F550338B6131}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Square", "Square\Square.vcxproj", "{25EB48A0-4549-414C-B80C-F69248920415}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL-Lab2", "..\TestGlut\Lab2\Lab2.vcxproj", "{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +29,14 @@ Global
 		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Debug|Win32.Build.0 = Debug|Win32
 		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Release|Win32.ActiveCfg = Release|Win32
 		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Release|Win32.Build.0 = Release|Win32
+		{25EB48A0-4549-414C-B80C-F69248920415}.Debug|Win32.ActiveCfg = Debug|Win32
+		{25EB48A0-4549-414C-B80C-F69248920415}.Debug|Win32.Build.0 = Debug|Win32
+		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.ActiveCfg = Release|Win32
+		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.Build.0 = Release|Win32
+		{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}.Debug|Win32.Build.0 = Debug|Win32
+		{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}.Release|Win32.ActiveCfg = Release|Win32
+		{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
