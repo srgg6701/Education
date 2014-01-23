@@ -6,7 +6,10 @@
 #include "windows.h"
 #include <GL/glut.h>
 #include <iostream>
+#include <ctime>
+#include <iomanip>
 #include "funx.h"
+#include "vars.h"
 using namespace std;
 
 // Define Infinite (Using INT_MAX caused overflow problems)
@@ -92,28 +95,34 @@ int main(int argvc, char**argv)
     
 	//convexHull(points, n);
 	glutInit(&argvc, argv);
-	glutInitWindowSize(600,400);
-	glutInitWindowPosition(800,400);
+	glutInitWindowSize(winWidth,winHeight);
+	glutInitWindowPosition(660,200);
 	glutCreateWindow("Dots");
 	glutDisplayFunc(Display);
-	//init();
+	glutKeyboardFunc(Keyboard);
+	init();
 	glutMainLoop();
     return 0;
 }
 void init()
 {
+	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(0.1,0.0,0.3,1.0);
-	glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMatrixMode(GL_MODELVIEW);
+	glOrtho(0.0,winWidth,0.0,winHeight,-10.0,10.0);
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
+}
+//
+float getRandom(float val)
+{	
+	return static_cast <float> (rand()) / (static_cast <float> (RAND_MAX)) * val;
 }
 // show gets here!
 void Display()
 {
-	//glClearColor(1.0,1.0,4.0,1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClearColor(1.0,1.0,1.0,1.0);
 	//glColor3f(0.0,1.0,0.0);	
 	//cout<<"Look at it, Dude: "<<endl;
 	//glMatrixMode(GL_PROJECTION);
@@ -122,11 +131,108 @@ void Display()
 	//glMatrixMode(GL_MODELVIEW);
 	//ќчистить матрицу
 	//glLoadIdentity();
+	srand(time(NULL));
+    setlocale(LC_ALL, "rus");
+	glPointSize(6.0);
+	glBegin(GL_POINTS);
+		glColor3f(0.0,0.0,0.0);
+		for (int i = 0; i < 100; i++)
+		{
+			float pX = getRandom(winWidth);
+			float pY = getRandom(winHeight);
+			float r = getRandom(0.5);
+			float g = getRandom(0.5);
+			float b = getRandom(0.5);
+			//cout<<"pX = "<<pX<<", pY = "<<pY<<"; r: "<<r<<", g: "<<g<<", b: "<<b<<endl;
+			glColor3f(r,g,b);
+			glVertex2f(pX,pY);
+		}
+	glEnd();
 	//¬идова€ трансформаци€(камера)
 	//gluLookAt(0.0,0.0,5.0,0.0,0.0,0.0,0.0,1.0,0.0);
-	glFlush;
+	glFlush();
 }
+// handle keys events
+void Keyboard(unsigned char key, int x, int y)
+{
+	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
+	{
+	case 60:	// <
+		//eyeX-=stepXY;
+		break;
+	case 62:	// >
+		//eyeX+=stepXY;
+		break;
+	case 44:	// ,
+		//eyeY-=stepXY;
+		break;
+	case 46:	// .
+		//eyeY+=stepXY;
+		break;
+	case 91:	// [
+		//eyeZ-=stepXY;
+		break;
+	case 93:	// ]
+		//eyeZ+=stepXY;
+		break;
+		//..................
+	case 120:	// x
+		//centerX-=stepXY;
+		break;
+	case 88:	// X
+		//centerX+=stepXY;
+		break;
+	case 121:	// y
+		//centerY-=stepXY;
+		break;
+	case 89:	// Y
+		//centerY+=stepXY;
+		break;
+	case 122:	// z
+		//centerZ-=stepCZ;
+		break;
+	case 90:	// Z
+		//centerZ+=stepCZ;
+		break;
 
+		// arrows:
+	case 52:	// 4
+		//trnslX-=stepTransform;
+		break;
+	case 54:	// 6
+		//trnslX+=stepTransform;
+		break;
+	case 56:	// 8
+		//trnslY+=stepTransform;
+		break;
+	case 50:	// 2
+		//trnslY-=stepTransform;
+		break;
+
+		// zoom:
+	case 43: // +
+		//
+		break;
+	case 45: // -
+		//
+		break;
+		//..................
+	case 61: // вернутьс€ к первоначальным значени€м
+		//eyeX=EX;
+		//eyeY=EY;
+		//eyeZ=EZ;
+		//centerX=CX;
+		//centerY=CY;
+		//centerZ=CZ;
+		break;
+		// «акрыть окно по нажатию кл. "ѕробел":
+	case 32: exit(0);
+		break;
+	}
+	if(key!=32) glutPostRedisplay(); // перерисовать окно  
+}
+//=====================================================================
+//.....................................................................
 // материалы:
 // http://habrahabr.ru/post/144921/ -> http://habrahabr.ru/post/144571/
 // http://marknelson.us/2007/08/22/convex/

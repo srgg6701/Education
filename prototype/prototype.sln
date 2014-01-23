@@ -3,13 +3,50 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab 1 - Sphere", "Sphere\Sphere.vcxproj", "{D2363A66-3B6F-4D3F-A216-CF48520AB556}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Textures", "Textures\Textures.vcxproj", "{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab 3 - Gift Wrapper", "Lab 3 - Gift Wrapper\Lab 3 - Gift Wrapper.vcxproj", "{CBA36EDD-F762-4DDF-9E06-F550338B6131}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Square", "Square\Square.vcxproj", "{25EB48A0-4549-414C-B80C-F69248920415}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL-Lab2", "..\TestGlut\Lab2\Lab2.vcxproj", "{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sources", "sources", "{993F1F24-0A7D-4148-BE00-755181FB91EB}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\BlueBook.pdf = ..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\BlueBook.pdf
+		..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\OpenGL Quick Reference Guide.docx = ..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\OpenGL Quick Reference Guide.docx
+		..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\OpenGL Резюме.docx = ..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\OpenGL Резюме.docx
+		..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\OpenGL-GLUT.docx = ..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\OpenGL-GLUT.docx
+		..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\RedBook Резюме.docx = ..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\RedBook Резюме.docx
+		..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\RedBook.pdf = ..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\RedBook.pdf
+		..\..\..\..\..\__3th\Labs\Лабораторные 3,4,6 VS.docx = ..\..\..\..\..\__3th\Labs\Лабораторные 3,4,6 VS.docx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sorting", "Sorting", "{2E449D41-0F08-432F-A810-D099DC9B3E90}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1. Sort-bubbles", "..\..\Sorting\bubbles\bubbles.vcxproj", "{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xmpl-dataOutput", "..\..\Sorting\dataOutput\dataOutput.vcxproj", "{4EC8319A-8D80-4941-BC31-14D844A9785F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "compoundSorting", "..\..\Sorting\compoundSorting\compoundSorting.vcxproj", "{32F2F25B-6438-48B3-AE02-1625F773AD66}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileHandler", "..\..\Sorting\FileHandler\FileHandler.vcxproj", "{1541CFF0-C513-4EC3-9569-2CD4DDD74601}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "get_and_sort", "..\..\Sorting\get_and_sort\get_and_sort.vcxproj", "{144B444E-EC26-4E4E-9B77-ACA966B0143D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NumbersFileHandler", "..\..\Sorting\NumbersFileHandler\NumbersFileHandler.vcxproj", "{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xmpl-File_creating_rand", "..\..\Sorting\outputFromArray\outputFromArray.vcxproj", "{FEAD975F-3720-4C91-B473-3247369A8D1F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuickSort", "..\..\Sorting\QuickSort\QuickSort\QuickSort.vcxproj", "{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3. Sort-quick_sort", "..\..\Sorting\QuickSort2\QuickSort2\QuickSort2.vcxproj", "{5B0EB61D-1CA5-4547-B239-B6640AD449C4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1. Sort-by_inserts", "..\..\Sorting\Sort_by_inserts\Sort_by_inserts.vcxproj", "{E89B10ED-F7AE-490A-9CE2-5904DC92878F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Reading_file-Vector", "..\..\Sorting\Vector\Vector.vcxproj", "{2F85449A-4EF6-4EB0-861E-7B80425A8A34}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Сортировка вставками", "Сортировка вставками", "{5CB909BB-0DED-4BCF-8B47-31C1C6312262}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Пузырьковая сортировка", "Пузырьковая сортировка", "{C771F2E4-C23C-41D6-BB93-A12F8689B2CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Быстрая сортировка", "Быстрая сортировка", "{10B18B63-C765-4E08-ADF4-F7B3D97CD57D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +58,6 @@ Global
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Debug|Win32.Build.0 = Debug|Win32
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Release|Win32.ActiveCfg = Release|Win32
 		{D2363A66-3B6F-4D3F-A216-CF48520AB556}.Release|Win32.Build.0 = Release|Win32
-		{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}.Debug|Win32.ActiveCfg = Debug|Win32
-		{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}.Debug|Win32.Build.0 = Debug|Win32
-		{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}.Release|Win32.ActiveCfg = Release|Win32
-		{FE4FD9FE-3199-432D-8160-2B81ECAFBBEF}.Release|Win32.Build.0 = Release|Win32
 		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Debug|Win32.ActiveCfg = Debug|Win32
 		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Debug|Win32.Build.0 = Debug|Win32
 		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Release|Win32.ActiveCfg = Release|Win32
@@ -33,13 +66,69 @@ Global
 		{25EB48A0-4549-414C-B80C-F69248920415}.Debug|Win32.Build.0 = Debug|Win32
 		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.ActiveCfg = Release|Win32
 		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.Build.0 = Release|Win32
-		{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}.Debug|Win32.Build.0 = Debug|Win32
-		{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}.Release|Win32.ActiveCfg = Release|Win32
-		{A4B7FE38-CBE4-4741-A9AE-71661FE15DDD}.Release|Win32.Build.0 = Release|Win32
+		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Debug|Win32.Build.0 = Debug|Win32
+		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Release|Win32.ActiveCfg = Release|Win32
+		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Release|Win32.Build.0 = Release|Win32
+		{4EC8319A-8D80-4941-BC31-14D844A9785F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4EC8319A-8D80-4941-BC31-14D844A9785F}.Debug|Win32.Build.0 = Debug|Win32
+		{4EC8319A-8D80-4941-BC31-14D844A9785F}.Release|Win32.ActiveCfg = Release|Win32
+		{4EC8319A-8D80-4941-BC31-14D844A9785F}.Release|Win32.Build.0 = Release|Win32
+		{32F2F25B-6438-48B3-AE02-1625F773AD66}.Debug|Win32.ActiveCfg = Debug|Win32
+		{32F2F25B-6438-48B3-AE02-1625F773AD66}.Debug|Win32.Build.0 = Debug|Win32
+		{32F2F25B-6438-48B3-AE02-1625F773AD66}.Release|Win32.ActiveCfg = Release|Win32
+		{32F2F25B-6438-48B3-AE02-1625F773AD66}.Release|Win32.Build.0 = Release|Win32
+		{1541CFF0-C513-4EC3-9569-2CD4DDD74601}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1541CFF0-C513-4EC3-9569-2CD4DDD74601}.Debug|Win32.Build.0 = Debug|Win32
+		{1541CFF0-C513-4EC3-9569-2CD4DDD74601}.Release|Win32.ActiveCfg = Release|Win32
+		{1541CFF0-C513-4EC3-9569-2CD4DDD74601}.Release|Win32.Build.0 = Release|Win32
+		{144B444E-EC26-4E4E-9B77-ACA966B0143D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{144B444E-EC26-4E4E-9B77-ACA966B0143D}.Debug|Win32.Build.0 = Debug|Win32
+		{144B444E-EC26-4E4E-9B77-ACA966B0143D}.Release|Win32.ActiveCfg = Release|Win32
+		{144B444E-EC26-4E4E-9B77-ACA966B0143D}.Release|Win32.Build.0 = Release|Win32
+		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}.Debug|Win32.Build.0 = Debug|Win32
+		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}.Release|Win32.ActiveCfg = Release|Win32
+		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}.Release|Win32.Build.0 = Release|Win32
+		{FEAD975F-3720-4C91-B473-3247369A8D1F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FEAD975F-3720-4C91-B473-3247369A8D1F}.Debug|Win32.Build.0 = Debug|Win32
+		{FEAD975F-3720-4C91-B473-3247369A8D1F}.Release|Win32.ActiveCfg = Release|Win32
+		{FEAD975F-3720-4C91-B473-3247369A8D1F}.Release|Win32.Build.0 = Release|Win32
+		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}.Debug|Win32.Build.0 = Debug|Win32
+		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}.Release|Win32.ActiveCfg = Release|Win32
+		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}.Release|Win32.Build.0 = Release|Win32
+		{5B0EB61D-1CA5-4547-B239-B6640AD449C4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5B0EB61D-1CA5-4547-B239-B6640AD449C4}.Debug|Win32.Build.0 = Debug|Win32
+		{5B0EB61D-1CA5-4547-B239-B6640AD449C4}.Release|Win32.ActiveCfg = Release|Win32
+		{5B0EB61D-1CA5-4547-B239-B6640AD449C4}.Release|Win32.Build.0 = Release|Win32
+		{E89B10ED-F7AE-490A-9CE2-5904DC92878F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E89B10ED-F7AE-490A-9CE2-5904DC92878F}.Debug|Win32.Build.0 = Debug|Win32
+		{E89B10ED-F7AE-490A-9CE2-5904DC92878F}.Release|Win32.ActiveCfg = Release|Win32
+		{E89B10ED-F7AE-490A-9CE2-5904DC92878F}.Release|Win32.Build.0 = Release|Win32
+		{2F85449A-4EF6-4EB0-861E-7B80425A8A34}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2F85449A-4EF6-4EB0-861E-7B80425A8A34}.Debug|Win32.Build.0 = Debug|Win32
+		{2F85449A-4EF6-4EB0-861E-7B80425A8A34}.Release|Win32.ActiveCfg = Release|Win32
+		{2F85449A-4EF6-4EB0-861E-7B80425A8A34}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4EC8319A-8D80-4941-BC31-14D844A9785F} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{32F2F25B-6438-48B3-AE02-1625F773AD66} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{1541CFF0-C513-4EC3-9569-2CD4DDD74601} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{144B444E-EC26-4E4E-9B77-ACA966B0143D} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{FEAD975F-3720-4C91-B473-3247369A8D1F} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{2F85449A-4EF6-4EB0-861E-7B80425A8A34} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{5CB909BB-0DED-4BCF-8B47-31C1C6312262} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{C771F2E4-C23C-41D6-BB93-A12F8689B2CD} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{10B18B63-C765-4E08-ADF4-F7B3D97CD57D} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{E89B10ED-F7AE-490A-9CE2-5904DC92878F} = {5CB909BB-0DED-4BCF-8B47-31C1C6312262}
+		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5} = {C771F2E4-C23C-41D6-BB93-A12F8689B2CD}
+		{5B0EB61D-1CA5-4547-B239-B6640AD449C4} = {10B18B63-C765-4E08-ADF4-F7B3D97CD57D}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
