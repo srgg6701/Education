@@ -61,6 +61,20 @@ int getOrientation(int indexA, int indexB, int indexC)
 	int val =	(pX[indexB]-pX[indexA]) * (pY[indexC]-pY[indexB]) -
 				(pY[indexB]-pY[indexA]) * (pX[indexC]-pX[indexB]);
 	if (val == 0) return 0;  // colinear
+	
+	cout<<endl<<
+		"( "<<pX[indexB]<<"-"<<pX[indexA]<<" ) * ( "<<pY[indexC]<<"-"<<pY[indexB]<<" ) -"<<endl
+		<<"( "<<pY[indexB]<<"-"<<pY[indexA]<<" ) * ( "<<pX[indexC]<<"-"<<pX[indexB]<<" )"<<endl;
+	
+	if(val>0) 
+	{
+		cout<<endl<<"val>0: "<<val;
+	}
+	else
+	{
+		cout<<endl<<"val<0: "<<val;
+	}
+	cout<<endl;
     return (val > 0)? 1: 2; // clock or counterclock wise
 }
 // Prints convex hull of a set of n points.
@@ -115,8 +129,17 @@ void convexHull()
     // Find the leftmost point
     int L = 0;
     for (int i = 1; i < starsCounter; i++)
-        if (pX[1] < pX[L]) L = i; 
- 
+	{
+        cout<< "pX[i] = " <<pX[i]<<",  pX[L] = "<<pX[L]<<endl;
+		if (pX[i] < pX[L])
+		{
+			cout<<" pX[1] < pX[L] !"<<endl;
+			L = i; 
+		}
+	}
+	cout<<"starting point["<<L<<"] is "<<pX[L]<<","<<pY[L]<<endl;
+
+
     
 	/*float orient;
 	for (int i = 0; i < starsCounter-2; i++)
@@ -139,9 +162,12 @@ void convexHull()
         // counterclockwise for all points 'i'
         q = (p+1)%starsCounter;
         for (int i = 0; i < starsCounter; i++)
-          if (getOrientation(p,i,q) == 2)
-             q = i;
- 
+          if (getOrientation(p,i,q) == 2){
+			  cout<<endl<<"i= "<<i<<", orientation= "<<getOrientation(p,i,q)
+						<<", add point: "<<pX[i]<<","<<pY[i];
+			  q = i;
+		  }
+		cout<<endl;
         next[p] = q;  // Add q to result as a next point of p
         p = q; // Set p as q for next iteration
     } while (p != L); /**/
@@ -224,7 +250,35 @@ void Display()
 		{
 			cout<<"pX = "<<pX[i]<<", pY = "<<pY[i]
 			<<"; r: "<<r[i]<<", g: "<<g[i]<<", b: "<<b[i]<<endl;
-			glColor3f(r[i],g[i],b[i]);
+			switch (i)
+			{
+				case 0:
+					glColor3f(1.0,0.0,0.0); //red
+					break;
+				case 1:
+					glColor3f(1.0,0.0,1.0); //violet
+					break;
+				case 2:
+					glColor3f(0.0,0.0,1.0); //blue
+					break;
+				case 3:
+					glColor3f(0.0,1.0,0.0); //gren
+					break;
+				case 4:
+					glColor3f(1.0,1.0,0.0); //yellow
+					break;
+				case 5:
+					glColor3f(1.0,0.5,0.0); //orange
+					break;
+				case 6:
+					glColor3f(0.0,0.0,0.0); //black
+					break;
+				
+				default:
+					glColor3f(r[i],g[i],b[i]);
+					break;
+			}
+			
 			glVertex2f(pX[i],pY[i]);
 		}
 	glEnd();/**/
@@ -256,10 +310,10 @@ void Display()
 			glColor3f(1.0,0.0,1.0);
 			if( clrs[ccnt] && (!i || i%2==0) )
 			{   ccnt=i-cnt;
-				cout<<endl<<"SHOW COLORS: i = "<<i<<", ccnt = "<<ccnt<<", colors: "
+				/*cout<<endl<<"SHOW COLORS: i = "<<i<<", ccnt = "<<ccnt<<", colors: "
 					<<clrs[ccnt][0]<<","
 					<<clrs[ccnt][1]<<","
-					<<clrs[ccnt][2];
+					<<clrs[ccnt][2]; */
 				glColor3f(clrs[ccnt][0],clrs[ccnt][1],clrs[ccnt][2]);
 				cnt++; 
 			}
