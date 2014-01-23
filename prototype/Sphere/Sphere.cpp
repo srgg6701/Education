@@ -232,7 +232,7 @@ void display(void)
 		<<"width: "<<glutGet(GLUT_WINDOW_WIDTH)<<endl
 		<<"height:"<<glutGet(GLUT_WINDOW_HEIGHT)
 		<<endl; */
-	showLog();
+	//showLog();
 	//объявить квадратичный объект
 	GLUquadricObj* qobj;
 	//очистить буфер
@@ -244,16 +244,14 @@ void display(void)
 	//...и правый
 	setLightRight();
 	
-	//
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	
 	//переместить объект влево/вправо
 	glTranslatef ( trnslX, trnslY, trnslZ );
 	//повернуть
 	glRotatef(rAngle,rX,rY,rZ);
+	
 	//масштабировать 
 	glScalef(sX,sY,sZ);
+
 	//создать квадратичный объект
 	qobj = gluNewQuadric();
 	//назначить объекту тип заливки
@@ -373,10 +371,12 @@ void Keyboard(unsigned char key, int x, int y)
 		case 43: // +
 			sX+=zoom;
 			sY+=zoom;
+			sZ+=zoom;
 			break;
 		case 45: // -
 			sX-=zoom;
 			sY-=zoom;
+			sZ-=zoom;
 			break;
 		//----------------------------
 		case 61: // = 
@@ -409,6 +409,7 @@ void Keyboard(unsigned char key, int x, int y)
 	}
 	if(key!=32) 
 	{
+		showLog();
 		/*	вызвать матрицы,
 			рассчитать ортографическую проекцию.
 			Вызов выполняется здесь, а не в display, 
@@ -423,8 +424,8 @@ int main(int argc, char **argv)
 {
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
-	glutInitWindowSize(250,250);
-	glutInitWindowPosition(1000,100);
+	glutInitWindowSize(450,450);
+	glutInitWindowPosition(800,100);
 	glutCreateWindow("Square");
 	init();
 	glutDisplayFunc(display);
