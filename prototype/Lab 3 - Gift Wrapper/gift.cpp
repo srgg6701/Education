@@ -93,3 +93,4 @@ int main()
 }
 // материалы:
 // http://habrahabr.ru/post/144921/ -> http://habrahabr.ru/post/144571/
+// http://marknelson.us/2007/08/22/convex/

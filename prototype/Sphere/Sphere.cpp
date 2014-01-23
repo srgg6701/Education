@@ -25,9 +25,9 @@ void showLog()
 		<<"X (x/X): "<<rX<<endl
 		<<"Y (y/Y): "<<rY<<endl
 		<<"Z (z/Z): "<<rZ<<endl
-		<<"SCALE:"<<endl
-		<<"by X (x/X): "<<sX<<endl
-		<<"by Y (y/Y): "<<sY<<endl
+		<<"SCALE: (+/-)"<<endl
+		<<"by X: "<<sX<<endl
+		<<"by Y: "<<sY<<endl/**/
 		/*<<"angles for axis (rAngle, no keys) - "<<endl
 		<<"aX: "<<aX<<endl
 		<<"aY: "<<aY<<endl
@@ -97,6 +97,9 @@ void loadTextures()
 	 ()   .	*/
 void prepareProjection()
 {
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
@@ -230,39 +233,38 @@ void display(void)
 		<<"height:"<<glutGet(GLUT_WINDOW_HEIGHT)
 		<<endl; */
 	showLog();
-	
+	//объявить квадратичный объект
 	GLUquadricObj* qobj;
-	
-	//  
+	//очистить буфер
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	//  
+	//указать цвет очистки
 	glColor3f(1.0,1.0,1.0);
-	// 
+	//включить левый источник света
 	setLightLeft();
+	//...и правый
 	setLightRight();
 	
-	//glEnable(GL_LIGHTING);
-	
+	//
 	//glMatrixMode(GL_PROJECTION);
 	//glLoadIdentity();
 	
-	//  
-	// -
+	//переместить объект влево/вправо
 	glTranslatef ( trnslX, trnslY, trnslZ );
-	//   
+	//повернуть
 	glRotatef(rAngle,rX,rY,rZ);
-	// 
-	//---------------------------------
+	//масштабировать 
 	glScalef(sX,sY,sZ);
+	//создать квадратичный объект
 	qobj = gluNewQuadric();
+	//назначить объекту тип заливки
 	gluQuadricDrawStyle(qobj,GLU_FILL);
+	//рассчитать нормали
 	gluQuadricNormals(qobj,GLU_SMOOTH);
+	//привязать ранее загруженную текстуру
 	gluQuadricTexture(qobj, true);
+	//указать тип созданного объекта (сфера)
 	gluSphere(qobj,0.33,50,20);
 	//---------------------------------
-	
-	//glutSolidSphere(0.2,50,15);
-	//   
 	glFlush();
 }
 //  
@@ -407,8 +409,13 @@ void Keyboard(unsigned char key, int x, int y)
 	}
 	if(key!=32) 
 	{
-		prepareProjection();	//   
-		glutPostRedisplay();	//    
+		/*	вызвать матрицы,
+			рассчитать ортографическую проекцию.
+			Вызов выполняется здесь, а не в display, 
+			чтобы избежать его повторения при инициализации*/
+		prepareProjection();
+		//
+		glutPostRedisplay();
 	}
 }
 
