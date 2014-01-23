@@ -8,12 +8,15 @@
 #include <iostream>
 #include <ctime>
 #include <iomanip>
+#include <vector>
 #include "funx.h"
 #include "vars.h"
 using namespace std;
 
 // Define Infinite (Using INT_MAX caused overflow problems)
 #define INF 10000
+
+std::vector<int> data;
 
 struct Point
 {
@@ -41,9 +44,27 @@ int orientation(Point p, Point q, Point r)
     if (val == 0) return 0;  // colinear
     return (val > 0)? 1: 2; // clock or counterclock wise
 }
- 
+
+int getOrientation(int indexA, int indexB, int indexC)
+{
+	/*	A = pX[i]	, pY[i], 
+		B = pX[i+1] , pY[i+1], 
+		C = pX[i+2] , pY[i+2], 
+		
+		A[0]A[1] - pX[i]		pY[i]
+		B[0]B[1] - pX[i+1]	pY[i+1]
+		C[0]C[1] - pX[i+2]	pY[i+2]
+		if returns positiv value, the C dot is from left,
+		otherwise - from right	*/
+	//return (B[0]-A[0])				* (C[1]-B[1]) - 
+	//		 (B[1]-A[1])				* (C[0]-B[0]);
+	int val =	(pX[indexB]-pX[indexA]) * (pY[indexC]-pY[indexB]) -
+				(pY[indexB]-pY[indexA]) * (pX[indexC]-pX[indexB]);
+	if (val == 0) return 0;  // colinear
+    return (val > 0)? 1: 2; // clock or counterclock wise
+}
 // Prints convex hull of a set of n points.
-void convexHull(Point points[], int n)
+void convexHull2(Point points[], int n)
 {
 
 	// There must be at least 3 points
@@ -55,14 +76,14 @@ void convexHull(Point points[], int n)
         next[i] = -1;
  
     // Find the leftmost point
-    int l = 0;
+    int L = 0;
     for (int i = 1; i < n; i++)
-        if (points[i].x < points[l].x)
-            l = i;
+        if (points[i].x < points[L].x)
+            L = i;
  
     // Start from leftmost point, keep moving counterclockwise
     // until reach the start point again
-    int p = l, q;
+    int p = L, q;
     do
     {
         // Search for a point 'q' such that orientation(p, i, q) is
@@ -74,7 +95,7 @@ void convexHull(Point points[], int n)
  
         next[p] = q;  // Add q to result as a next point of p
         p = q; // Set p as q for next iteration
-    } while (p != l);
+    } while (p != L);
  
     // Print Result
     for (int i = 0; i < n; i++)
@@ -83,17 +104,63 @@ void convexHull(Point points[], int n)
            cout << "(" << points[i].x << ", " << points[i].y << ")\n";
     } 
 }
+
+void convexHull()
+{
+	// Initialize Result
+    int *next = new int[starsCounter];
+    for (int i = 0; i < starsCounter; i++)
+        next[i] = -1;
  
+    // Find the leftmost point
+    int L = 0;
+    for (int i = 1; i < starsCounter; i++)
+        if (pX[1] < pX[L]) L = i; 
+ 
+    
+	/*float orient;
+	for (int i = 0; i < starsCounter-2; i++)
+	{
+		orient = getOrientation(i, i+1, i+2);
+		if(orient>=0)
+		{
+			cout<<"x: "<<pX[i]<<", y: "<<pY[i]<<", orient: "<<orient<<endl;
+			// save the index of the dot:
+			data.push_back(i);
+		}
+	}*/
+
+	// Start from leftmost point, keep moving counterclockwise
+    // until reach the start point again
+    int p = L, q;
+    do
+    {
+        // Search for a point 'q' such that orientation(p, i, q) is
+        // counterclockwise for all points 'i'
+        q = (p+1)%starsCounter;
+        for (int i = 0; i < starsCounter; i++)
+          if (getOrientation(p,i,q) == 2)
+             q = i;
+ 
+        next[p] = q;  // Add q to result as a next point of p
+        p = q; // Set p as q for next iteration
+    } while (p != L); /**/
+ 
+    
+	// Print Result
+    for (int i = 0; i < starsCounter; i++)
+    {
+        if (next[i] != -1)
+		{
+			cout << "i = "<<i<<"(" << pX[i] << ", " << pY[i] << ")\n";
+			data.push_back(i);
+		}
+    } /**/
+}
+
 // Driver program to test above functions
 int main(int argvc, char**argv)
 {
-    /*Point points[] = {
-						{0, 3}, {2, 2}, {1, 1}, {2, 1},
-						{3, 0}, {0, 0}, {3, 3}
-					};
-    int n = sizeof(points)/sizeof(points[0]);*/
-    
-	//convexHull(points, n);
 	glutInit(&argvc, argv);
 	glutInitWindowSize(winWidth,winHeight);
 	glutInitWindowPosition(660,200);
@@ -101,42 +168,36 @@ int main(int argvc, char**argv)
 	glutDisplayFunc(Display);
 	glutKeyboardFunc(Keyboard);
 	init();
+	/*Point points[] = {
+						{0, 3}, {2, 2}, {1, 1}, {2, 1},
+						{3, 0}, {0, 0}, {3, 3}
+					};
+    int n = sizeof(points)/sizeof(points[0]);
+	convexHull2(points, n);*/
+    /*
+	Point points[starsCounter]={};
+	for (int i = 0; i < starsCounter; i++)
+	{
+		Point points[] = {0,3};
+	}*/
+	convexHull();
 	glutMainLoop();
     return 0;
 }
-float pX[100];
-float pY[100];
-float r[100];
-float g[100];
-float b[100];
-	
+
 void init()
 {
 	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glOrtho(10.0,winWidth-10.0,10.0,winHeight-10.0,-10.0,10.0);
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < starsCounter; i++)
 	{
 		pX[i]	= getRandom(winWidth);
 		pY[i]	= getRandom(winHeight);
 		r[i]	= getRandom(0.5);
 		g[i]	= getRandom(0.5);
 		b[i]	= getRandom(0.5);
-		/*float pX = getRandom(winWidth);
-		float pY = getRandom(winHeight);
-		float r = getRandom(0.5);
-		float g = getRandom(0.5);
-		float b = getRandom(0.5);
-		//cout<<"pX = "<<pX<<", pY = "<<pY<<"; r: "<<r<<", g: "<<g<<", b: "<<b<<endl;
-		glColor3f(r,g,b);
-		glVertex2f(pX,pY);*/
 	}
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glEnableClientState(GL_COLOR_ARRAY);
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
 }
 // get the trully random value
 float getRandom(float val)
@@ -148,11 +209,8 @@ void Display()
 {
 	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	//cout<<"Look at it, Dude: "<<endl;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//glOrtho(-4.0,4.0,-4.0,4.0,-10.0,10.0); // left right bottom top
-	//glMatrixMode(GL_MODELVIEW);
 	//Очистить матрицу
 	glLoadIdentity();
 	glScalef(0.9,0.9,0.9);
@@ -162,15 +220,13 @@ void Display()
 
 	glPointSize(6.0);
 	glBegin(GL_POINTS);
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < starsCounter; i++)
 		{
 			//cout<<"pX = "<<pX<<", pY = "<<pY<<"; r: "<<r<<", g: "<<g<<", b: "<<b<<endl;
 			glColor3f(r[i],g[i],b[i]);
 			glVertex2f(pX[i],pY[i]);
 		}
 	glEnd();
-	//Видовая трансформация(камера)
-	//gluLookAt(0.0,0.0,5.0,0.0,0.0,0.0,0.0,1.0,0.0);
 	glFlush();
 }
 // handle keys events
