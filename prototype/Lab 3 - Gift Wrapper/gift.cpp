@@ -232,10 +232,10 @@ void buildStarTrackPath()
 	int ccnt=0;
 	
 	glColor3f(1.0,0.0,1.0);
-
-	if(wrapper_path==0)
-		glVertex2f(pX[stars[stars.size()-1]],pY[stars[stars.size()-1]]);
 	
+	if(wrapper_path!=stars.size())
+		glVertex2f(pX[stars[stars.size()-1]],pY[stars[stars.size()-1]]);
+		
 	// Walk through our constellation
 	for (size_t i=0; i<wrapper_path; i++)//stars.size()
 	{		
