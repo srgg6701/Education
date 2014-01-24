@@ -13,7 +13,7 @@
 #include "vars.h"
 using namespace std;
 
-// Define Infinite (Using INT_MAX caused overflow problems)
+// Define InfbigBange (Using INT_MAX caused overflow problems)
 #define INF 10000
 
 std::vector<int> data;
@@ -87,7 +87,7 @@ void convexHull2(Point points[], int n)
 	// There must be at least 3 points
     if (n < 3) return;
  
-    // Initialize Result
+    // bigBangialize Result
     int *next = new int[n];
     for (int i = 0; i < n; i++)
         next[i] = -1;
@@ -124,7 +124,7 @@ void convexHull2(Point points[], int n)
 //
 void convexHull()
 {
-	// Initialize Result
+	// bigBangialize Result
     /*int *next = new int[starsCounter];
     for (int i = 0; i < starsCounter; i++)
         next[i] = -1;*/
@@ -228,7 +228,7 @@ int main(int argvc, char**argv)
 	glutCreateWindow("Dots");
 	glutDisplayFunc(Display);
 	glutKeyboardFunc(Keyboard);
-	init();
+	bigBang();
 	/*Point points[] = {
 						{0, 3}, {2, 2}, {1, 1}, {2, 1},
 						{3, 0}, {0, 0}, {3, 3}
@@ -246,7 +246,7 @@ int main(int argvc, char**argv)
     return 0;
 }
 // Generate donts on the space
-void generateDots()
+void generateStars()
 {	
 	if(random) // random mode
 	{
@@ -263,14 +263,14 @@ void generateDots()
 	else // test mode
 	{
 		// 8 | 400 x 300 
-		float cWidth[starsCounter]			={ 200, 150, 300, 100, 200, 100, 300, 100 };
-		float cHeight[starsCounter]			={ 100, 200, 150, 50,  150, 250, 100, 150 };
+		float cWidth[starsCounter]			={ 200, 150, 300, 100, 200, 100, 250, 125 };
+		float cHeight[starsCounter]			={ 100, 200, 150, 50,  150, 250, 100, 125 };
 		float dotColors[starsCounter][3]	={ {1.0,0.0,0.0}, {1.0,0.0,1.0}, 
 											   {0.0,0.0,1.0}, {0.0,1.0,0.0},
 											   {1.0,1.0,0.0}, {1.0,0.5,0.0}, 
-											   {0.5,0.5,1.0}, {0.0,0.0,0.0}
+											   {0.5,1.0,1.0}, {0.0,0.0,0.0}
 											}; 
-
+			
 		for (int i = 0; i < starsCounter; i++)
 		{
 			pX[i]	= cWidth[i];
@@ -281,13 +281,13 @@ void generateDots()
 		}
 	}
 }
-//
-void init()
+// The Universe starts here!
+void bigBang()
 {
 	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glOrtho(10.0,winWidth-10.0,10.0,winHeight-10.0,-10.0,10.0);
-	generateDots();
+	generateStars();
 }
 // get the trully random value
 float getRandom(float val)
@@ -308,7 +308,7 @@ void Display()
 	srand(time(NULL));
     setlocale(LC_ALL, "rus");
 
-	glPointSize(6.0);
+	glPointSize(12.0);
 	glBegin(GL_POINTS);
 		for (int i = 0; i < starsCounter; i++)
 		{
@@ -316,7 +316,7 @@ void Display()
 			<<"; r: "<<r[i]<<", g: "<<g[i]<<", b: "<<b[i]<<endl;
 			switch (i)
 			{
-				case 0:
+				/*case 0:
 					glColor3f(1.0,0.0,0.0); //red
 					break;
 				case 1:
@@ -337,7 +337,7 @@ void Display()
 				case 6:
 					glColor3f(0.0,0.0,0.0); //black
 					break;
-				
+				*/
 				default:
 					glColor3f(r[i],g[i],b[i]);
 					break;
@@ -346,47 +346,52 @@ void Display()
 			glVertex2f(pX[i],pY[i]);
 		}
 	glEnd();/**/
-	glLineWidth(4.0);
-	float clrs[12][3]={
-		{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0},
-		{1.0,0.0,0.0},{1.0,0.0,1.0}/*,{0.0,0.0,1.0},{1.0,1.0,0.0},
-		{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0}*/
-	};
-	glBegin(GL_LINE_LOOP);
-			glColor3f(1.0,0.0,1.0);
-		/*glVertex2f(10.0,10.0);
-		glVertex2f(10.0,100.0);
-		glVertex2f(100.0,100.0);
-		glVertex2f(200.0,50.0);
-		//glVertex2f(200.0,90.0);
-		glVertex2f(100.0,10.0);
+	
+	if(random)
+	{
+		glLineWidth(4.0);
+		float clrs[12][3]={
+			{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0},
+			{1.0,0.0,0.0},{1.0,0.0,1.0}/*,{0.0,0.0,1.0},{1.0,1.0,0.0},
+			{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0}*/
+		};
+	
+		glBegin(GL_LINE_LOOP);
+				glColor3f(1.0,0.0,1.0);
+			/*glVertex2f(10.0,10.0);
+			glVertex2f(10.0,100.0);
+			glVertex2f(100.0,100.0);
+			glVertex2f(200.0,50.0);
+			//glVertex2f(200.0,90.0);
+			glVertex2f(100.0,10.0);
 		
-		glVertex2f(0.0,0.0);
-		glVertex2f(0.0,30.0);
-		glVertex2f(40.0,30.0);
-		glVertex2f(60.0,15.0);
-		glVertex2f(40.0,0.0);*/	
+			glVertex2f(0.0,0.0);
+			glVertex2f(0.0,30.0);
+			glVertex2f(40.0,30.0);
+			glVertex2f(60.0,15.0);
+			glVertex2f(40.0,0.0);*/	
 		
-		int cnt=0;
-		int ccnt=0;
-		for (size_t i=0; i<data.size(); i++)
-		{
-			glColor3f(1.0,0.0,1.0);
-			if( clrs[ccnt] && (!i || i%2==0) )
-			{   ccnt=i-cnt;
-				/*cout<<endl<<"SHOW COLORS: i = "<<i<<", ccnt = "<<ccnt<<", colors: "
-					<<clrs[ccnt][0]<<","
-					<<clrs[ccnt][1]<<","
-					<<clrs[ccnt][2]; */
-				glColor3f(clrs[ccnt][0],clrs[ccnt][1],clrs[ccnt][2]);
-				cnt++; 
-			}
-			cout<<endl<<"index: "<<data[i]
-				<<", pX: "<<pX[data[i]]
-				<<", pY: "<<pY[data[i]];
-			glVertex2f(pX[data[i]],pY[data[i]]);
-		}/**/
-	glEnd();
+			int cnt=0;
+			int ccnt=0;
+			for (size_t i=0; i<data.size(); i++)
+			{
+				glColor3f(1.0,0.0,1.0);
+				if( clrs[ccnt] && (!i || i%2==0) )
+				{   ccnt=i-cnt;
+					/*cout<<endl<<"SHOW COLORS: i = "<<i<<", ccnt = "<<ccnt<<", colors: "
+						<<clrs[ccnt][0]<<","
+						<<clrs[ccnt][1]<<","
+						<<clrs[ccnt][2]; */
+					glColor3f(clrs[ccnt][0],clrs[ccnt][1],clrs[ccnt][2]);
+					cnt++; 
+				}
+				cout<<endl<<"index: "<<data[i]
+					<<", pX: "<<pX[data[i]]
+					<<", pY: "<<pY[data[i]];
+				glVertex2f(pX[data[i]],pY[data[i]]);
+			}/**/
+		glEnd();
+	}
 	glFlush();
 }
 // handle keys events
