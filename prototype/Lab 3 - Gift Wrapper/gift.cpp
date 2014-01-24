@@ -44,7 +44,7 @@ int orientation(Point p, Point q, Point r)
     if (val == 0) return 0;  // colinear
     return (val > 0)? 1: 2; // clock or counterclock wise
 }
-
+// Define the next dot's direction 
 int getOrientation(int indexA, int indexB, int indexC)
 {
 	/*	A = pX[i]	, pY[i], 
@@ -61,18 +61,21 @@ int getOrientation(int indexA, int indexB, int indexC)
 	int val =	(pX[indexB]-pX[indexA]) * (pY[indexC]-pY[indexB]) -
 				(pY[indexB]-pY[indexA]) * (pX[indexC]-pX[indexB]);
 	if (val == 0) return 0;  // colinear
-	
+	/*
 	cout<<endl<<
 		"( "<<pX[indexB]<<"-"<<pX[indexA]<<" ) * ( "<<pY[indexC]<<"-"<<pY[indexB]<<" ) -"<<endl
 		<<"( "<<pY[indexB]<<"-"<<pY[indexA]<<" ) * ( "<<pX[indexC]<<"-"<<pX[indexB]<<" )"<<endl;
 	
+	cout<<"pX["<<indexA<<"], pY["<<indexA<<"]"<<endl
+		<<"pX["<<indexB<<"], pY["<<indexB<<"]"<<endl
+		<<"pX["<<indexC<<"], pY["<<indexC<<"]";*/
 	if(val>0) 
 	{
-		cout<<endl<<"val>0: "<<val;
+		//cout<<endl<<"val>0: "<<val;
 	}
 	else
 	{
-		cout<<endl<<"val<0: "<<val;
+		cout<<endl<<"indexC = "<<indexC<<", val<0: "<<val;
 	}
 	cout<<endl;
     return (val > 0)? 1: 2; // clock or counterclock wise
@@ -118,28 +121,61 @@ void convexHull2(Point points[], int n)
            cout << "(" << points[i].x << ", " << points[i].y << ")\n";
     } 
 }
-
+//
 void convexHull()
 {
 	// Initialize Result
-    int *next = new int[starsCounter];
+    /*int *next = new int[starsCounter];
     for (int i = 0; i < starsCounter; i++)
-        next[i] = -1;
+        next[i] = -1;*/
  
     // Find the leftmost point
-    int L = 0;
+    /*int L = 0;
     for (int i = 1; i < starsCounter; i++)
 	{
         cout<< "pX[i] = " <<pX[i]<<",  pX[L] = "<<pX[L]<<endl;
 		if (pX[i] < pX[L])
 		{
+			
 			cout<<" pX[1] < pX[L] !"<<endl;
 			L = i; 
 		}
+	}*/
+	int L = 0;
+	for (int i = 1; i < starsCounter; i++)
+	{
+		if(pX[i]<pX[0]) L = i; 
+		//if (A[P[i]][0]<A[P[0]][0])//: # если P[i]-ая точка лежит левее P[0]-ой точки
+			//P[i], P[0] = P[0], P[i] # меняем местами номера этих точек 
 	}
 	cout<<"starting point["<<L<<"] is "<<pX[L]<<","<<pY[L]<<endl;
 
-
+	data.push_back(L);
+	int counter = 20;
+	while (counter)
+	{
+		int right = 0;
+		int orient = 0;
+		for(int i=0; i < starsCounter; i++)
+		{
+		  //if (rotate(A[H[-1]],A[P[right]],A[P[i]])<0):
+			orient=getOrientation(-1,right,i);
+			if (orient== 2) right = i;
+			//cout<<"orient: "<<orient<<", right = "<<right<<endl;
+		}
+		//if P[right]==H[0]: 
+		  //break
+		if(L==right) 
+			break;
+		else
+		{
+		  data.push_back(right);
+		}  
+		//H.append(P[right])
+		  //del P[right]
+		counter--;
+	}
+	//return
     
 	/*float orient;
 	for (int i = 0; i < starsCounter-2; i++)
@@ -152,7 +188,7 @@ void convexHull()
 			data.push_back(i);
 		}
 	}*/
-
+	/*
 	// Start from leftmost point, keep moving counterclockwise
     // until reach the start point again
     int p = L, q;
@@ -170,7 +206,7 @@ void convexHull()
 		cout<<endl;
         next[p] = q;  // Add q to result as a next point of p
         p = q; // Set p as q for next iteration
-    } while (p != L); /**/
+    } while (p != L); 
  
     
 	// Print Result
@@ -181,9 +217,8 @@ void convexHull()
 			cout << "i = "<<i<<"(" << pX[i] << ", " << pY[i] << ")\n";
 			data.push_back(i);
 		}
-    } /**/
+    } */
 }
-
 // Driver program to test above functions
 int main(int argvc, char**argv)
 {
@@ -210,20 +245,49 @@ int main(int argvc, char**argv)
 	glutMainLoop();
     return 0;
 }
+// Generate donts on the space
+void generateDots()
+{	
+	if(random) // random mode
+	{
+		for (int i = 0; i < starsCounter; i++)
+		{
+			pX[i]	= getRandom(winWidth);
+			pY[i]	= getRandom(winHeight);
+		
+			r[i]	= getRandom(0.5);
+			g[i]	= getRandom(0.5);
+			b[i]	= getRandom(0.5);
+		}
+	}
+	else // test mode
+	{
+		// 8 | 400 x 300 
+		float cWidth[starsCounter]			={ 200, 150, 300, 100, 200, 100, 300, 100 };
+		float cHeight[starsCounter]			={ 100, 200, 150, 50,  150, 250, 100, 150 };
+		float dotColors[starsCounter][3]	={ {1.0,0.0,0.0}, {1.0,0.0,1.0}, 
+											   {0.0,0.0,1.0}, {0.0,1.0,0.0},
+											   {1.0,1.0,0.0}, {1.0,0.5,0.0}, 
+											   {0.5,0.5,1.0}, {0.0,0.0,0.0}
+											}; 
 
+		for (int i = 0; i < starsCounter; i++)
+		{
+			pX[i]	= cWidth[i];
+			pY[i]	= cHeight[i];
+			r[i]	= dotColors[i][0];
+			g[i]	= dotColors[i][1];
+			b[i]	= dotColors[i][2];
+		}
+	}
+}
+//
 void init()
 {
 	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glOrtho(10.0,winWidth-10.0,10.0,winHeight-10.0,-10.0,10.0);
-	for (int i = 0; i < starsCounter; i++)
-	{
-		pX[i]	= getRandom(winWidth);
-		pY[i]	= getRandom(winHeight);
-		r[i]	= getRandom(0.5);
-		g[i]	= getRandom(0.5);
-		b[i]	= getRandom(0.5);
-	}
+	generateDots();
 }
 // get the trully random value
 float getRandom(float val)

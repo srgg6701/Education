@@ -1,5 +1,7 @@
-float winWidth			= 300.00;
-float winHeight			= 200.00;
+bool random = false;
+
+float winWidth			= 400.00;
+float winHeight			= 300.00;
 const int starsCounter	= 8;
 
 float pX[100];
