@@ -139,7 +139,7 @@ void generateStars()
 	}
 	else // test mode
 	{
-		// 8 | 400 x 300 
+		// winWidth x winHeight 
 		float cWidth[strz]			={  200, 150, 300, 100, 200, 100, 250, 125,  50, 350, 100, 150, 200, 375, 250, 200 };
 		
 		float cHeight[strz]			={	100, 200, 150,  50, 150, 250, 100, 125, 100, 250, 175,  75, 275,  25, 200, 200 };
@@ -170,6 +170,7 @@ void bigBang()
 	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glOrtho(10.0,winWidth-10.0,10.0,winHeight-10.0,-10.0,10.0);
+	generateStars();
 }
 // get the trully random value
 float getRandom(float val)
@@ -179,8 +180,6 @@ float getRandom(float val)
 // show gets here!
 void Display()
 {
-	generateStars();
-	
 	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
@@ -205,49 +204,61 @@ void Display()
 	if(random)
 	{
 		glLineWidth(4.0);
-		//Set wrapper's lines colors 
-		float clrs[12][3]={
-			{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0},
-			{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0},
-			{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0}/**/
-		};
-		// build wrapper
-		glBegin(GL_LINE_LOOP);
-				
-			glColor3f(1.0,0.0,1.0);
-		
-			int cnt=0;
-			int ccnt=0;
-			// Walk through our constellation
-			for (int i=0; i<wrapper_path; i++)
-			{
-				glColor3f(1.0,0.0,1.0);
-				
-				if(clrs&&ccnt&&!clrs[ccnt])
-					ccnt=0; // Drop colors counter to get them again
-
-				if(clrs[ccnt])
-				{   
-					if(!i || i%2==0) 
-					{
-						ccnt=i-cnt;
-						glColor3f(clrs[ccnt][0],clrs[ccnt][1],clrs[ccnt][2]);
-						cnt++; 
-					}
-				}
-				glVertex2f(pX[stars[i]],pY[stars[i]]);
-			}
-		glEnd();
+		if(wrapper_path==stars.size())
+		{
+			glBegin(GL_LINE_LOOP);
+				//Set wrapper's lines colors 
+				// build wrapper
+				buildStarTrackPath();
+			glEnd();		
+		}
+		else
+		{	glBegin(GL_LINE_STRIP);
+				//Set wrapper's lines colors 
+				// build wrapper
+				buildStarTrackPath();
+			glEnd();
+			
+		}
 	}
 	glFlush();
+}
+//
+void buildStarTrackPath()
+{
+	glColor3f(1.0,0.0,1.0);
+		
+	int cnt=0;
+	int ccnt=0;
+	
+	glColor3f(1.0,0.0,1.0);
+
+	if(wrapper_path==0)
+		glVertex2f(pX[stars[stars.size()-1]],pY[stars[stars.size()-1]]);
+	
+	// Walk through our constellation
+	for (size_t i=0; i<wrapper_path; i++)//stars.size()
+	{		
+		if(clrs&&ccnt&&!clrs[ccnt])
+			ccnt=0; // Drop colors counter to get them again
+
+		if(clrs[ccnt])
+		{   
+			if(!i || i%2==0) 
+			{
+				ccnt=i-cnt;
+				glColor3f(clrs[ccnt][0],clrs[ccnt][1],clrs[ccnt][2]);
+				cnt++; 
+			}
+		}
+		glVertex2f(pX[stars[i]],pY[stars[i]]);
+	}
 }
 // handle keys events
 void Keyboard(unsigned char key, int x, int y)
 {
 	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
 	{
-	
-			// arrows:
 		case 52:	// 4
 			if(wrapper_path)
 				wrapper_path--;
