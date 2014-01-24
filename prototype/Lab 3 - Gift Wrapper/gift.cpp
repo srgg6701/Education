@@ -45,12 +45,27 @@ int orientation(Point p, Point q, Point r)
     return (val > 0)? 1: 2; // clock or counterclock wise
 }
 // Define the next dot's direction 
-int getOrientation(int indexA, int indexB, int indexC)
+int getOrientation( int indexA, // P	// A
+					int indexB,	// i	// B
+					int indexC	// q	// C
+				  )
 {
-	/*	A = pX[i]	, pY[i], 
-		B = pX[i+1] , pY[i+1], 
-		C = pX[i+2] , pY[i+2], 
+	/*	A,B,C
+		P, - текущая точка обёртки
+		i, - текущая точка из общего массива
+		q  - следующая (за точкой из обёртки) точка 
+
+		( B[0] - A[0] ) * ( C[1] - B[1] ) - ( B[1] - A[1] ) * ( C[0] - B[0] )
 		
+		A[0] = pX[P]	A[1] = pY[P]
+		B[0] = pX[i]	B[1] = pY[i] 
+		C[0] = pX[q]	C[1] = pY[q] 
+	
+		( pX[i]-pX[P] ) * ( pY[q]-pY[i] ) - ( pY[i]-pY[P] ) * ( pX[q]-pX[i] )
+	
+	*/
+
+		/*
 		A[0]A[1] - pX[i]		pY[i]
 		B[0]B[1] - pX[i+1]	pY[i+1]
 		C[0]C[1] - pX[i+2]	pY[i+2]
@@ -69,16 +84,25 @@ int getOrientation(int indexA, int indexB, int indexC)
 	cout<<"pX["<<indexA<<"], pY["<<indexA<<"]"<<endl
 		<<"pX["<<indexB<<"], pY["<<indexB<<"]"<<endl
 		<<"pX["<<indexC<<"], pY["<<indexC<<"]";*/
+	cout<<"P: pXY["<<indexA<<"] = "<<pX[indexA]<<","<<pY[indexA]
+		<<"\ti: pXY["<<indexB<<"] = "<<pX[indexB]<<","<<pY[indexB]
+		<<"\tq: pXY["<<indexC<<"] = "<<pX[indexC]<<","<<pY[indexC]
+		<<endl
+		<<"val = "<<val<<",";
 	if(val>0) 
 	{
-		//cout<<endl<<"val>0: "<<val;
+		cout<<"\tskip ";
 	}
 	else
 	{
-		cout<<endl<<"indexC = "<<indexC<<", val<0: "<<val;
+		cout<<"\tapply ";
 	}
-	cout<<endl;
-    return (val > 0)? 1: 2; // clock or counterclock wise
+	cout<<"dot ["<<indexB<<"]"
+	//cout<<":: ("<<pX[indexB]<<"-"<<pX[indexA]<<") * ("<<pY[indexC]<<"-"<<pY[indexB]<<") - "
+		//<<"("<<pY[indexB]<<"-"<<pY[indexA]<<") * ("<<pX[indexC]<<"-"<<pX[indexB]<<") = " <<val
+		<<endl;
+
+	return (val > 0)? 1: 2; // clock or counterclock wise
 }
 // Prints convex hull of a set of n points.
 void convexHull2(Point points[], int n)
@@ -87,7 +111,7 @@ void convexHull2(Point points[], int n)
 	// There must be at least 3 points
     if (n < 3) return;
  
-    // bigBangialize Result
+    // initialize Result
     int *next = new int[n];
     for (int i = 0; i < n; i++)
         next[i] = -1;
@@ -143,14 +167,80 @@ void convexHull()
 	}*/
 	int L = 0;
 	for (int i = 1; i < starsCounter; i++)
-	{
-		if(pX[i]<pX[0]) L = i; 
-		//if (A[P[i]][0]<A[P[0]][0])//: # если P[i]-ая точка лежит левее P[0]-ой точки
-			//P[i], P[0] = P[0], P[i] # меняем местами номера этих точек 
+	{	//cout<<"pXY[i] :: pX[0]. pXY["<<i<<"] = "<<pX[i]<<","<<pY[i]<<" :: pX[0] = "<<pX[0]<<endl;
+		if(pX[i]<pX[L]) 
+		{	//cout<<endl<<"exchange "<<pX[0]<<" to "<<pX[i]<<", L = "<<i<<endl;
+			L = i; 
+		}
 	}
-	cout<<"starting point["<<L<<"] is "<<pX[L]<<","<<pY[L]<<endl;
+	cout<<"\tstarting point is vertex["<<L<<"]:"<<pX[L]<<","<<pY[L]<<endl
+		<<".............................................."<<endl;
 
-	data.push_back(L);
+	int orient;
+	int q = 0; //=-1
+	int P = L;
+	// initialize Result
+    //int *next = new int[starsCounter];
+	//std::vector<int> dots;
+	int cnt = 0;
+	do
+	{
+		//cout<<"164. BEFORE - P = "<<P<<", q = "<<q<<endl;
+		// q is following P vertex
+		q = P+1;
+		//
+		//cout<<"167. AFTER - P = "<<P<<", q (P+1) = "<<q<<endl;
+		//if(P!=q)
+		//{
+			for (int i = 0; i < starsCounter; i++)
+			{
+				orient=getOrientation(P,i,q);
+				// if the next (q) dot is the right one, assign to it the current index
+				if(orient==2)  
+				{
+					q=i;
+					cout<<"\tP = "<<P<<", ADD DOT: pXY["<<q<<"] = "<<pX[q]<<","<<pY[q]<<endl;
+					
+				}/*
+				else
+				{
+					
+					cout<<"------------------------------"
+						<<endl
+						<<"["<<i<<"] NO CCWs"
+						<<endl
+						<<"P:: pXY["<<P<<"] = "<<pX[P]<<","<<pY[P]
+						<<endl
+						<<"i:: pXY["<<i<<"] = "<<pX[i]<<","<<pY[i]
+						<<endl
+						<<"q:: pXY["<<q<<"] = "<<pX[q]<<","<<pY[q]
+						<<endl;
+				}*/
+			}
+			//next[P]=q; //cout<<"next["<<P<<"] = "<<q<<endl;
+			data.push_back(q);
+			P = q;
+			cnt++;
+	
+			if(cnt>300) 
+			{
+				cout<<endl<<"Too much!"<<endl;
+				break;
+			}
+		//}
+	}
+	while(P!=L);
+	for (size_t i=0; i<data.size(); i++)
+	//for (int i = 0; i < starsCounter; i++)
+    {	//if (next[i]&&next[i]!= -1)
+		if(data[i])
+			cout<<"Dot pXY["<<data[i]<<"] = "<<pX[data[i]]<<","<<pY[data[i]]<<endl;
+        /*if (next[i] != -1)
+			cout << " vertex next["<<i<< "] = "<<next[i]
+			<<", pX["<<next[i]<<"] = "<<pX[next[i]]
+			<<", pY["<<next[i]<<"] = "<<pY[next[i]];*/
+    } 
+	/*data.push_back(L);
 	int counter = 20;
 	while (counter)
 	{
@@ -159,12 +249,10 @@ void convexHull()
 		for(int i=0; i < starsCounter; i++)
 		{
 		  //if (rotate(A[H[-1]],A[P[right]],A[P[i]])<0):
-			orient=getOrientation(-1,right,i);
+			orient=getOrientation(i-1,i,i+1);
 			if (orient== 2) right = i;
 			//cout<<"orient: "<<orient<<", right = "<<right<<endl;
 		}
-		//if P[right]==H[0]: 
-		  //break
 		if(L==right) 
 			break;
 		else
@@ -174,7 +262,7 @@ void convexHull()
 		//H.append(P[right])
 		  //del P[right]
 		counter--;
-	}
+	}*/
 	//return
     
 	/*float orient;
@@ -248,6 +336,9 @@ int main(int argvc, char**argv)
 // Generate donts on the space
 void generateStars()
 {	
+	const int strz = 16;
+	starsCounter=strz;
+
 	if(random) // random mode
 	{
 		for (int i = 0; i < starsCounter; i++)
@@ -263,15 +354,21 @@ void generateStars()
 	else // test mode
 	{
 		// 8 | 400 x 300 
-		float cWidth[starsCounter]			={ 200, 150, 300, 100, 200, 100, 250, 125 };
-		float cHeight[starsCounter]			={ 100, 200, 150, 50,  150, 250, 100, 125 };
-		float dotColors[starsCounter][3]	={ {1.0,0.0,0.0}, {1.0,0.0,1.0}, 
-											   {0.0,0.0,1.0}, {0.0,1.0,0.0},
-											   {1.0,1.0,0.0}, {1.0,0.5,0.0}, 
-											   {0.5,1.0,1.0}, {0.0,0.0,0.0}
-											}; 
+		float cWidth[strz]			={  200, 150, 300, 100, 200, 100, 250, 125,  50, 350, 100, 150, 200, 375, 250, 200 };
+		
+		float cHeight[strz]			={	100, 200, 150,  50, 150, 250, 100, 125, 100, 250, 175,  75, 275,  25, 200, 200 };
+		
+		float dotColors[strz][3]	={  {1.0,0.0,0.0}, {1.0,0.0,1.0}, 
+										{0.0,0.0,1.0}, {0.0,1.0,0.0},
+										{1.0,1.0,0.0}, {1.0,0.5,0.0}, 
+										{0.5,1.0,1.0}, {0.0,0.0,0.0},
+										{1.0,0.0,0.0}, {1.0,0.0,1.0}, 
+										{0.0,0.0,1.0}, {0.0,1.0,0.0},
+										{1.0,1.0,0.0}, {1.0,0.5,0.0}, 
+										{0.5,1.0,1.0}, {0.0,0.0,0.0}
+									}; 
 			
-		for (int i = 0; i < starsCounter; i++)
+		for (int i = 0; i < strz; i++)
 		{
 			pX[i]	= cWidth[i];
 			pY[i]	= cHeight[i];
@@ -312,36 +409,39 @@ void Display()
 	glBegin(GL_POINTS);
 		for (int i = 0; i < starsCounter; i++)
 		{
-			cout<<"pX = "<<pX[i]<<", pY = "<<pY[i]
-			<<"; r: "<<r[i]<<", g: "<<g[i]<<", b: "<<b[i]<<endl;
-			switch (i)
-			{
-				/*case 0:
-					glColor3f(1.0,0.0,0.0); //red
-					break;
-				case 1:
-					glColor3f(1.0,0.0,1.0); //violet
-					break;
-				case 2:
-					glColor3f(0.0,0.0,1.0); //blue
-					break;
-				case 3:
-					glColor3f(0.0,1.0,0.0); //gren
-					break;
-				case 4:
-					glColor3f(1.0,1.0,0.0); //yellow
-					break;
-				case 5:
-					glColor3f(1.0,0.5,0.0); //orange
-					break;
-				case 6:
-					glColor3f(0.0,0.0,0.0); //black
-					break;
-				*/
-				default:
-					glColor3f(r[i],g[i],b[i]);
-					break;
-			}
+			//cout<<"pX = "<<pX[i]<<", pY = "<<pY[i]<<endl
+			//	<<"; r: "<<r[i]<<", g: "<<g[i]<<", b: "<<b[i]<<endl;
+			if(random)
+				switch (i)
+				{
+					case 0:
+						glColor3f(1.0,0.0,0.0); //red
+						break;
+					case 1:
+						glColor3f(1.0,0.0,1.0); //violet
+						break;
+					case 2:
+						glColor3f(0.0,0.0,1.0); //blue
+						break;
+					case 3:
+						glColor3f(0.0,1.0,0.0); //gren
+						break;
+					case 4:
+						glColor3f(1.0,1.0,0.0); //yellow
+						break;
+					case 5:
+						glColor3f(1.0,0.5,0.0); //orange
+						break;
+					case 6:
+						glColor3f(0.0,0.0,0.0); //black
+						break;
+				
+					default:
+						glColor3f(r[i],g[i],b[i]);
+						break;
+				}/**/
+			else
+				glColor3f(r[i],g[i],b[i]);
 			
 			glVertex2f(pX[i],pY[i]);
 		}
@@ -385,9 +485,9 @@ void Display()
 					glColor3f(clrs[ccnt][0],clrs[ccnt][1],clrs[ccnt][2]);
 					cnt++; 
 				}
-				cout<<endl<<"index: "<<data[i]
+				/*cout<<endl<<"index: "<<data[i]
 					<<", pX: "<<pX[data[i]]
-					<<", pY: "<<pY[data[i]];
+					<<", pY: "<<pY[data[i]];*/
 				glVertex2f(pX[data[i]],pY[data[i]]);
 			}/**/
 		glEnd();
