@@ -1,9 +1,10 @@
-bool random = false;
+bool random = true;
+int wrapper_path = 0;
 
 float winWidth			= 400.00;
 float winHeight			= 300.00;
 
-int starsCounter	= 0;
+int starsCounterTest	= 0;
 
 float pX[100];
 float pY[100];

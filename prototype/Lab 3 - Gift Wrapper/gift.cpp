@@ -13,46 +13,19 @@
 #include "vars.h"
 using namespace std;
 
-// Define InfbigBange (Using INT_MAX caused overflow problems)
-#define INF 10000
+std::vector<int> stars;
 
-std::vector<int> data;
-
-struct Point
-{
-    int x;
-    int y;
-};
- 
-// To find orientation of ordered triplet (p, q, r).
-// The function returns following values
-// 0 --> p, q and r are colinear
-// 1 --> Clockwise
-// 2 --> Counterclockwise
-int orientation(Point p, Point q, Point r)
-{
-    /*   ак сказал Ўурик —вин - "головой биццо тута!"
-		...говор€ по-интеллигентному - здесь-то вс€ соль.
-		ѕатамушта (с) нижележаща€ (широкоизвестна€ в узких 
-		кругах) формула, как раз, и определ€ет, где относительно
-		вектора, исход€щего из текущей точки, лежит следующа€ - 
-		справа или слева. 
-	*/
-	int val = (q.y - p.y) * (r.x - q.x) -
-              (q.x - p.x) * (r.y - q.y);
- 
-    if (val == 0) return 0;  // colinear
-    return (val > 0)? 1: 2; // clock or counterclock wise
-}
-// Define the next dot's direction 
-int getOrientation( int indexA, // P	// A
+/*	Define the next dot's direction 
+	This is the main formula	*/
+int getDotDirection( int indexA, // P	// A
 					int indexB,	// i	// B
 					int indexC	// q	// C
 				  )
 {
-	/*	A,B,C
+	/*	// Taken from here: http://habrahabr.ru/post/144921/
+		A,B,C
 		P, - текуща€ точка обЄртки
-		i, - текуща€ точка из общего массива
+		i, - текуща€ точка из общего массива точек
 		q  - следующа€ (за точкой из обЄртки) точка 
 
 		( B[0] - A[0] ) * ( C[1] - B[1] ) - ( B[1] - A[1] ) * ( C[0] - B[0] )
@@ -61,253 +34,77 @@ int getOrientation( int indexA, // P	// A
 		B[0] = pX[i]	B[1] = pY[i] 
 		C[0] = pX[q]	C[1] = pY[q] 
 	
-		( pX[i]-pX[P] ) * ( pY[q]-pY[i] ) - ( pY[i]-pY[P] ) * ( pX[q]-pX[i] )
-	
-	*/
+		( pX[i]-pX[P] ) * ( pY[q]-pY[i] ) - ( pY[i]-pY[P] ) * ( pX[q]-pX[i] ) */
 
-		/*
-		A[0]A[1] - pX[i]		pY[i]
-		B[0]B[1] - pX[i+1]	pY[i+1]
-		C[0]C[1] - pX[i+2]	pY[i+2]
-		if returns positiv value, the C dot is from left,
-		otherwise - from right	*/
-	//return (B[0]-A[0])				* (C[1]-B[1]) - 
-	//		 (B[1]-A[1])				* (C[0]-B[0]);
+	// filter points
 	int val =	(pX[indexB]-pX[indexA]) * (pY[indexC]-pY[indexB]) -
 				(pY[indexB]-pY[indexA]) * (pX[indexC]-pX[indexB]);
-	if (val == 0) return 0;  // colinear
-	/*
-	cout<<endl<<
-		"( "<<pX[indexB]<<"-"<<pX[indexA]<<" ) * ( "<<pY[indexC]<<"-"<<pY[indexB]<<" ) -"<<endl
-		<<"( "<<pY[indexB]<<"-"<<pY[indexA]<<" ) * ( "<<pX[indexC]<<"-"<<pX[indexB]<<" )"<<endl;
 	
-	cout<<"pX["<<indexA<<"], pY["<<indexA<<"]"<<endl
-		<<"pX["<<indexB<<"], pY["<<indexB<<"]"<<endl
-		<<"pX["<<indexC<<"], pY["<<indexC<<"]";*/
-	cout<<"P: pXY["<<indexA<<"] = "<<pX[indexA]<<","<<pY[indexA]
-		<<"\ti: pXY["<<indexB<<"] = "<<pX[indexB]<<","<<pY[indexB]
-		<<"\tq: pXY["<<indexC<<"] = "<<pX[indexC]<<","<<pY[indexC]
-		<<endl
-		<<"val = "<<val<<",";
-	if(val>0) 
-	{
-		cout<<"\tskip ";
+	if (val == 0) return 0;  // colinear
+	bool test = false;
+	if (test)
+	{	
+		cout<<"P: pXY["<<indexA<<"] = "<<pX[indexA]<<","<<pY[indexA]
+			<<"\ti: pXY["<<indexB<<"] = "<<pX[indexB]<<","<<pY[indexB]
+			<<"\tq: pXY["<<indexC<<"] = "<<pX[indexC]<<","<<pY[indexC]
+			<<endl
+			<<"val = "<<val<<",";
+		if(val>0)
+			cout<<"\tskip ";
+		else
+			cout<<"\tapply ";		
+		cout<<"dot ["<<indexB<<"]"<<endl;
 	}
-	else
-	{
-		cout<<"\tapply ";
-	}
-	cout<<"dot ["<<indexB<<"]"
-	//cout<<":: ("<<pX[indexB]<<"-"<<pX[indexA]<<") * ("<<pY[indexC]<<"-"<<pY[indexB]<<") - "
-		//<<"("<<pY[indexB]<<"-"<<pY[indexA]<<") * ("<<pX[indexC]<<"-"<<pX[indexB]<<") = " <<val
-		<<endl;
-
-	return (val > 0)? 1: 2; // clock or counterclock wise
-}
-// Prints convex hull of a set of n points.
-void convexHull2(Point points[], int n)
-{
-
-	// There must be at least 3 points
-    if (n < 3) return;
- 
-    // initialize Result
-    int *next = new int[n];
-    for (int i = 0; i < n; i++)
-        next[i] = -1;
- 
-    // Find the leftmost point
-    int L = 0;
-    for (int i = 1; i < n; i++)
-        if (points[i].x < points[L].x)
-            L = i;
- 
-    // Start from leftmost point, keep moving counterclockwise
-    // until reach the start point again
-    int p = L, q;
-    do
-    {
-        // Search for a point 'q' such that orientation(p, i, q) is
-        // counterclockwise for all points 'i'
-        q = (p+1)%n;
-        for (int i = 0; i < n; i++)
-          if (orientation(points[p], points[i], points[q]) == 2)
-             q = i;
- 
-        next[p] = q;  // Add q to result as a next point of p
-        p = q; // Set p as q for next iteration
-    } while (p != L);
- 
-    // Print Result
-    for (int i = 0; i < n; i++)
-    {
-        if (next[i] != -1)
-           cout << "(" << points[i].x << ", " << points[i].y << ")\n";
-    } 
+	return (val > 0)? 1: 2; // we use clockwise direction
 }
 //
-void convexHull()
+void wrapStars()
 {
-	// bigBangialize Result
-    /*int *next = new int[starsCounter];
-    for (int i = 0; i < starsCounter; i++)
-        next[i] = -1;*/
- 
-    // Find the leftmost point
-    /*int L = 0;
-    for (int i = 1; i < starsCounter; i++)
-	{
-        cout<< "pX[i] = " <<pX[i]<<",  pX[L] = "<<pX[L]<<endl;
-		if (pX[i] < pX[L])
-		{
-			
-			cout<<" pX[1] < pX[L] !"<<endl;
-			L = i; 
-		}
-	}*/
 	int L = 0;
-	for (int i = 1; i < starsCounter; i++)
-	{	//cout<<"pXY[i] :: pX[0]. pXY["<<i<<"] = "<<pX[i]<<","<<pY[i]<<" :: pX[0] = "<<pX[0]<<endl;
-		if(pX[i]<pX[L]) 
-		{	//cout<<endl<<"exchange "<<pX[0]<<" to "<<pX[i]<<", L = "<<i<<endl;
+	
+	for (int i = 1; i < starsCounterTest; i++)
+		if(pX[i]<pX[L])
 			L = i; 
-		}
-	}
+	
 	cout<<"\tstarting point is vertex["<<L<<"]:"<<pX[L]<<","<<pY[L]<<endl
 		<<".............................................."<<endl;
 
 	int orient;
-	int q = 0; //=-1
+	int q = 0;
 	int P = L;
-	// initialize Result
-    //int *next = new int[starsCounter];
-	//std::vector<int> dots;
 	int cnt = 0;
 	do
 	{
-		//cout<<"164. BEFORE - P = "<<P<<", q = "<<q<<endl;
-		// q is following P vertex
 		q = P+1;
-		//
-		//cout<<"167. AFTER - P = "<<P<<", q (P+1) = "<<q<<endl;
-		//if(P!=q)
-		//{
-			for (int i = 0; i < starsCounter; i++)
-			{
-				orient=getOrientation(P,i,q);
-				// if the next (q) dot is the right one, assign to it the current index
-				if(orient==2)  
-				{
-					q=i;
-					cout<<"\tP = "<<P<<", ADD DOT: pXY["<<q<<"] = "<<pX[q]<<","<<pY[q]<<endl;
-					
-				}/*
-				else
-				{
-					
-					cout<<"------------------------------"
-						<<endl
-						<<"["<<i<<"] NO CCWs"
-						<<endl
-						<<"P:: pXY["<<P<<"] = "<<pX[P]<<","<<pY[P]
-						<<endl
-						<<"i:: pXY["<<i<<"] = "<<pX[i]<<","<<pY[i]
-						<<endl
-						<<"q:: pXY["<<q<<"] = "<<pX[q]<<","<<pY[q]
-						<<endl;
-				}*/
-			}
-			//next[P]=q; //cout<<"next["<<P<<"] = "<<q<<endl;
-			data.push_back(q);
-			P = q;
-			cnt++;
+		for (int i = 0; i < starsCounterTest; i++)
+		{
+			/*	Get direction of the next dot. If it located from right of vector, 
+				we will add this dot to our path */
+			orient=getDotDirection(P,i,q);
+			// if the next (q) dot is the right one, assign to it the current index
+			if(orient==2)
+				q=i;  
+		}
+		cout<<"ADD dot to the vector: pXY["<<q<<"] = "<<pX[q]<<","<<pY[q]<<endl;	
+		stars.push_back(q);
+		P = q;
+		cnt++;
 	
-			if(cnt>300) 
-			{
-				cout<<endl<<"Too much!"<<endl;
-				break;
-			}
-		//}
+		if(cnt>500) 
+		{
+			cout<<endl<<"Too much! Something went wrong, Dude."<<endl;
+			break;
+		}
 	}
 	while(P!=L);
-	for (size_t i=0; i<data.size(); i++)
-	//for (int i = 0; i < starsCounter; i++)
-    {	//if (next[i]&&next[i]!= -1)
-		if(data[i])
-			cout<<"Dot pXY["<<data[i]<<"] = "<<pX[data[i]]<<","<<pY[data[i]]<<endl;
-        /*if (next[i] != -1)
-			cout << " vertex next["<<i<< "] = "<<next[i]
-			<<", pX["<<next[i]<<"] = "<<pX[next[i]]
-			<<", pY["<<next[i]<<"] = "<<pY[next[i]];*/
-    } 
-	/*data.push_back(L);
-	int counter = 20;
-	while (counter)
-	{
-		int right = 0;
-		int orient = 0;
-		for(int i=0; i < starsCounter; i++)
-		{
-		  //if (rotate(A[H[-1]],A[P[right]],A[P[i]])<0):
-			orient=getOrientation(i-1,i,i+1);
-			if (orient== 2) right = i;
-			//cout<<"orient: "<<orient<<", right = "<<right<<endl;
+	// test stars:
+	if(starsCounterTest)
+		for (size_t i=0; i<stars.size(); i++)
+		{	if(stars[i])
+				cout<<"Dot pXY["<<stars[i]<<"] = "<<pX[stars[i]]<<","<<pY[stars[i]]<<endl;
 		}
-		if(L==right) 
-			break;
-		else
-		{
-		  data.push_back(right);
-		}  
-		//H.append(P[right])
-		  //del P[right]
-		counter--;
-	}*/
-	//return
-    
-	/*float orient;
-	for (int i = 0; i < starsCounter-2; i++)
-	{
-		orient = getOrientation(i, i+1, i+2);
-		if(orient>=0)
-		{
-			cout<<"x: "<<pX[i]<<", y: "<<pY[i]<<", orient: "<<orient<<endl;
-			// save the index of the dot:
-			data.push_back(i);
-		}
-	}*/
-	/*
-	// Start from leftmost point, keep moving counterclockwise
-    // until reach the start point again
-    int p = L, q;
-    do
-    {
-        // Search for a point 'q' such that orientation(p, i, q) is
-        // counterclockwise for all points 'i'
-        q = (p+1)%starsCounter;
-        for (int i = 0; i < starsCounter; i++)
-          if (getOrientation(p,i,q) == 2){
-			  cout<<endl<<"i= "<<i<<", orientation= "<<getOrientation(p,i,q)
-						<<", add point: "<<pX[i]<<","<<pY[i];
-			  q = i;
-		  }
-		cout<<endl;
-        next[p] = q;  // Add q to result as a next point of p
-        p = q; // Set p as q for next iteration
-    } while (p != L); 
- 
-    
-	// Print Result
-    for (int i = 0; i < starsCounter; i++)
-    {
-        if (next[i] != -1)
-		{
-			cout << "i = "<<i<<"(" << pX[i] << ", " << pY[i] << ")\n";
-			data.push_back(i);
-		}
-    } */
 }
-// Driver program to test above functions
+// main
 int main(int argvc, char**argv)
 {
 	glutInit(&argvc, argv);
@@ -317,31 +114,20 @@ int main(int argvc, char**argv)
 	glutDisplayFunc(Display);
 	glutKeyboardFunc(Keyboard);
 	bigBang();
-	/*Point points[] = {
-						{0, 3}, {2, 2}, {1, 1}, {2, 1},
-						{3, 0}, {0, 0}, {3, 3}
-					};
-    int n = sizeof(points)/sizeof(points[0]);
-	convexHull2(points, n);*/
-    /*
-	Point points[starsCounter]={};
-	for (int i = 0; i < starsCounter; i++)
-	{
-		Point points[] = {0,3};
-	}*/
-	convexHull();
+	// implement wrapper
+	wrapStars();
 	glutMainLoop();
     return 0;
 }
 // Generate donts on the space
 void generateStars()
 {	
-	const int strz = 16;
-	starsCounter=strz;
-
+	const int strz = 40;
+	starsCounterTest=strz;
+	// to turn it on, go to the vars.h
 	if(random) // random mode
 	{
-		for (int i = 0; i < starsCounter; i++)
+		for (int i = 0; i < starsCounterTest; i++)
 		{
 			pX[i]	= getRandom(winWidth);
 			pY[i]	= getRandom(winHeight);
@@ -384,7 +170,6 @@ void bigBang()
 	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glOrtho(10.0,winWidth-10.0,10.0,winHeight-10.0,-10.0,10.0);
-	generateStars();
 }
 // get the trully random value
 float getRandom(float val)
@@ -394,6 +179,8 @@ float getRandom(float val)
 // show gets here!
 void Display()
 {
+	generateStars();
+	
 	glClearColor(1.0,1.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
@@ -407,89 +194,49 @@ void Display()
 
 	glPointSize(12.0);
 	glBegin(GL_POINTS);
-		for (int i = 0; i < starsCounter; i++)
+		for (int i = 0; i < starsCounterTest; i++)
 		{
-			//cout<<"pX = "<<pX[i]<<", pY = "<<pY[i]<<endl
-			//	<<"; r: "<<r[i]<<", g: "<<g[i]<<", b: "<<b[i]<<endl;
-			if(random)
-				switch (i)
-				{
-					case 0:
-						glColor3f(1.0,0.0,0.0); //red
-						break;
-					case 1:
-						glColor3f(1.0,0.0,1.0); //violet
-						break;
-					case 2:
-						glColor3f(0.0,0.0,1.0); //blue
-						break;
-					case 3:
-						glColor3f(0.0,1.0,0.0); //gren
-						break;
-					case 4:
-						glColor3f(1.0,1.0,0.0); //yellow
-						break;
-					case 5:
-						glColor3f(1.0,0.5,0.0); //orange
-						break;
-					case 6:
-						glColor3f(0.0,0.0,0.0); //black
-						break;
-				
-					default:
-						glColor3f(r[i],g[i],b[i]);
-						break;
-				}/**/
-			else
-				glColor3f(r[i],g[i],b[i]);
-			
+			glColor3f(r[i],g[i],b[i]);
+			// build stars
 			glVertex2f(pX[i],pY[i]);
 		}
-	glEnd();/**/
+	glEnd();
 	
 	if(random)
 	{
 		glLineWidth(4.0);
+		//Set wrapper's lines colors 
 		float clrs[12][3]={
 			{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0},
-			{1.0,0.0,0.0},{1.0,0.0,1.0}/*,{0.0,0.0,1.0},{1.0,1.0,0.0},
-			{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0}*/
+			{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0},
+			{1.0,0.0,0.0},{1.0,0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0}/**/
 		};
-	
+		// build wrapper
 		glBegin(GL_LINE_LOOP);
-				glColor3f(1.0,0.0,1.0);
-			/*glVertex2f(10.0,10.0);
-			glVertex2f(10.0,100.0);
-			glVertex2f(100.0,100.0);
-			glVertex2f(200.0,50.0);
-			//glVertex2f(200.0,90.0);
-			glVertex2f(100.0,10.0);
-		
-			glVertex2f(0.0,0.0);
-			glVertex2f(0.0,30.0);
-			glVertex2f(40.0,30.0);
-			glVertex2f(60.0,15.0);
-			glVertex2f(40.0,0.0);*/	
+				
+			glColor3f(1.0,0.0,1.0);
 		
 			int cnt=0;
 			int ccnt=0;
-			for (size_t i=0; i<data.size(); i++)
+			// Walk through our constellation
+			for (int i=0; i<wrapper_path; i++)
 			{
 				glColor3f(1.0,0.0,1.0);
-				if( clrs[ccnt] && (!i || i%2==0) )
-				{   ccnt=i-cnt;
-					/*cout<<endl<<"SHOW COLORS: i = "<<i<<", ccnt = "<<ccnt<<", colors: "
-						<<clrs[ccnt][0]<<","
-						<<clrs[ccnt][1]<<","
-						<<clrs[ccnt][2]; */
-					glColor3f(clrs[ccnt][0],clrs[ccnt][1],clrs[ccnt][2]);
-					cnt++; 
+				
+				if(clrs&&ccnt&&!clrs[ccnt])
+					ccnt=0; // Drop colors counter to get them again
+
+				if(clrs[ccnt])
+				{   
+					if(!i || i%2==0) 
+					{
+						ccnt=i-cnt;
+						glColor3f(clrs[ccnt][0],clrs[ccnt][1],clrs[ccnt][2]);
+						cnt++; 
+					}
 				}
-				/*cout<<endl<<"index: "<<data[i]
-					<<", pX: "<<pX[data[i]]
-					<<", pY: "<<pY[data[i]];*/
-				glVertex2f(pX[data[i]],pY[data[i]]);
-			}/**/
+				glVertex2f(pX[stars[i]],pY[stars[i]]);
+			}
 		glEnd();
 	}
 	glFlush();
@@ -499,77 +246,23 @@ void Keyboard(unsigned char key, int x, int y)
 {
 	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
 	{
-	case 60:	// <
-		//eyeX-=stepXY;
-		break;
-	case 62:	// >
-		//eyeX+=stepXY;
-		break;
-	case 44:	// ,
-		//eyeY-=stepXY;
-		break;
-	case 46:	// .
-		//eyeY+=stepXY;
-		break;
-	case 91:	// [
-		//eyeZ-=stepXY;
-		break;
-	case 93:	// ]
-		//eyeZ+=stepXY;
-		break;
-		//..................
-	case 120:	// x
-		//centerX-=stepXY;
-		break;
-	case 88:	// X
-		//centerX+=stepXY;
-		break;
-	case 121:	// y
-		//centerY-=stepXY;
-		break;
-	case 89:	// Y
-		//centerY+=stepXY;
-		break;
-	case 122:	// z
-		//centerZ-=stepCZ;
-		break;
-	case 90:	// Z
-		//centerZ+=stepCZ;
-		break;
-
-		// arrows:
-	case 52:	// 4
-		//trnslX-=stepTransform;
-		break;
-	case 54:	// 6
-		//trnslX+=stepTransform;
-		break;
-	case 56:	// 8
-		//trnslY+=stepTransform;
-		break;
-	case 50:	// 2
-		//trnslY-=stepTransform;
-		break;
-
-		// zoom:
-	case 43: // +
-		//
-		break;
-	case 45: // -
-		//
-		break;
-		//..................
-	case 61: // вернутьс€ к первоначальным значени€м
-		//eyeX=EX;
-		//eyeY=EY;
-		//eyeZ=EZ;
-		//centerX=CX;
-		//centerY=CY;
-		//centerZ=CZ;
-		break;
-		// «акрыть окно по нажатию кл. "ѕробел":
-	case 32: exit(0);
-		break;
+	
+			// arrows:
+		case 52:	// 4
+			if(wrapper_path)
+				wrapper_path--;
+			break;
+		case 54:	// 6
+			if(wrapper_path<stars.size())
+				wrapper_path++;
+			break;
+			//..................
+		case 61: // вернутьс€ к первоначальным значени€м
+			wrapper_path==0;
+			break;
+			// «акрыть окно по нажатию кл. "ѕробел":
+		case 32: exit(0);
+			break;
 	}
 	if(key!=32) glutPostRedisplay(); // перерисовать окно  
 }
