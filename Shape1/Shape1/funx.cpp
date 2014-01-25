@@ -1,5 +1,8 @@
+#include "stdafx.h"
+
 #include "funx.h"
-#include "vars.h"
+//#include "vars.h"
+
 void Draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -19,4 +22,4 @@ void Draw()
 		}
 	glEnd();
 	glFlush();
-}
+}/**/

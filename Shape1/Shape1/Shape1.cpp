@@ -1,9 +1,18 @@
 #include "stdafx.h"
 #include "windows.h"
 #include <GL/glut.h>
-#include <iostream>
+
+float WinW=400.0;
+float ww2=WinW/2;
+float WinH=400.0;
+float wh2=WinH/2;
+
+//#include "vars.h"
+
 #include "funx.h"
-#include "vars.h"
+
+#include <iostream>
+//#include "funx.cpp"
 using namespace std;
 
 /*void Draw()

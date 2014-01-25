@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab 1 - Sphere", "Sphere\Sphere.vcxproj", "{D2363A66-3B6F-4D3F-A216-CF48520AB556}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab 2 - Sphere", "Sphere\Sphere.vcxproj", "{D2363A66-3B6F-4D3F-A216-CF48520AB556}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab 3 - Gift Wrapper", "Lab 3 - Gift Wrapper\Lab 3 - Gift Wrapper.vcxproj", "{CBA36EDD-F762-4DDF-9E06-F550338B6131}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Square", "Square\Square.vcxproj", "{25EB48A0-4549-414C-B80C-F69248920415}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sources", "sources", "{993F1F24-0A7D-4148-BE00-755181FB91EB}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,10 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sources", "sources", "{993F
 		..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\OpenGL-GLUT.docx = ..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\OpenGL-GLUT.docx
 		..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\RedBook Резюме.docx = ..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\RedBook Резюме.docx
 		..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\RedBook.pdf = ..\..\..\..\..\..\..\srgg6701\Учебные материалы\C, C++\OpenGL\RedBook.pdf
-		..\..\..\..\..\__3th\Labs\Лабораторные 3,4,6 VS.docx = ..\..\..\..\..\__3th\Labs\Лабораторные 3,4,6 VS.docx
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sorting", "Sorting", "{2E449D41-0F08-432F-A810-D099DC9B3E90}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Вспомогательные проекты", "Вспомогательные проекты", "{2E449D41-0F08-432F-A810-D099DC9B3E90}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1. Sort-bubbles", "..\..\Sorting\bubbles\bubbles.vcxproj", "{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}"
 EndProject
@@ -48,6 +45,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Пузырьковая со
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Быстрая сортировка", "Быстрая сортировка", "{10B18B63-C765-4E08-ADF4-F7B3D97CD57D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Задания к лабораторным", "Задания к лабораторным", "{CB60DEA5-A41C-45FD-A3FC-F8E54478E15A}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Задание на л.р # 1 Visual Studio.doc = ..\..\..\..\Задание на л.р # 1 Visual Studio.doc
+		..\..\..\..\..\__3th\Labs\Лабораторные 3,4,6 VS.docx = ..\..\..\..\..\__3th\Labs\Лабораторные 3,4,6 VS.docx
+		..\..\..\..\..\__3th\Постановки задания.docx = ..\..\..\..\..\__3th\Постановки задания.docx
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab 1 - Algorithms analysis graph", "Lab 1 - Algorithms analysis graph\Lab 1 - Algorithms analysis graph.vcxproj", "{31C18364-1F60-424D-B308-441270C7D252}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Grid", "..\Shape1\Shape1\Shape1.vcxproj", "{C55F22F4-4B5A-4693-AFAB-9E1204034B46}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -62,10 +70,6 @@ Global
 		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Debug|Win32.Build.0 = Debug|Win32
 		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Release|Win32.ActiveCfg = Release|Win32
 		{CBA36EDD-F762-4DDF-9E06-F550338B6131}.Release|Win32.Build.0 = Release|Win32
-		{25EB48A0-4549-414C-B80C-F69248920415}.Debug|Win32.ActiveCfg = Debug|Win32
-		{25EB48A0-4549-414C-B80C-F69248920415}.Debug|Win32.Build.0 = Debug|Win32
-		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.ActiveCfg = Release|Win32
-		{25EB48A0-4549-414C-B80C-F69248920415}.Release|Win32.Build.0 = Release|Win32
 		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Debug|Win32.ActiveCfg = Debug|Win32
 		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Debug|Win32.Build.0 = Debug|Win32
 		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Release|Win32.ActiveCfg = Release|Win32
@@ -110,11 +114,20 @@ Global
 		{2F85449A-4EF6-4EB0-861E-7B80425A8A34}.Debug|Win32.Build.0 = Debug|Win32
 		{2F85449A-4EF6-4EB0-861E-7B80425A8A34}.Release|Win32.ActiveCfg = Release|Win32
 		{2F85449A-4EF6-4EB0-861E-7B80425A8A34}.Release|Win32.Build.0 = Release|Win32
+		{31C18364-1F60-424D-B308-441270C7D252}.Debug|Win32.ActiveCfg = Debug|Win32
+		{31C18364-1F60-424D-B308-441270C7D252}.Debug|Win32.Build.0 = Debug|Win32
+		{31C18364-1F60-424D-B308-441270C7D252}.Release|Win32.ActiveCfg = Release|Win32
+		{31C18364-1F60-424D-B308-441270C7D252}.Release|Win32.Build.0 = Release|Win32
+		{C55F22F4-4B5A-4693-AFAB-9E1204034B46}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C55F22F4-4B5A-4693-AFAB-9E1204034B46}.Debug|Win32.Build.0 = Debug|Win32
+		{C55F22F4-4B5A-4693-AFAB-9E1204034B46}.Release|Win32.ActiveCfg = Release|Win32
+		{C55F22F4-4B5A-4693-AFAB-9E1204034B46}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{C771F2E4-C23C-41D6-BB93-A12F8689B2CD} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{4EC8319A-8D80-4941-BC31-14D844A9785F} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{32F2F25B-6438-48B3-AE02-1625F773AD66} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{1541CFF0-C513-4EC3-9569-2CD4DDD74601} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
@@ -122,13 +135,13 @@ Global
 		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{FEAD975F-3720-4C91-B473-3247369A8D1F} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
-		{2F85449A-4EF6-4EB0-861E-7B80425A8A34} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
-		{5CB909BB-0DED-4BCF-8B47-31C1C6312262} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
-		{C771F2E4-C23C-41D6-BB93-A12F8689B2CD} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{10B18B63-C765-4E08-ADF4-F7B3D97CD57D} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
-		{E89B10ED-F7AE-490A-9CE2-5904DC92878F} = {5CB909BB-0DED-4BCF-8B47-31C1C6312262}
+		{5CB909BB-0DED-4BCF-8B47-31C1C6312262} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{2F85449A-4EF6-4EB0-861E-7B80425A8A34} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
+		{C55F22F4-4B5A-4693-AFAB-9E1204034B46} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5} = {C771F2E4-C23C-41D6-BB93-A12F8689B2CD}
 		{5B0EB61D-1CA5-4547-B239-B6640AD449C4} = {10B18B63-C765-4E08-ADF4-F7B3D97CD57D}
+		{E89B10ED-F7AE-490A-9CE2-5904DC92878F} = {5CB909BB-0DED-4BCF-8B47-31C1C6312262}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
