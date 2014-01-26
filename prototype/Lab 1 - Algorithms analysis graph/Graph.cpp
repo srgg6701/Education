@@ -86,7 +86,7 @@ void setMarkers()
 			/* установить левый отступ маркера
                              -200+20.0     *i*4-50 */
 			float currentX = -ww2+	 // -200 левый край сетки
-                              WinW/mrxValue // 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
+                              WinW/2/mrxValue // 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
 							  *i	 // общая текущая длина отрезков
 							  -10;   // смещение маркера влево для центрирования с вертикалью сетки
 
@@ -167,7 +167,7 @@ void Initialize()
 	glLoadIdentity();
 	//сетка - left-bottom / right-top
 	gluOrtho2D(-ww2-offset*2,	//-200 - 20*	2	левый, x	= -160	
-				ww2+offset*2,	// 200 + 20*2	правый, x	=  240
+				WinW+offset*2,	// 200 + 20*2	правый, x	=  240
 			   -wh2-offset*2,	//-200 - 20*	2	нижний, y	= -160
 				wh2+offset		// 200 + 20		верхний, y	= 220
 			  ); 
@@ -267,7 +267,7 @@ int _tmain(int argc, char** argv)
 	// 3 нижележащие функции можно располагать в любом порядке
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
 	glutInitWindowSize(WinW,WinH);
-	glutInitWindowPosition(850,200);
+	glutInitWindowPosition(450,200);
 	glutCreateWindow("Grid");
 	// регистрация
 	glutDisplayFunc(Draw);
