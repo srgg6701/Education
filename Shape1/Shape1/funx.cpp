@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+/*
 #include "funx.h"
 //#include "vars.h"
 
@@ -22,4 +22,4 @@ void Draw()
 		}
 	glEnd();
 	glFlush();
-}/**/
+}*/
