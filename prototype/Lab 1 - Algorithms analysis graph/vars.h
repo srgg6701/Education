@@ -1,11 +1,22 @@
-const float WinW=800.0;
-const float ww2=WinW/2;
-const float WinH=400.0;
-//const float wh2=WinH/2;
-const float grid_step = 20.0;
-const float offset = 25.0;
-
-// установить объём (колич. строк) генерируемых файлов 
-const int files_volumes[5]={
+/*	Здесь установлены: 
+	* пространственные параметры сцены - 
+		 - ширина 
+		 - высота
+	* шаг сетки для графов
+	* параметры визуальных отступов
+	* количество генерируемых программно файлов, алгоритмы сортировки_контента/поиска_в_содержании
+	  которых будут анализироваться программой.	*/
+// ширина рабочего пространства (сцены)
+const float globSceneWidth=800.0;
+// половина ширины (принимает участие в рассчётах
+const float globSceneWidthHalf=globSceneWidth/2;
+// высота сцены
+const float globSceneHeight=400.0;
+// шаг сетки (в пикселах)
+const float glob_grid_step = 20.0;
+// единица визуального отступа
+const float glob_offset = 25.0;
+// объём (колич. строк) генерируемых файлов 
+const int glob_files_volumes[5]={
 	1000, 20000, 100000, 250000, 380000
 };

@@ -8,30 +8,45 @@
 #include <GL/glut.h>
 #include "vars.h"
 #include "markers.h"
-#include <ctime> // если будем измерять время выполнения процедур
+#include <ctime> // если будем измерять время выполнения процедур. А ведь придётся!
 using namespace std;
 
 // построить сетку для графа
 void setGrid(bool copier=false)
 {
-// set 20 vertical lines
-	int vCount=0; // установить индикатор вертикали маркера
-	float GridLeftEdge, GridRightEdge; // установить пространственные пределы генерации сеток 
-	// если строим вторую сетку, сделаем поправку базиса для координат объектов
-	// см. gluOrtho2D:: левый: -50, правый: 875, нижний: -50, верхний: 450 
+	/*	Установить индикатор вертикали, пересекающейся с маркером.
+		Нужен как инструмент для выделения каждой 4-й вертикали 
+		(20 вертикальдных линий / 5 маркеров) цветом, как места, 
+		где располагается маркер одного из 5-ти используемых файлов.		*/
+	int vCount=0; 
+	/*	Создать (и далее - установить) левую и правую границы для 
+		сеток графов; Пространство между ними будет заполняться 
+		вертикалями графа.	*/
+	float GridLeftEdge, GridRightEdge;  
+	/*	Рассчитать значения левой и правой границ сеток графа. 
+		Передавайемый параметр copier означает, что строим сетку
+		для правого графа. Если параметр не передан, то - для левого. 
+		.............................................................
+		См. параметры gluOrtho2D, на основе которых рассчитывается
+		расположение сеток графов - отступы углов от начала координат:
+		левый:	-50, правый: 875, 
+		нижний: -50, верхний: 450	*/
 	if(copier)
 	{
-		GridLeftEdge	= ww2+offset*2;		// 450
-		GridRightEdge	= WinW + offset*2;	// 825
+		/*	Половина рабочего пространства окна 
+			+ пространство для создания визуального отступа */
+		GridLeftEdge	= globSceneWidthHalf+glob_offset*2;		// 450
+		GridRightEdge	= globSceneWidth + glob_offset*2;	// 825
 	}
 	else
 	{
 		GridLeftEdge	= 0;				//   0
-		GridRightEdge	= ww2;				// 400
+		GridRightEdge	= globSceneWidthHalf;				// 400
 	}
 	const float grid_left_start		= GridLeftEdge;
 	const float grid_right_finish	= GridRightEdge;
 	//cout<<"Start grid"<<endl<<"........................."<<endl;
+	// установить по 20 вертикальных линий для сеток каждого графа
 	while(GridLeftEdge<=grid_right_finish)
 	{	// cout<<"GridLeftEdge: "<<GridLeftEdge<<endl;
 		// установить вертикали	
@@ -41,16 +56,16 @@ void setGrid(bool copier=false)
 		else
 			glColor3f(0.4,0.4,0.4);
 		vCount++;
-
+		// линии
 		glVertex2f(GridLeftEdge, 0); // 
-		glVertex2f(GridLeftEdge, WinH);		// 
-		GridLeftEdge+=grid_step;
+		glVertex2f(GridLeftEdge, globSceneHeight);		// 
+		GridLeftEdge+=glob_grid_step;
 	}
 	glColor3f(0.4,0.4,0.4);
 	// установить горизонтали
 	for ( float offsetBottom  = 0;	// 
-				offsetBottom <= WinH;		// <= 400
-				offsetBottom += grid_step )
+				offsetBottom <= globSceneHeight;		// <= 400
+				offsetBottom += glob_grid_step )
 	{   //cout<<"offsetBottom: "<<offsetBottom<<"\t";
 		glVertex2f(grid_left_start,offsetBottom);
 		glVertex2f(grid_right_finish,offsetBottom);
@@ -63,19 +78,19 @@ void buildMarkerRow( int &arrayNumbersRow,
 				   )
 {
 	//cout<<"Bottom: "<<Bottom<<endl;
-	for (int col = 1; col <= cols; col++)
+	for (int col = 1; col <= globMrxCols; col++)
 	{   
 		// Позиции текущей ячейки в строке сетки маркера
-		float Left		= currentLeft+colWidth*col;
-		float Top		= Bottom+rowHeight;
-		float Right		= currentLeft+colWidth*col+colWidth;
+		float Left		= currentLeft+globMrxColWidth*col;
+		float Top		= Bottom+globMrxRowHeight;
+		float Right		= currentLeft+globMrxColWidth*col+globMrxColWidth;
 		//		Bottom	- получена в качестве аргумента функции, равна нижней позиции строки сетки маркера;
 		/*cout<<"\tleft/bottom -\t"<<Left<<":"<<Bottom<<endl
 			<<"\tleft/top -\t"<<Left<<":"<<Top<<endl
 			<<"\tright/top -\t"<<Right<<":"<<Top<<endl
 			<<"\tright/bottom -\t"<<Right<<":"<<Bottom<<endl<<endl; */
 		// 
-		if(Numbers[arrayNumbersRow][col-1]>0)
+		if(globNumbers[arrayNumbersRow][col-1]>0)
 			glColor3f(1.0,0.0,0.5);
 		else
 			glColor3f(1.0,1.0,1.0);
@@ -95,31 +110,30 @@ void buildMarkerRow( int &arrayNumbersRow,
 void setMarkers(bool copier=false)
 {
 	// создать внутреннюю 2-D матрицу для построения цифр от 1 до 5. 
-	// См. схему здесь: http://www.canstockphoto.com/pixel-art-numbers-and-mathematical-signs-12800261.html
+	// См. схему здесь: http://www.canstockphoto.com/pixel-art-globNumbers-and-mathematical-signs-12800261.html
 	// Нарисовать маркеры файлов
 	glBegin(GL_QUADS);
 		int arrayNumbersRow=0;
-		float LeftEdge = (copier)? ww2+offset*2 : 0;	// 400 : 0
-		for (int i = 1; i <= mrxValue; i++) // mrxValue - количество маркеров (файлов)
+		float LeftEdge = (copier)? globSceneWidthHalf+glob_offset*2 : 0;	// 400 : 0
+		for (int i = 1; i <= globMrxValue; i++) // globMrxValue - количество маркеров (файлов)
 		{	
-			/* установить левый отступ маркера
-                             -200+20.0     *i*4-50 */
+			// установить левый отступ маркера
 			float currentX = LeftEdge +		// левый край сетки (0-400)
-                             ww2/mrxValue	// 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
+                             globSceneWidthHalf/globMrxValue	// 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
 							 *i				// общая текущая длина отрезков
-							 -15;			// смещение маркера влево для визуального центрирования с вертикалью сетки
-
+							 -15;			// смещение маркера влево для визуального центрирования с выделенной вертикалью сетки
 			// построить блок с маркером (сетка 5х4)
-			for (int row = 1; row <= rows; row++)
+			for (int row = 1; row <= globMrxRows; row++)
 			{
 				// построить маркеры
-				buildMarkerRow( /*	текущий индекс массива с цифрами 
-									(определяет индекс строки сетки маркера) */
+				buildMarkerRow( /*	текущий индекс массива с цифрами globNumbers
+									(внутри функции по нему определяется индекс 
+									текущей строки в сетке маркера) */
 								arrayNumbersRow,
-								/*	нижняя позиция текущей строки в сетке маркера:
-									*/
-								mrxTopLine-rowHeight*row,
-								currentX // левый отступ текущего маркера	
+								/*	нижняя позиция текущей строки в сетке маркера */
+								globMrxTopLine-globMrxRowHeight*row,
+								/*	левая граница текущей ячейки в строке блока маркера */
+								currentX	
 							  );
 			}
 		}
@@ -137,18 +151,18 @@ void makeFiles()
 
 	bool run  = true;		// позволить процессу начаться
 	/*	если захотим уменьшить количество строк, разделим значения массива
-		files_volumes на нижележащее значение: */
+		glob_files_volumes на нижележащее значение: */
 	int decreaser = 100;	
 	
-	for (int i = 0, len = sizeof(files_volumes)/sizeof(int); i < len; i++)
+	for (int i = 0, len = sizeof(glob_files_volumes)/sizeof(int); i < len; i++)
 	{
 		std::stringstream sstm;
-		sstm << file_name << files_volumes[i];
+		sstm << file_name << glob_files_volumes[i];
 		file_full_name = sstm.str();
 
 		ofstream f(file_full_name); // создать/пересоздать файл
 		int val;
-		int jLen = files_volumes[i];
+		int jLen = glob_files_volumes[i];
 		// для теста - если установили уменьшитель, используем его
 		if(decreaser>1) jLen/=decreaser;
 		
@@ -163,7 +177,7 @@ void makeFiles()
 				jLen--; // декременировать счётчик
 				if(jLen) f<<endl; // добавить перенос строки, если счётчик не кончился
 			}
-		}		
+		}	
 	}
 }
 // построить всё!
@@ -193,11 +207,12 @@ void Initialize()
 	glClearColor(1.0,1.0,1.0,1.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//сетка - left-bottom / right-top
-	gluOrtho2D(-offset*2,		// -50	левый, x	
-				WinW+offset*3,	// 875	правый, x	
-			   -offset*2,		// -50	нижний, y	
-				WinH+offset		// 450	верхний, y	
+	// сетка - left-bottom / right-top
+	// построить ортографическую проекцию
+	gluOrtho2D(-glob_offset*2,		// -50	левый, x	
+				globSceneWidth+glob_offset*3,	// 875	правый, x	
+			   -glob_offset*2,		// -50	нижний, y	
+				globSceneHeight+glob_offset		// 450	верхний, y	
 			  ); 
 }
 // обработать события клавиатуры
@@ -294,7 +309,7 @@ int _tmain(int argc, char** argv)
 	glutInit(&argc, argv); 
 	// 3 нижележащие функции можно располагать в любом порядке
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
-	glutInitWindowSize(WinW,WinH);
+	glutInitWindowSize(globSceneWidth,globSceneHeight);
 	glutInitWindowPosition(450,200);
 	glutCreateWindow("Grid");
 	// регистрация
