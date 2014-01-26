@@ -1,12 +1,17 @@
 #include "stdafx.h"
 #include "windows.h"
-#include <GL/glut.h>
 #include <iostream>
+#include <string> // http://en.cppreference.com/w/cpp/string/basic_string/to_string
+#include <sstream>
+#include <fstream>
+//----------------------------------------------------------------------------------
+#include <GL/glut.h>
 #include "vars.h"
 #include "markers.h"
+//#include <ctime> // если будем измер€ть врем€ выполнени€ процедур
 using namespace std;
 
-// построить сетку дл€ графика
+// построить сетку дл€ графа
 void setGrid()
 {
 // set 20 vertical lines
@@ -34,16 +39,19 @@ void setGrid()
 	}
 }
 // построить сетку маркера и заполнить еЄ закрашенными €чейками дл€ создани€ контуров цифр
-void buildMarkerRow(int &arrayNumbersRow,float currentRowBottomPos, float currentX)
+void buildMarkerRow( int &arrayNumbersRow,
+					 float Bottom, 
+					 float currentLeft
+				   )
 {
-	//cout<<"currentRowBottomPos: "<<currentRowBottomPos<<endl;
+	//cout<<"Bottom: "<<Bottom<<endl;
 	for (int col = 1; col <= cols; col++)
 	{   
-		float Left		= currentX+colWidth*col;
-		float Top		= currentRowBottomPos+rowHeight;
-		float Right		= currentX+colWidth*col+colWidth;
-		float Bottom	= currentRowBottomPos;
-
+		// ѕозиции текущей €чейки в строке сетки маркера
+		float Left		= currentLeft+colWidth*col;
+		float Top		= Bottom+rowHeight;
+		float Right		= currentLeft+colWidth*col+colWidth;
+		//		Bottom	- получена в качестве аргумента функции, равна нижней позиции строки сетки маркера;
 		/*cout<<"\tleft/bottom -\t"<<Left<<":"<<Bottom<<endl
 			<<"\tleft/top -\t"<<Left<<":"<<Top<<endl
 			<<"\tright/top -\t"<<Right<<":"<<Top<<endl
@@ -94,9 +102,55 @@ void setMarkers()
 		}
 	glEnd();
 }
-//
+// cоздать файлы
+void makeFiles()
+{
+	// отличный сборник решений по канкатенации строк здесь: http://stackoverflow.com/a/900035/1522479
+	std::string file_name="file_";
+	std::string file_full_name;
+
+	for (int i = 0, len = sizeof(files_volumes)/sizeof(int); i < len; i++)
+	{
+		
+		std::stringstream sstm;
+		sstm << file_name << files_volumes[i];
+		file_full_name = sstm.str();
+
+		cout<<"full_file_name = "<<file_full_name<<endl;
+		/*
+		ofstream f("ofile.txt");
+		for(int j=0, jLen = sizeof(files_volumes[i])/sizeof(int); j<jLen; j++)
+		{
+			//cout<<"arrLen = "<<arrLen<<endl;
+	
+			bool swtch = false;
+
+			if(swtch)
+			{
+				int arrLen = rand() % 100; //*100000;
+		
+			}
+		
+			int strt=0;
+			for(int i=0;i<div;i++)
+			{
+				int str= rand() % rPart;
+				strt+=str;
+			}
+
+			f<<strt;
+			arrLen--;	
+			if(arrLen)
+			{
+				f<<endl;	
+			}
+		}*/
+	}
+}
+// построить всЄ!
 void Draw()
 {
+	makeFiles();
 	glClear(GL_COLOR_BUFFER_BIT);
 	glEnable(GL_LINE_STIPPLE); // включить шаблон пунктирной линии
 	glLineWidth (1.0);
@@ -110,7 +164,7 @@ void Draw()
 		setMarkers();
 	glFlush();
 }
-//
+// инициализировать процесс
 void Initialize()
 {
 	glClearColor(1.0,1.0,1.0,1.0);
@@ -123,7 +177,7 @@ void Initialize()
 				wh2+offset		// 200 + 20		верхний, y	= 220
 			  ); 
 }
-//
+// обработать событи€ клавиатуры
 void Keyboard(unsigned char key, int x, int y)
 {
 	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
