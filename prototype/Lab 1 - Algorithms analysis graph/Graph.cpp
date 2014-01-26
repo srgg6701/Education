@@ -16,23 +16,25 @@ void setGrid(bool copier=false)
 {
 // set 20 vertical lines
 	int vCount=0; // установить индикатор вертикали маркера
-	float startLeft, endLeft; 
+	float GridLeftEdge, GridRightEdge; // установить пространственные пределы генерации сеток 
 	// если строим вторую сетку, сделаем поправку базиса дл€ координат объектов
+	// см. gluOrtho2D:: левый: -50, правый: 875, нижний: -50, верхний: 450 
 	if(copier)
 	{
-		startLeft = ww2 + offset;
-		endLeft = ww2*2 + offset;
+		GridLeftEdge	= ww2+offset*2;		// 450
+		GridRightEdge	= WinW + offset*2;	// 825
 	}
 	else
 	{
-		startLeft = -ww2;
-		endLeft = ww2;
+		GridLeftEdge	= 0;				//   0
+		GridRightEdge	= ww2;				// 400
 	}
-
-	for (float offsetLeft = startLeft; offsetLeft <= endLeft; offsetLeft+=grid_step) // -endLeft = -(400/2)
-	{         //-200,-180,-160,-140,-120,-100 // 200
-		//cout<<"offsetLeft,-wh2, offsetLeft, wh2: "<<offsetLeft<<","<<-wh2<<","<<offsetLeft<<","<<wh2<<endl;
-			
+	const float grid_left_start		= GridLeftEdge;
+	const float grid_right_finish	= GridRightEdge;
+	cout<<"Start grid"<<endl<<"........................."<<endl;
+	while(GridLeftEdge<=grid_right_finish)
+	{	// cout<<"GridLeftEdge: "<<GridLeftEdge<<endl;
+		// установить вертикали	
 		// выделим цветом каждую 4-ю вертикаль (там, где размещаетс€ маркер нового файла):
 		if( vCount>0 && vCount%4==0 ) 
 			glColor3f(1.0,0.0,0.5);
@@ -40,16 +42,19 @@ void setGrid(bool copier=false)
 			glColor3f(0.4,0.4,0.4);
 		vCount++;
 
-		glVertex2f(offsetLeft,-wh2); // WinH/2; // -400/2
-		glVertex2f(offsetLeft, wh2); // WinH/2; // 400/2			
+		glVertex2f(GridLeftEdge, 0); // 
+		glVertex2f(GridLeftEdge, WinH);		// 
+		GridLeftEdge+=grid_step;
 	}
 	glColor3f(0.4,0.4,0.4);
-	// set horizontal lines
-	for (float offsetBottom = -wh2; offsetBottom <= wh2; offsetBottom+=grid_step)
-	{
-		glVertex2f(-endLeft,offsetBottom);
-		glVertex2f( endLeft,offsetBottom);
-	}
+	// установить горизонтали
+	for ( float offsetBottom  = 0;	// 
+				offsetBottom <= WinH;		// <= 400
+				offsetBottom += grid_step )
+	{   cout<<"offsetBottom: "<<offsetBottom<<"\t";
+		glVertex2f(grid_left_start,offsetBottom);
+		glVertex2f(grid_right_finish,offsetBottom);
+	}	cout<<endl;
 }
 // построить сетку маркера и заполнить еЄ закрашенными €чейками дл€ создани€ контуров цифр
 void buildMarkerRow( int &arrayNumbersRow,
@@ -142,18 +147,18 @@ void makeFiles()
 		// дл€ теста - если установили уменьшитель, используем его
 		if(decreaser>1) jLen/=decreaser;
 		
-		while(jLen)
-		{
-			if(run)
-			{				
-				//сгенерировать случайное число от 0 до 400000
-				val = int(double(rand())/RAND_MAX*400000); 
-				//cout<<"val : "<<val<<endl;
-			}		
-			f<<val; // сохранить сгенерированный номер в строке
-			jLen--; // декременировать счЄтчик
-			if(jLen) f<<endl; // добавить перенос строки, если счЄтчик не кончилс€
-		}
+		if(run)
+		{				
+			while(jLen)
+			{
+					//сгенерировать случайное число от 0 до 400000
+					val = int(double(rand())/RAND_MAX*400000); 
+					//cout<<"val : "<<val<<endl;
+				f<<val; // сохранить сгенерированный номер в строке
+				jLen--; // декременировать счЄтчик
+				if(jLen) f<<endl; // добавить перенос строки, если счЄтчик не кончилс€
+			}
+		}		
 	}
 }
 // построить всЄ!
@@ -164,8 +169,10 @@ void Draw()
 	glLineWidth (1.0);
 	glLineStipple(1,0xAAAA);
 	glBegin(GL_LINES);
-		// построить сетку
+		// построить первую (левую) сетку
 		setGrid();
+		// построить вторую (правую) сетку
+		setGrid(true);
 	glEnd();
 	glDisable(GL_LINE_STIPPLE);
 		// построить маркеры файлов
@@ -179,10 +186,10 @@ void Initialize()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	//сетка - left-bottom / right-top
-	gluOrtho2D(-ww2-offset*2,	//-200 - 20*	2	левый, x	= -160	
-				WinW+offset*2,	// 200 + 20*2	правый, x	=  240
-			   -wh2-offset*2,	//-200 - 20*	2	нижний, y	= -160
-				wh2+offset		// 200 + 20		верхний, y	= 220
+	gluOrtho2D(-offset*2,		// -50	левый, x	
+				WinW+offset*3,	// 875	правый, x	
+			   -offset*2,		// -50	нижний, y	
+				WinH+offset		// 450	верхний, y	
 			  ); 
 }
 // обработать событи€ клавиатуры
