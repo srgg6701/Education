@@ -112,37 +112,40 @@ void makeFiles()
 	// http://ru.cppreference.com/w/cpp/numeric/random/rand
 	srand(time(NULL));
 
+	bool run  = true;		// позволить процессу начаться
+	/*	если захотим уменьшить количество строк, разделим значения массива
+		files_volumes на нижележащее значение: */
+	int decreaser = 100;	
+	
 	for (int i = 0, len = sizeof(files_volumes)/sizeof(int); i < len; i++)
 	{
-		
 		std::stringstream sstm;
 		sstm << file_name << files_volumes[i];
 		file_full_name = sstm.str();
 
-		cout<<"full_file_name = "<<file_full_name<<endl;
-		
-		ofstream f(file_full_name);
+		ofstream f(file_full_name); // создать/пересоздать файл
 		int val;
-		for(int j=0, jLen = sizeof(files_volumes[i])/sizeof(int); j<jLen; j++)
+		int jLen = files_volumes[i];
+		// для теста - если установили уменьшитель, используем его
+		if(decreaser>1) jLen/=decreaser;
+		
+		while(jLen)
 		{
-			//cout<<"arrLen = "<<arrLen<<endl;
-	
-			bool swtch = false;
-
-			if(swtch)
+			if(run)
 			{				
 				//сгенерировать случайное число от 0 до 400000
 				val = int(double(rand())/RAND_MAX*400000); 
-				cout<<"val : "<<val<<endl;
+				//cout<<"val : "<<val<<endl;
 			}		
-			f<<val<<endl;
+			f<<val; // сохранить сгенерированный номер в строке
+			jLen--; // декременировать счётчик
+			if(jLen) f<<endl; // добавить перенос строки, если счётчик не кончился
 		}
 	}
 }
 // построить всё!
 void Draw()
 {
-	makeFiles();
 	glClear(GL_COLOR_BUFFER_BIT);
 	glEnable(GL_LINE_STIPPLE); // включить шаблон пунктирной линии
 	glLineWidth (1.0);
@@ -257,6 +260,8 @@ void Keyboard(unsigned char key, int x, int y)
 //
 int _tmain(int argc, char** argv)
 {
+	// сгенеирировать/перезаписать файлы
+	makeFiles();
 	// инициализация
 	glutInit(&argc, argv); 
 	// 3 нижележащие функции можно располагать в любом порядке
