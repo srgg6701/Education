@@ -27,6 +27,9 @@
     <ClInclude Include="vars.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="markers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

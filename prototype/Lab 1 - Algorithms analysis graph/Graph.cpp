@@ -3,10 +3,97 @@
 #include <GL/glut.h>
 #include <iostream>
 #include "vars.h"
+#include "markers.h"
 using namespace std;
 
-#define drawOneLine(x1,y1,x2,y2)
+// построить сетку для графика
+void setGrid()
+{
+// set 20 vertical lines
+	int vCount=0; // установить индикатор вертикали маркера
+	for (float offsetLeft = -ww2; offsetLeft <= ww2; offsetLeft+=grid_step) // -ww2 = -(400/2)
+	{         //-200,-180,-160,-140,-120,-100 // 200
+		//cout<<"offsetLeft,-wh2, offsetLeft, wh2: "<<offsetLeft<<","<<-wh2<<","<<offsetLeft<<","<<wh2<<endl;
+			
+		// выделим цветом каждую 4-ю вертикаль (там, где размещается маркер нового файла):
+		if( vCount>0 && vCount%4==0 ) 
+			glColor3f(1.0,0.0,0.5);
+		else
+			glColor3f(0.4,0.4,0.4);
+		vCount++;
 
+		glVertex2f(offsetLeft,-wh2); // WinH/2; // -400/2
+		glVertex2f(offsetLeft, wh2); // WinH/2; // 400/2			
+	}
+	glColor3f(0.4,0.4,0.4);
+	// set horizontal lines
+	for (float offsetBottom = -wh2; offsetBottom <= wh2; offsetBottom+=grid_step)
+	{
+		glVertex2f(-ww2,offsetBottom);
+		glVertex2f( ww2,offsetBottom);
+	}
+}
+// построить сетку маркера и заполнить её закрашенными ячейками для создания контуров цифр
+void buildMarkerRow(int &arrayNumbersRow,float currentRowBottomPos, float currentX)
+{
+	//cout<<"currentRowBottomPos: "<<currentRowBottomPos<<endl;
+	for (int col = 1; col <= cols; col++)
+	{   
+		float Left		= currentX+colWidth*col;
+		float Top		= currentRowBottomPos+rowHeight;
+		float Right		= currentX+colWidth*col+colWidth;
+		float Bottom	= currentRowBottomPos;
+
+		/*cout<<"\tleft/bottom -\t"<<Left<<":"<<Bottom<<endl
+			<<"\tleft/top -\t"<<Left<<":"<<Top<<endl
+			<<"\tright/top -\t"<<Right<<":"<<Top<<endl
+			<<"\tright/bottom -\t"<<Right<<":"<<Bottom<<endl<<endl; */
+		// 
+		if(Numbers[arrayNumbersRow][col-1]>0)
+			glColor3f(1.0,0.0,0.5);
+		else
+			glColor3f(1.0,1.0,1.0);
+		// создать ячейки сетки маркера:
+		// левая-нижняя
+		glVertex2f(Left,Bottom);
+		// левая-верхняя
+		glVertex2f(Left,Top);
+		// правая-верхняя
+		glVertex2f(Right,Top);
+		// правая-нижняя
+		glVertex2f(Right,Bottom);
+	}
+	arrayNumbersRow++;
+}
+// создать маркеры загружаемых файлов
+void setMarkers()
+{
+	// создать внутреннюю 2-D матрицу для построения цифр от 1 до 5. 
+	// См. схему здесь: http://www.canstockphoto.com/pixel-art-numbers-and-mathematical-signs-12800261.html
+	// Нарисовать маркеры файлов
+	glBegin(GL_QUADS);
+		int arrayNumbersRow=0;
+		for (int i = 1; i <= mrxValue; i++) // mrxValue - количество маркеров (файлов)
+		{	
+			/* установить левый отступ маркера
+                             -200+20.0     *i*4-50 */
+			float currentX = -ww2+	 // -200 левый край сетки
+                              WinW/mrxValue // 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
+							  *i	 // общая текущая длина отрезков
+							  -10;   // смещение маркера влево для центрирования с вертикалью сетки
+
+			// построить блок с маркером (сетка 5х4)
+			for (int row = 1; row <= rows; row++)
+			{
+				// построить маркеры
+				buildMarkerRow( arrayNumbersRow,	// текущий индекс массива с цифрами (определяет строку сетки маркера)
+								mrxTopLine-rowHeight*row, // нижняя позиция текущей строки в сетке маркера
+								currentX // левый отступ текущего маркера	
+							  );
+			}
+		}
+	glEnd();
+}
 //
 void Draw()
 {
@@ -14,84 +101,13 @@ void Draw()
 	glEnable(GL_LINE_STIPPLE); // включить шаблон пунктирной линии
 	glLineWidth (1.0);
 	glLineStipple(1,0xAAAA);
-	glColor3f(0.4,0.4,0.4);
 	glBegin(GL_LINES);
-		// set 10 vertical lines
-		for (float offsetLeft = -ww2; offsetLeft <= ww2; offsetLeft+=grid_step) // -ww2 = -(400/2)
-		{         //-200,-180,-160,-140,-120,-100 // 200
-			//cout<<"offsetLeft,-wh2, offsetLeft, wh2: "<<offsetLeft<<","<<-wh2<<","<<offsetLeft<<","<<wh2<<endl;
-			glVertex2f(offsetLeft,-wh2); // WinH/2; // -400/2
-			glVertex2f(offsetLeft, wh2); // WinH/2; // 400/2
-		}
-		// set horizontal lines
-		for (float offsetBottom = -wh2; offsetBottom <= wh2; offsetBottom+=grid_step)
-		{
-			glVertex2f(-ww2,offsetBottom);
-			glVertex2f( ww2,offsetBottom);
-		}
+		// построить сетку
+		setGrid();
 	glEnd();
 	glDisable(GL_LINE_STIPPLE);
-	glColor3f(1.0,0.0,0.5);
-	// установить параметры цифр (маркеров номеров файлов под осью Х сетки):
-	float mW = 20.0;	// ширина блока
-	float mH = 20.0;	// высота
-	float mBottom = -ww2-mH-10.0; // нижняяя линия маркеров
-	// задать размерность сетки для блока маркера
-	float rows = 5;		// количество строк в блоке маркера
-	float cols = 4;		// количество столбцов в блоке маркера
-	float rowHeight = mH/rows;	// высота строки в блоке маркера
-	float colWidth  = mW/cols;	// ширина столбца
-	// Нарисовать маркеры файлов
-	glBegin(GL_QUADS);
-		for (int i = 1; i <= 5; i++) // 5 - количество маркеров (файлов)
-		{	
-			/* установить левый отступ маркера
-                             -200+20.0     *i*4-50 */
-			float currentX = -ww2+	 // -200 левый край сетки
-                              WinW/5 // 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
-							  *i	 // общая текущая длина отрезков
-							  -10;   // смещение маркера влево для центрирования с вертикалью сетки
-
-			// отступ снизу - 4px
-			// точки маркера - 
-			// левая-нижняя
-			//glVertex2f(currentX,mBottom); // 15 х 20   
-			// левая-верхняя
-			//glVertex2f(currentX,mBottom+mH);
-			// построить блок с маркером (сетка 5х4)
-			for (int row = 1; row <= rows; row++)
-			{
-				float currentRowBottom = mBottom+rowHeight*row;
-				cout<<"currentRowBottom: "<<currentRowBottom<<endl;
-				for (int col = 1; col <= cols; col++)
-				{   
-					float Left		= currentX+colWidth*col;
-					float Top		= currentRowBottom+rowHeight;
-					float Right		= currentX+colWidth*col+colWidth;
-					float Bottom	= currentRowBottom;
-
-					cout<<"\tleft/bottom -\t"<<Left<<":"<<Bottom<<endl
-						<<"\tleft/top -\t"<<Left<<":"<<Top<<endl
-						<<"\tright/top -\t"<<Right<<":"<<Top<<endl
-						<<"\tright/bottom -\t"<<Right<<":"<<Bottom<<endl<<endl;
-					// создать ячейки сетки маркера:
-					// левая-нижняя
-					glVertex2f(Left,Bottom);
-					// левая-верхняя
-					glVertex2f(Left,Top);
-					// правая-верхняя
-					glVertex2f(Right,Top);
-					// правая-нижняя
-					glVertex2f(Right,Bottom);
-				}
-			}
-			// правая-верхняя
-			//glVertex2f(currentX+mH,mBottom+mH);
-			// правая-нижняя
-			//glVertex2f(currentX+mH,mBottom);
-		}
-	glEnd();
-	
+		// построить маркеры файлов
+		setMarkers();
 	glFlush();
 }
 //
