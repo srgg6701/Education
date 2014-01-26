@@ -33,12 +33,17 @@ void Draw()
 	glDisable(GL_LINE_STIPPLE);
 	glColor3f(1.0,0.0,0.5);
 	// установить параметры цифр (маркеров номеров файлов под осью ’ сетки):
-	float mW = 20.0; // ширина блока
-	float mH = 20.0; // высота
+	float mW = 20.0;	// ширина блока
+	float mH = 20.0;	// высота
 	float mBottom = -ww2-mH-10.0; // нижн€€€ лини€ маркеров
-	// Ќарисовать маркеры файлов размерностью 5x4
+	// задать размерность сетки дл€ блока маркера
+	float rows = 5;		// количество строк в блоке маркера
+	float cols = 4;		// количество столбцов в блоке маркера
+	float rowHeight = mH/rows;	// высота строки в блоке маркера
+	float colWidth  = mW/cols;	// ширина столбца
+	// Ќарисовать маркеры файлов
 	glBegin(GL_QUADS);
-		for (int i = 1; i <= 5; i++) //5
+		for (int i = 1; i <= 5; i++) // 5 - количество маркеров (файлов)
 		{	
 			/* установить левый отступ маркера
                              -200+20.0     *i*4-50 */
@@ -46,21 +51,44 @@ void Draw()
                               WinW/5 // 400/5 = 80 длина отрезка дл€ одного (всего 5, по количеству файлов) маркера
 							  *i	 // обща€ текуща€ длина отрезков
 							  -10;   // смещение маркера влево дл€ центрировани€ с вертикалью сетки
+
 			// отступ снизу - 4px
 			// точки маркера - 
 			// лева€-нижн€€
-			glVertex2f(currentX,mBottom); // 15 х 20   
+			//glVertex2f(currentX,mBottom); // 15 х 20   
 			// лева€-верхн€€
-			glVertex2f(currentX,mBottom+mH);
+			//glVertex2f(currentX,mBottom+mH);
 			// построить блок с маркером (сетка 5х4)
-			for (int L = 0; L < 5; L++)
+			for (int row = 1; row <= rows; row++)
 			{
+				float currentRowBottom = mBottom+rowHeight*row;
+				cout<<"currentRowBottom: "<<currentRowBottom<<endl;
+				for (int col = 1; col <= cols; col++)
+				{   
+					float Left		= currentX+colWidth*col;
+					float Top		= currentRowBottom+rowHeight;
+					float Right		= currentX+colWidth*col+colWidth;
+					float Bottom	= currentRowBottom;
 
+					cout<<"\tleft/bottom -\t"<<Left<<":"<<Bottom<<endl
+						<<"\tleft/top -\t"<<Left<<":"<<Top<<endl
+						<<"\tright/top -\t"<<Right<<":"<<Top<<endl
+						<<"\tright/bottom -\t"<<Right<<":"<<Bottom<<endl<<endl;
+					// создать €чейки сетки маркера:
+					// лева€-нижн€€
+					glVertex2f(Left,Bottom);
+					// лева€-верхн€€
+					glVertex2f(Left,Top);
+					// права€-верхн€€
+					glVertex2f(Right,Top);
+					// права€-нижн€€
+					glVertex2f(Right,Bottom);
+				}
 			}
 			// права€-верхн€€
-			glVertex2f(currentX+mH,mBottom+mH);
+			//glVertex2f(currentX+mH,mBottom+mH);
 			// права€-нижн€€
-			glVertex2f(currentX+mH,mBottom);
+			//glVertex2f(currentX+mH,mBottom);
 		}
 	glEnd();
 	
@@ -172,7 +200,7 @@ int _tmain(int argc, char** argv)
 	// 3 нижележащие функции можно располагать в любом пор€дке
 	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
 	glutInitWindowSize(WinW,WinH);
-	glutInitWindowPosition(100,100);
+	glutInitWindowPosition(850,200);
 	glutCreateWindow("Grid");
 	// регистраци€
 	glutDisplayFunc(Draw);
