@@ -189,7 +189,7 @@ void Display()
 	glScalef(0.9,0.9,0.9);
 	
 	srand(time(NULL));
-    setlocale(LC_ALL, "rus");
+    //setlocale(LC_ALL, "rus");
 
 	glPointSize(12.0);
 	glBegin(GL_POINTS);

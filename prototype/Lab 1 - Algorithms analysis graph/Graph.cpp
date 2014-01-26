@@ -8,7 +8,7 @@
 #include <GL/glut.h>
 #include "vars.h"
 #include "markers.h"
-//#include <ctime> // если будем измерять время выполнения процедур
+#include <ctime> // если будем измерять время выполнения процедур
 using namespace std;
 
 // построить сетку для графа
@@ -108,6 +108,9 @@ void makeFiles()
 	// отличный сборник решений по канкатенации строк здесь: http://stackoverflow.com/a/900035/1522479
 	std::string file_name="file_";
 	std::string file_full_name;
+	
+	// http://ru.cppreference.com/w/cpp/numeric/random/rand
+	srand(time(NULL));
 
 	for (int i = 0, len = sizeof(files_volumes)/sizeof(int); i < len; i++)
 	{
@@ -117,8 +120,9 @@ void makeFiles()
 		file_full_name = sstm.str();
 
 		cout<<"full_file_name = "<<file_full_name<<endl;
-		/*
-		ofstream f("ofile.txt");
+		
+		ofstream f(file_full_name);
+		int val;
 		for(int j=0, jLen = sizeof(files_volumes[i])/sizeof(int); j<jLen; j++)
 		{
 			//cout<<"arrLen = "<<arrLen<<endl;
@@ -126,25 +130,13 @@ void makeFiles()
 			bool swtch = false;
 
 			if(swtch)
-			{
-				int arrLen = rand() % 100; //*100000;
-		
-			}
-		
-			int strt=0;
-			for(int i=0;i<div;i++)
-			{
-				int str= rand() % rPart;
-				strt+=str;
-			}
-
-			f<<strt;
-			arrLen--;	
-			if(arrLen)
-			{
-				f<<endl;	
-			}
-		}*/
+			{				
+				//сгенерировать случайное число от 0 до 400000
+				val = int(double(rand())/RAND_MAX*400000); 
+				cout<<"val : "<<val<<endl;
+			}		
+			f<<val<<endl;
+		}
 	}
 }
 // построить всё!
