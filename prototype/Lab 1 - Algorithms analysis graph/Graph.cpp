@@ -12,11 +12,24 @@
 using namespace std;
 
 // построить сетку дл€ графа
-void setGrid()
+void setGrid(bool copier=false)
 {
 // set 20 vertical lines
 	int vCount=0; // установить индикатор вертикали маркера
-	for (float offsetLeft = -ww2; offsetLeft <= ww2; offsetLeft+=grid_step) // -ww2 = -(400/2)
+	float startLeft, endLeft; 
+	// если строим вторую сетку, сделаем поправку базиса дл€ координат объектов
+	if(copier)
+	{
+		startLeft = ww2 + offset;
+		endLeft = ww2*2 + offset;
+	}
+	else
+	{
+		startLeft = -ww2;
+		endLeft = ww2;
+	}
+
+	for (float offsetLeft = startLeft; offsetLeft <= endLeft; offsetLeft+=grid_step) // -endLeft = -(400/2)
 	{         //-200,-180,-160,-140,-120,-100 // 200
 		//cout<<"offsetLeft,-wh2, offsetLeft, wh2: "<<offsetLeft<<","<<-wh2<<","<<offsetLeft<<","<<wh2<<endl;
 			
@@ -34,8 +47,8 @@ void setGrid()
 	// set horizontal lines
 	for (float offsetBottom = -wh2; offsetBottom <= wh2; offsetBottom+=grid_step)
 	{
-		glVertex2f(-ww2,offsetBottom);
-		glVertex2f( ww2,offsetBottom);
+		glVertex2f(-endLeft,offsetBottom);
+		glVertex2f( endLeft,offsetBottom);
 	}
 }
 // построить сетку маркера и заполнить еЄ закрашенными €чейками дл€ создани€ контуров цифр
