@@ -31,7 +31,7 @@ void setGrid(bool copier=false)
 	}
 	const float grid_left_start		= GridLeftEdge;
 	const float grid_right_finish	= GridRightEdge;
-	cout<<"Start grid"<<endl<<"........................."<<endl;
+	//cout<<"Start grid"<<endl<<"........................."<<endl;
 	while(GridLeftEdge<=grid_right_finish)
 	{	// cout<<"GridLeftEdge: "<<GridLeftEdge<<endl;
 		// установить вертикали	
@@ -51,10 +51,10 @@ void setGrid(bool copier=false)
 	for ( float offsetBottom  = 0;	// 
 				offsetBottom <= WinH;		// <= 400
 				offsetBottom += grid_step )
-	{   cout<<"offsetBottom: "<<offsetBottom<<"\t";
+	{   //cout<<"offsetBottom: "<<offsetBottom<<"\t";
 		glVertex2f(grid_left_start,offsetBottom);
 		glVertex2f(grid_right_finish,offsetBottom);
-	}	cout<<endl;
+	}	//cout<<endl;
 }
 // построить сетку маркера и заполнить её закрашенными ячейками для создания контуров цифр
 void buildMarkerRow( int &arrayNumbersRow,
@@ -92,28 +92,33 @@ void buildMarkerRow( int &arrayNumbersRow,
 	arrayNumbersRow++;
 }
 // создать маркеры загружаемых файлов
-void setMarkers()
+void setMarkers(bool copier=false)
 {
 	// создать внутреннюю 2-D матрицу для построения цифр от 1 до 5. 
 	// См. схему здесь: http://www.canstockphoto.com/pixel-art-numbers-and-mathematical-signs-12800261.html
 	// Нарисовать маркеры файлов
 	glBegin(GL_QUADS);
 		int arrayNumbersRow=0;
+		float LeftEdge = (copier)? ww2+offset*2 : 0;	// 400 : 0
 		for (int i = 1; i <= mrxValue; i++) // mrxValue - количество маркеров (файлов)
 		{	
 			/* установить левый отступ маркера
                              -200+20.0     *i*4-50 */
-			float currentX = -ww2+	 // -200 левый край сетки
-                              WinW/2/mrxValue // 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
-							  *i	 // общая текущая длина отрезков
-							  -10;   // смещение маркера влево для центрирования с вертикалью сетки
+			float currentX = LeftEdge +		// левый край сетки (0-400)
+                             ww2/mrxValue	// 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
+							 *i				// общая текущая длина отрезков
+							 -15;			// смещение маркера влево для визуального центрирования с вертикалью сетки
 
 			// построить блок с маркером (сетка 5х4)
 			for (int row = 1; row <= rows; row++)
 			{
 				// построить маркеры
-				buildMarkerRow( arrayNumbersRow,	// текущий индекс массива с цифрами (определяет строку сетки маркера)
-								mrxTopLine-rowHeight*row, // нижняя позиция текущей строки в сетке маркера
+				buildMarkerRow( /*	текущий индекс массива с цифрами 
+									(определяет индекс строки сетки маркера) */
+								arrayNumbersRow,
+								/*	нижняя позиция текущей строки в сетке маркера:
+									*/
+								mrxTopLine-rowHeight*row,
 								currentX // левый отступ текущего маркера	
 							  );
 			}
@@ -176,7 +181,10 @@ void Draw()
 	glEnd();
 	glDisable(GL_LINE_STIPPLE);
 		// построить маркеры файлов
+		// на левой сетке
 		setMarkers();
+		// на правой сетке
+		setMarkers(true);
 	glFlush();
 }
 // инициализировать процесс
