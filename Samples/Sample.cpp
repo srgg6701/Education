@@ -12,6 +12,13 @@ void Display()
 {
 	glClearColor(0.0,0.0,0.6,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	glBegin(GL_LINE_LOOP);
+		glColor3ub(255,255,255);
+		glVertex2i(0,0);
+		glVertex2i(0,400);
+		glVertex2i(600,400);
+		glVertex2i(600,0);
+	glEnd();
 	glFlush();
 }
 void Keyboard(unsigned char key, int x, int y)
@@ -108,4 +115,4 @@ void main(int arcv, char**argv)
 	glutDisplayFunc(Display);
 	glutKeyboardFunc(Keyboard);
 	glutMainLoop();
-}	
+}
