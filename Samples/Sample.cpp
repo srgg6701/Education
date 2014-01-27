@@ -5,12 +5,25 @@
 #include <iostream>
 using namespace std;
 
-void Reshape(int w, int h)
+/* Функция вызывается при изменении размеров окна. 
+	ВНИМАНИЕ! 
+	1. Необходимо синхронизировать параметры gluOrtho*
+	во всех вызовах.	
+	2. В данном варианте установки проекции позиции 
+	объектов НЕ центрируются, а только привязываются
+	к левой-нижней координате. 
+	3. Абсолютный размер объектов также НЕ ИЗМЕНЯЕТСЯ. */
+void Reshape(GLint w, GLint h)
 {
-	glViewport(0,0,(GLsizei) w, (GLsizei) h);
+	// раскомментировать, если определены глобальные переменные:
+	// Width = w;
+	// Height = h;
+	/* устанавливаем размеры области отображения */
+	glViewport(0, 0, w, h);
+	/* ортографическая проекция */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(-10.0,610,-10.0,410);
+	gluOrtho2D(oL, w, oB, h);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -118,7 +131,7 @@ void Keyboard(unsigned char key, int x, int y)
 }
 void Init()
 {
-	gluOrtho2D(-10.0,610,-10.0,410);
+	gluOrtho2D(oL,oR,oB,oT);
 }
 void main(int arcv, char**argv)
 {
