@@ -10,7 +10,9 @@ void Draw()
 }
 void Display()
 {
-
+	glClearColor(0.0,0.0,0.6,1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glFlush();
 }
 void Keyboard(unsigned char key, int x, int y)
 {
@@ -94,7 +96,7 @@ void Keyboard(unsigned char key, int x, int y)
 }
 void Init()
 {
-
+	gluOrtho2D(-10.0,610,-10.0,410);
 }
 void main(int arcv, char**argv)
 {
@@ -102,6 +104,7 @@ void main(int arcv, char**argv)
 	glutInitWindowSize(600,400);
 	glutInitWindowPosition(600,200);
 	glutCreateWindow("Sample");
+	Init();
 	glutDisplayFunc(Display);
 	glutKeyboardFunc(Keyboard);
 	glutMainLoop();
