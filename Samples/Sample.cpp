@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "windows.h"
+#include "set.h"
 #include <GL/glut.h>
 #include <iostream>
 using namespace std;
@@ -10,15 +11,23 @@ void Draw()
 }
 void Display()
 {
-	glClearColor(0.0,0.0,0.6,1.0);
+	glClearColor(0.8,0.8,0.8,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glBegin(GL_LINE_LOOP);
+	glBegin(GL_QUADS);
 		glColor3ub(255,255,255);
 		glVertex2i(0,0);
 		glVertex2i(0,400);
 		glVertex2i(600,400);
 		glVertex2i(600,0);
 	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3ub(25,25,125);
+		glVertex2i(100,100);
+		glVertex2i(100,200);
+		glVertex2i(200,200);
+		glVertex2i(200,100);
+	glEnd();
+
 	glFlush();
 }
 void Keyboard(unsigned char key, int x, int y)
