@@ -5,14 +5,20 @@
 #include <iostream>
 using namespace std;
 
-void Draw()
+void Reshape(int w, int h)
 {
-
+	glViewport(0,0,(GLsizei) w, (GLsizei) h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(-10.0,610,-10.0,410);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 void Display()
 {
 	glClearColor(0.8,0.8,0.8,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	
 	glBegin(GL_QUADS);
 		glColor3ub(255,255,255);
 		glVertex2i(0,0);
@@ -26,8 +32,8 @@ void Display()
 		glVertex2i(100,200);
 		glVertex2i(200,200);
 		glVertex2i(200,100);
-	glEnd();
-
+	glEnd();	
+	
 	glFlush();
 }
 void Keyboard(unsigned char key, int x, int y)
@@ -123,5 +129,6 @@ void main(int arcv, char**argv)
 	Init();
 	glutDisplayFunc(Display);
 	glutKeyboardFunc(Keyboard);
+	glutReshapeFunc(Reshape);
 	glutMainLoop();
 }
