@@ -26,7 +26,7 @@ void showSorting(vector<int>nmbrs, int limit, int sorting_id){
 	switch(sorting_id)
 	{
 		case 1:
-			for (int i=0; i<=limit; i++){
+			for (int i=0; i<limit; i++){
 				if (i) cout<<endl;
 				if(nmbrs[i]) cout<<i+1<<" : "<<nmbrs[i];
 				else cout<<"Элемент с индексом "<<i<<" не найден...";
@@ -132,7 +132,7 @@ void makeFiles()
 	bool run  = true;		// позволить процессу начаться
 	/*	если захотим уменьшить количество строк, разделим значения массива
 		glob_files_volumes на нижележащее значение: */
-	int decreaser = 1; //100	
+	int decreaser = 100; //100	
 
 	setlocale(LC_ALL, "Russian");
 
@@ -183,11 +183,8 @@ vector<int> getRowsArray(int i=0)
 	while (text.good())
 	{
 		int v; text >> v;
-		if (text.good())
-		{
-			rowsArray.push_back(v);
-			cout <<v<<" ";
-		}
+		rowsArray.push_back(v);
+		cout<<v<<" ";
 	}	cout<<endl;
 	return rowsArray;
 }
