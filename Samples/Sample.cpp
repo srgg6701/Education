@@ -5,6 +5,25 @@
 #include <iostream>
 using namespace std;
 
+void prepareProjection(GLint w, GLint h)
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	
+	//int w = glutGet(GLUT_WINDOW_WIDTH);
+	//int h = glutGet(GLUT_WINDOW_HEIGHT);
+
+	if (w<=h) gluOrtho2D(	oL,
+						oR,
+						oB*(GLfloat)h/(GLfloat)w,
+						oT*(GLfloat)h/(GLfloat)w
+					 );
+	else	  gluOrtho2D(  oL*(GLfloat)w/(GLfloat)h,
+						oR*(GLfloat)w/(GLfloat)h,
+						oB,
+						oT
+					 );
+}
 /* Функция вызывается при изменении размеров окна. 
 	ВНИМАНИЕ! 
 	1. Необходимо синхронизировать параметры gluOrtho*
@@ -15,6 +34,22 @@ using namespace std;
 	3. Абсолютный размер объектов также НЕ ИЗМЕНЯЕТСЯ. */
 void Reshape(GLint w, GLint h)
 {
+	glViewport(0,0,(GLsizei) w, (GLsizei) h);
+	prepareProjection(w,h);
+	// обязательно:
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+/* Функция вызывается при изменении размеров окна. 
+	ВНИМАНИЕ! 
+	1. Необходимо синхронизировать параметры gluOrtho*
+	во всех вызовах.	
+	2. В данном варианте установки проекции позиции 
+	объектов НЕ центрируются, а только привязываются
+	к левой-нижней координате. 
+	3. Абсолютный размер объектов также НЕ ИЗМЕНЯЕТСЯ. */
+void ReshapeOne(GLint w, GLint h)
+{
 	// раскомментировать, если определены глобальные переменные:
 	// Width = w;
 	// Height = h;
@@ -23,7 +58,9 @@ void Reshape(GLint w, GLint h)
 	/* ортографическая проекция */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(oL, w, oB, h);
+	//
+	gluOrtho2D(oL, w, oB, h); //если не вызвать - привяжет левый нижний угол к центру порта просмотра...
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -31,6 +68,8 @@ void Display()
 {
 	glClearColor(0.8,0.8,0.8,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+	
+	glScalef(zoom,zoom,zoom);
 	
 	glBegin(GL_QUADS);
 		glColor3ub(255,255,255);
@@ -106,14 +145,14 @@ void Keyboard(unsigned char key, int x, int y)
 		case 50:	// 2
 		//trnslY-=stepTransform;
 		break;	*/
-		/*
+		
 		// zoom:
 		case 43: // +
-		//
+			zoom+=zoom_step;
 		break;
 		case 45: // -
-		//
-		break;	*/
+			zoom-=zoom_step;
+		break;	/**/
 		//..................
 		case 61: // вернуться к первоначальным значениям
 			//eyeX=EX;
@@ -142,6 +181,7 @@ void main(int arcv, char**argv)
 	Init();
 	glutDisplayFunc(Display);
 	glutKeyboardFunc(Keyboard);
-	glutReshapeFunc(Reshape);
+	//glutReshapeFunc(Reshape);
+	glutReshapeFunc(ReshapeOne);
 	glutMainLoop();
 }
