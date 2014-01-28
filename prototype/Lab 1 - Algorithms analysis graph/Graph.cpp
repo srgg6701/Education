@@ -13,6 +13,9 @@
 #include "markers.h"
 using namespace std;
 
+// контейнер для сохранения имён сгенерированных файлов
+vector<string>glob_files_names;
+
 // отобразить процесс сортировки
 void showSorting(vector<int>nmbrs, int limit, int sorting_id){
 
@@ -135,12 +138,12 @@ void makeFiles()
 		sstm << "file_"<< glob_files_volumes[i]<<".txt";
 		file_full_name = sstm.str();
 		
-		//vector<string>file_names;
+		// сохранить имя сгенерированного файла в векторе
+		glob_files_names.push_back(file_full_name);
+		// если добавить в начало, заменить на -   
+		//.insert(glob_files_names.begin(),file_full_name);		
 		
-		//file_names[0]=file_full_name;
-
 		cout<<"file_full_name: "<<file_full_name<<endl;
-		
 		ofstream f(file_full_name); // создать/пересоздать файл
 		int val;
 		int jLen = glob_files_volumes[i];
@@ -189,6 +192,12 @@ vector<int> getRowsArray(char *file_name)
 // пузырьковая сортировка
 void sortBubbling()
 {
+	for (int i = 0; i < glob_files_names.size(); i++)
+	{
+		if(i) cout<<endl;
+		cout<<"file name: "<<glob_files_names[i]<<endl;
+	}
+	
 	// получить массив строк из файла
 	char * file_name = "file_1000.txt";
 	vector<int> nmbrs=getRowsArray(file_name);
@@ -410,5 +419,5 @@ int _tmain(int argc, char** argv)
 }
 /*	Материалы:
 	- Оценка эффективности алгорима по времени: http://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC#.D0.92.D1.80.D0.B5.D0.BC.D1.8F_.D1.80.D0.B0.D0.B1.D0.BE.D1.82.D1.8B
-	
+	- vector: http://ru.cppreference.com/w/cpp/container/vector
 	*/
