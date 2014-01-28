@@ -180,6 +180,10 @@ void makeFiles()
 		}	
 	}
 }
+
+void sorting()
+{
+}
 // построить всё!
 void Draw()
 {
