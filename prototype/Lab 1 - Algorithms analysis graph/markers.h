@@ -5,7 +5,7 @@
 	http://www.canstockphoto.com/pixel-art-globNumbers-and-mathematical-signs-12800261.html
 	.......................................................................................	*/
 
-const int globMrxValue = 5; // количество маркеров (файлов)
+//const int globMrxValue = 5; // количество маркеров (файлов)
 
 // Карта цифр с номерами файлов (1-5)
 const int globNumbers[25][4]={
