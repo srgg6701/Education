@@ -24,8 +24,8 @@ void sortBubbling(vector<int> *,int);
 void sortByInserts();
 // Быстрая сортировка........................................
 void sortQuick();
-	void quickSort(vector<int>, int, int);
-	int pivot(vector<int>, int, int);
+	void quickSort(vector<int>&, int, int);
+	 int pivot(vector<int>&, int, int);
 	void swap(int&, int&);
 	void swapNoTemp(int&, int&);
 //-----------------------------------------------------------
@@ -44,8 +44,7 @@ void showSorting(vector<int> nmbrs, int limit, int sorting_id=1){
 	{
 		case 1:
 			for (int i=0; i<limit; i++){
-				if (i) cout<<endl;
-				if(nmbrs[i]) cout<<i+1<<" : "<<nmbrs[i];
+				if(nmbrs[i]) cout<<endl<<i+1<<" : "<<nmbrs[i];
 				else cout<<"Элемент с индексом "<<i<<" не найден...";
 			}
 			break;
@@ -181,7 +180,7 @@ void makeFiles()
 vector<int> getRowsArray(int i=0)
 {
 	vector<int> rowsArray;
-	ifstream text(glob_files_names[i]);//"file_1000.txt"
+	ifstream text(glob_files_names[i]);
 	int count = 0;
 	// включить кириллицу:
 	//setlocale(LC_ALL, "Russian");
@@ -341,9 +340,8 @@ int _tmain(int argc, char** argv)
 // пузырьковая сортировка
 void sortBubbling(int i)
 {
-	vector<int> nmbrs;
 	// получить массив строк из файла
-	nmbrs=getRowsArray(i);
+	vector<int> nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
 	int clipboard;// временная переменная для хранения значения элемента сортируемого массива
 	/*	the variable that will define the inner loop 
@@ -406,9 +404,8 @@ void sortBubbling(int i)
 // сортировка вставками
 void sortByInserts(int i)
 {
-	vector<int> nmbrs;
 	// получить массив строк из файла
-	nmbrs=getRowsArray(i);
+	vector<int> nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
 	int clipboard; // временная переменная для хранения значения элемента сортируемого массива
 	int prev_index; // индекс предыдущего элемента
@@ -429,41 +426,40 @@ void sortByInserts(int i)
 // быстрая сортировка
 void sortQuick(int i)
 {
-	vector<int> nmbrs;
 	// получить массив строк из файла
-	nmbrs=getRowsArray(i);
+	vector<int> nmbrs = getRowsArray(i);
+	vector<int> &numbers = nmbrs;
 	const int limit = nmbrs.size();
-	int clipboard;// временная переменная для хранения значения элемента сортируемого массива
-	quickSort(nmbrs, 0, nmbrs.size()-1);
-	showSorting(nmbrs,limit);
+	quickSort(numbers, 0, nmbrs.size()-1);
+	showSorting(numbers,limit);
 	cout<<endl;
 }
 // реализация механизма быстрой сортировки
-void quickSort(vector<int> nmbrs, int first, int last)
+void quickSort(vector<int> &nmbrs, int first, int last)
 {
 	int pivotElement;
 
     if(first < last)
-    {
-        pivotElement = pivot(nmbrs, first, last);
+    {   //cout<<endl<<"first: "<<first<<", last: "<<last;
+        pivotElement = pivot(nmbrs, first, last); //cout<<"pivotElement = "<<pivotElement<<endl;
         quickSort(nmbrs, first, pivotElement-1);
         quickSort(nmbrs, pivotElement+1, last);
     }
 }
 // возвращает опорную точку сортировки
-int pivot( vector<int> nmbrs,		// массив значений
+int pivot( vector<int> &nmbrs,		// массив значений
 		   int first,   // индекс первого элемента массива
 		   int last		// индекс последнего элемента массива
 		 ) 
 {
     int  p = first; // "опорная точка" - индекс первого элемента массива
     int pivotElement = nmbrs[first];
- 
+	cout<<"pivotElement = "<<pivotElement<<endl;
     for(int i = first+1 ; i <= last ; i++)
     {
         /* Для изменения порядка сортировки заменить "<=" на ">" */
         if(nmbrs[i] <= pivotElement)
-        {
+        {   cout<<"\tswap "<<nmbrs[i]<<" <> "<<pivotElement<<endl;
             p++;
             swap(nmbrs[i], nmbrs[p]);
         }
