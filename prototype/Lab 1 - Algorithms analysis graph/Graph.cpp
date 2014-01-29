@@ -19,15 +19,18 @@ vector<string>glob_files_names;
 //-----------------------------------------------------------
 // ФУНКЦИИ СОРТИРОВКИ ДАННЫХ:
 // Пузырьковая сортировка....................................
-void sortBubbling();
+void sortBubbling(vector<int> *,int);
 // Сортировка вставками......................................
 void sortByInserts();
 // Быстрая сортировка........................................
 void sortQuick();
 //-----------------------------------------------------------
+// Сортировка данных:
+void sortData();
+//-----------------------------------------------------------
 
 // отобразить процесс сортировки
-void showSorting(vector<int>nmbrs, int limit, int sorting_id){
+void showSorting(vector<int> nmbrs, int limit, int sorting_id){
 
 	setlocale(LC_ALL, "Russian");
 
@@ -260,16 +263,7 @@ void setGrid(bool copier=false)
 // построить граф
 void Draw()
 {
-	/*	Сгенерировать файлы с набором случайных чисел.
-		--------------------------------------------------
-	ВНИМАНИЕ! 
-	В тестовом режиме целесооборазно уменьшить размер 
-	генерируемых файлов. Для этого достаточно указать
-	значение пер. glob_files_size_decreaser,  
-	являющееся делителем для определяющих его значений 
-	элементов массива glob_files_volumes в файле vars.h. */
-	//makeFiles();
-	sortBubbling(); // отсортировать пузырьковым методом
+	sortData(); // отсортировать содержание файлов
 	glClear(GL_COLOR_BUFFER_BIT);
 	glEnable(GL_LINE_STIPPLE); // включить шаблон пунктирной линии
 	glLineWidth (1.0); // указать толщину линий сетки
@@ -316,8 +310,17 @@ void Keyboard(unsigned char key, int x, int y)
 //
 int _tmain(int argc, char** argv)
 {
-	// сгенеирировать/перезаписать файлы
+	/*	Сгенерировать/перезаписать файлы с набором случайных чисел.
+		--------------------------------------------------
+	ВНИМАНИЕ! 
+	В тестовом режиме целесооборазно уменьшить размер 
+	генерируемых файлов. Для этого достаточно указать
+	значение пер. glob_files_size_decreaser,  
+	являющееся делителем для определяющих его значений 
+	элементов массива glob_files_volumes в файле vars.h. */
 	makeFiles();
+	// отсортировать содержание файлов
+	sortData(); 
 	bool run = false;
 	if(run)
 	{
@@ -333,110 +336,120 @@ int _tmain(int argc, char** argv)
 		glutKeyboardFunc(Keyboard);
 		Initialize();
 		glutMainLoop();
-	}
-	else
-		sortBubbling(); // отсортировать пузырьковым методом
+	}	
 	return 0;
 }
 
 // СОРТИРОВКА ............................................
 // пузырьковая сортировка
-void sortBubbling()
+void sortBubbling(int i)
 {
-	setlocale(LC_ALL, "Russian");
 	vector<int> nmbrs;
-	for (int i = 0; i < glob_files_names.size(); i++)
+	// получить массив строк из файла
+	nmbrs=getRowsArray(i);
+	const int limit = nmbrs.size();
+	/*	the variable for temporary storing the value of 
+		the array's certain element during permutations	*/
+	int clipboard;
+	/*	the variable that will define the inner loop 
+		iterations number; (see the 'while' loop) we 
+		need it because constants can't be changed! */
+	int lmt;
+	/*	we need this variable just to avoid keeping to repeat an expression 
+		like innerCounter+1	*/
+	int nextIndex;	
+	/*	it will be used as an element's index to compare the array's elements 
+		within an inner loop */
+	int innerCounter;
+	// пройтись по массиву строк
+	for (int i=0; i<limit; i++)
 	{
-		cout<<"Итерация "<<i+1<<". Если хотите продолжить, введите "<<i+1<<". "<<endl
-			<<"......................................................"<<endl;
-		int choice;
-		cin>>choice;
-		if(choice==(i+1))
-		{
-			if(i) cout<<endl;
-			cout<<"Имя файла: "<<glob_files_names[i]<<endl;
-			// получить массив строк из файла
-			nmbrs=getRowsArray(i);
-			const int limit = nmbrs.size();
-	
-			/*	the variable for temporary storing the value of 
-				the array's certain element during permutations	*/
-			int clipboard = 0;	
-			/*	the variable that will define the inner loop 
-				iterations number; (see the 'while' loop) we 
-				need it because constants can't be changed! */
-			int lmt;
-			/*	we need this variable just to avoid keeping to repeat an expression 
-				like innerCounter+1	*/
-			int nextIndex;	
-			/*	it will be used as an element's index to compare the array's elements 
-				within an inner loop */
-			int innerCounter;
-			// пройтись по массиву строк
-			for (int i=0; i<limit; i++)
+		lmt = limit-i;
+		innerCounter = 0;
+		/*	Go to the inner loop;
+			its length should be decreased while every 
+			new iteration (see video).
+			It starts from the maximal value which is:
+			array length (6) minus 1 (see a definition
+			of 'lmt' variable); 
+			every outer iteration decreases it 
+			(see in the end of the 'while' loop):
+			- the first iteration:	lmt = 5
+			- the second iteration: lmt = 4 
+			- etc...
+			*/
+		while(lmt>1)
+		{ 
+			nextIndex = innerCounter+1;
+			if(nmbrs[innerCounter]>nmbrs[nextIndex]) // 5 < 3
 			{
-				lmt = limit-i;
-				innerCounter = 0;
-				/*	Go to the inner loop;
-					its length should be decreased while every 
-					new iteration (see video).
-					It starts from the maximal value which is:
-					array length (6) minus 1 (see a definition
-					of 'lmt' variable); 
-					every outer iteration decreases it 
-					(see in the end of the 'while' loop):
-					- the first iteration:	lmt = 5
-					- the second iteration: lmt = 4 
-					- etc...
-				  */
-				while(lmt>1)
-				{ 
-					nextIndex = innerCounter+1;
-					if(nmbrs[innerCounter]>nmbrs[nextIndex]) // 5 < 3
-					{
-						/*	cout<< "\nA permutation is needed!\ncurrent elemen's value: " 
-								<< nmbrs[innerCounter] << "\nnext element's value: "
-								<< nmbrs[nextIndex]; */
-						// store the array's element value
-						clipboard = nmbrs[nextIndex];
-						/*	cout<< "\nclipboard = nmbrs["<<innerCounter<<"+1] = "
-								<< clipboard<<"\n"; */
-						/*	here we lost an original value in the array
-							but it was stored in the clipboard variable earlier */
-						/*	cout<< "\nnmbrs["<<innerCounter<<"+1] = nmbrs["<<innerCounter<<"] = "
-								<< nmbrs[innerCounter]<<"\n"; */
-						nmbrs[nextIndex] = nmbrs[innerCounter]; // 3 -> 5 
-						/*	take out the value stored in the clipboard earlier 
-							and assign it to the current array's element */
-						nmbrs[innerCounter] = clipboard;
-						/*	cout<< "\nnmbrs["<<innerCounter<<"] = clipboard = "
-								<< clipboard<<"\n"; */
-					}
-					else
-					{
-						/*cout<< "\nNo need to permutate!\nnmbrs["	<< innerCounter << "] ("
-							<< nmbrs[innerCounter] << ") not bigger than nmbrs[" << nextIndex << "] ("
-							<< nmbrs[nextIndex] << ")\n"; */
-					}	
-					lmt--;
-					innerCounter++;
-				}
+				/*	cout<< "\nA permutation is needed!\ncurrent elemen's value: " 
+						<< nmbrs[innerCounter] << "\nnext element's value: "
+						<< nmbrs[nextIndex]; */
+				// store the array's element value
+				clipboard = nmbrs[nextIndex];
+				/*	cout<< "\nclipboard = nmbrs["<<innerCounter<<"+1] = "
+						<< clipboard<<"\n"; */
+				/*	here we lost an original value in the array
+					but it was stored in the clipboard variable earlier */
+				/*	cout<< "\nnmbrs["<<innerCounter<<"+1] = nmbrs["<<innerCounter<<"] = "
+						<< nmbrs[innerCounter]<<"\n"; */
+				nmbrs[nextIndex] = nmbrs[innerCounter]; // 3 -> 5 
+				/*	take out the value stored in the clipboard earlier 
+					and assign it to the current array's element */
+				nmbrs[innerCounter] = clipboard;
+				/*	cout<< "\nnmbrs["<<innerCounter<<"] = clipboard = "
+						<< clipboard<<"\n"; */
 			}
-			showSorting(nmbrs,limit,1);
-			cout<<endl;
+			lmt--;
+			innerCounter++;
 		}
-		else break;
 	}
+	showSorting(nmbrs,limit,1);
+	cout<<endl;
 }
 // сортировка вставками
 void sortByInserts()
 {
+	/*int temp, // временная переменная для хранения значения элемента сортируемого массива
+        item; // индекс предыдущего элемента
+    for (int counter = 1; counter < length; counter++)
+    {
+        temp = arrayPtr[counter]; // инициализируем временную переменную текущим значением элемента массива
+        item = counter-1; // запоминаем индекс предыдущего элемента массива
+        while(item >= 0 && arrayPtr[item] > temp) // пока индекс не равен 0 и предыдущий элемент массива больше текущего
+        {
+            arrayPtr[item + 1] = arrayPtr[item]; // перестановка элементов массива
+            arrayPtr[item] = temp;
+            item--;
+        }
+    }*/
 }
 // быстрая сортировка
 void sortQuick()
 {
 }
-
+//
+void sortData()
+{
+	setlocale(LC_ALL, "Russian");
+	
+	for (int i = 0; i < glob_files_names.size(); i++)
+	{
+		cout<<"Итерация "<<i+1<<". Если хотите продолжить, введите "<<i+1<<". Выход - 0."<<endl
+			<<"......................................................"<<endl;
+		int choice;
+		cin>>choice;
+		if(choice==0) exit(0);
+		if(choice==(i+1))
+		{
+			if(i) cout<<endl;
+			cout<<"Имя файла: "<<glob_files_names[i]<<endl;		
+			sortBubbling(i);
+		}
+		else break;
+	}
+}
 /*	Материалы:
 	- Оценка эффективности алгорима по времени: http://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC#.D0.92.D1.80.D0.B5.D0.BC.D1.8F_.D1.80.D0.B0.D0.B1.D0.BE.D1.82.D1.8B
 	- vector: http://ru.cppreference.com/w/cpp/container/vector
