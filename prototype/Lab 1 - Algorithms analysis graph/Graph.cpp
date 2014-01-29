@@ -24,18 +24,22 @@ void sortBubbling(vector<int> *,int);
 void sortByInserts();
 // Быстрая сортировка........................................
 void sortQuick();
+	void quickSort(vector<int>, int, int);
+	int pivot(vector<int>, int, int);
+	void swap(int&, int&);
+	void swapNoTemp(int&, int&);
 //-----------------------------------------------------------
 // Сортировка данных:
 void sortData();
 //-----------------------------------------------------------
 
 // отобразить процесс сортировки
-void showSorting(vector<int> nmbrs, int limit, int sorting_id){
+void showSorting(vector<int> nmbrs, int limit, int sorting_id=1){
 
 	setlocale(LC_ALL, "Russian");
 
 	cout<<endl<<"После сортировки: "
-		<<endl<<"................"<<endl;
+		<<endl<<"................";
 	switch(sorting_id)
 	{
 		case 1:
@@ -45,18 +49,12 @@ void showSorting(vector<int> nmbrs, int limit, int sorting_id){
 				else cout<<"Элемент с индексом "<<i<<" не найден...";
 			}
 			break;
-		case 2:
-
-			break;
-		case 3:
-
-			break;
-		case 4:
-
-			break;
-		case 5:
-
-			break;
+		/*	оставим как заготовку, на случай, если захотим выводить 
+			данные по каждому сортируемому файлу отдельно:	*/
+		case 2: break;
+		case 3: break;
+		case 4: break;
+		case 5: break;
 	}
 }
 
@@ -402,7 +400,7 @@ void sortBubbling(int i)
 			innerCounter++;
 		}
 	}
-	showSorting(nmbrs,limit,1);
+	showSorting(nmbrs,limit);
 	cout<<endl;
 }
 // сортировка вставками
@@ -425,14 +423,77 @@ void sortByInserts(int i)
             prev_index--;
         }
     }
-	showSorting(nmbrs,limit,1);
+	showSorting(nmbrs,limit);
 	cout<<endl;
 }
 // быстрая сортировка
-void sortQuick()
+void sortQuick(int i)
 {
+	vector<int> nmbrs;
+	// получить массив строк из файла
+	nmbrs=getRowsArray(i);
+	const int limit = nmbrs.size();
+	int clipboard;// временная переменная для хранения значения элемента сортируемого массива
+	quickSort(nmbrs, 0, nmbrs.size()-1);
+	showSorting(nmbrs,limit);
+	cout<<endl;
 }
-//
+// реализация механизма быстрой сортировки
+void quickSort(vector<int> nmbrs, int first, int last)
+{
+	int pivotElement;
+
+    if(first < last)
+    {
+        pivotElement = pivot(nmbrs, first, last);
+        quickSort(nmbrs, first, pivotElement-1);
+        quickSort(nmbrs, pivotElement+1, last);
+    }
+}
+// возвращает опорную точку сортировки
+int pivot( vector<int> nmbrs,		// массив значений
+		   int first,   // индекс первого элемента массива
+		   int last		// индекс последнего элемента массива
+		 ) 
+{
+    int  p = first; // "опорная точка" - индекс первого элемента массива
+    int pivotElement = nmbrs[first];
+ 
+    for(int i = first+1 ; i <= last ; i++)
+    {
+        /* Для изменения порядка сортировки заменить "<=" на ">" */
+        if(nmbrs[i] <= pivotElement)
+        {
+            p++;
+            swap(nmbrs[i], nmbrs[p]);
+        }
+    }
+ 
+    swap(nmbrs[p], nmbrs[first]);
+ 
+    return p; // возвращает опорную точку
+}
+// переключает параметры сортировки
+void swap( int& a,	// первый параметр 
+		   int& b	// последний параметр
+		 )
+{
+    int temp = a;
+    a = b;
+    b = temp;
+}
+/*	Переключает параметры без временной переменной
+	ВНИМАНИЕ! Проконтролировать (за|пере)полнение	*/ 
+void swapNoTemp( int& a, 	// первый параметр
+				 int& b		// последний параметр
+			   )
+{
+    a -= b;
+    b += a;// b gets the original value of a
+    a = (b - a);// a gets the original value of b
+}
+//-----------------------------------------------------------
+// отсортировать всеми указанными способами
 void sortData()
 {
 	setlocale(LC_ALL, "Russian");
@@ -448,12 +509,12 @@ void sortData()
 		{
 			if(i) cout<<endl;
 			cout<<"Имя файла: "<<glob_files_names[i]<<endl;
-			cout<<endl<<"ПУЗЫРЬКОВАЯ СОРТИРОВКА"<<endl
-				<<"-----------------------"<<endl;
+			cout<<endl<<"ПУЗЫРЬКОВАЯ СОРТИРОВКА"<<endl<<"-----------------------"<<endl;
 			sortBubbling(i);	// пузырьковая сортировка
-			cout<<endl<<"СОРТИРОВКА ВСТАВКАМИ"<<endl
-				<<"-----------------------"<<endl;
+			cout<<endl<<"СОРТИРОВКА ВСТАВКАМИ"<<endl<<"-----------------------"<<endl;
 			sortByInserts(i);	// сортировка вставками
+			cout<<endl<<"БЫСТРАЯ СОРТИРОВКА"<<endl<<"-----------------------"<<endl;
+			sortQuick(i);	// быстрая сортировка
 		}
 		else break;
 	}
