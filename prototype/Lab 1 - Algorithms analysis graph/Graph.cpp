@@ -34,7 +34,7 @@ void showSorting(vector<int> nmbrs, int limit, int sorting_id){
 
 	setlocale(LC_ALL, "Russian");
 
-	cout<<endl<<endl<<"После сортировки: "
+	cout<<endl<<"После сортировки: "
 		<<endl<<"................"<<endl;
 	switch(sorting_id)
 	{
@@ -186,16 +186,15 @@ vector<int> getRowsArray(int i=0)
 	ifstream text(glob_files_names[i]);//"file_1000.txt"
 	int count = 0;
 	// включить кириллицу:
-	setlocale(LC_ALL, "Russian");
-
-	cout<<endl<<"До сортировки:"<<endl
-		<<"................"<<endl;
+	//setlocale(LC_ALL, "Russian");
+	//cout<<endl<<"До сортировки:"<<endl
+		//<<"................"<<endl;
 	while (text.good())
 	{
 		int v; text >> v;
 		rowsArray.push_back(v);
-		cout<<v<<" ";
-	}	cout<<endl;
+		//cout<<v<<" ";
+	}	//cout<<endl;
 	return rowsArray;
 }
 
@@ -348,9 +347,7 @@ void sortBubbling(int i)
 	// получить массив строк из файла
 	nmbrs=getRowsArray(i);
 	const int limit = nmbrs.size();
-	/*	the variable for temporary storing the value of 
-		the array's certain element during permutations	*/
-	int clipboard;
+	int clipboard;// временная переменная для хранения значения элемента сортируемого массива
 	/*	the variable that will define the inner loop 
 		iterations number; (see the 'while' loop) we 
 		need it because constants can't be changed! */
@@ -409,21 +406,27 @@ void sortBubbling(int i)
 	cout<<endl;
 }
 // сортировка вставками
-void sortByInserts()
+void sortByInserts(int i)
 {
-	/*int temp, // временная переменная для хранения значения элемента сортируемого массива
-        item; // индекс предыдущего элемента
-    for (int counter = 1; counter < length; counter++)
+	vector<int> nmbrs;
+	// получить массив строк из файла
+	nmbrs=getRowsArray(i);
+	const int limit = nmbrs.size();
+	int clipboard; // временная переменная для хранения значения элемента сортируемого массива
+	int prev_index; // индекс предыдущего элемента
+	for (int current_index = 1; current_index < limit; current_index++)
     {
-        temp = arrayPtr[counter]; // инициализируем временную переменную текущим значением элемента массива
-        item = counter-1; // запоминаем индекс предыдущего элемента массива
-        while(item >= 0 && arrayPtr[item] > temp) // пока индекс не равен 0 и предыдущий элемент массива больше текущего
+        clipboard = nmbrs[current_index]; // инициализируем временную переменную текущим значением элемента массива
+        prev_index = current_index-1; // запоминаем индекс предыдущего элемента массива
+        while(prev_index >= 0 && nmbrs[prev_index] > clipboard) // пока индекс не равен 0 и предыдущий элемент массива больше текущего
         {
-            arrayPtr[item + 1] = arrayPtr[item]; // перестановка элементов массива
-            arrayPtr[item] = temp;
-            item--;
+            nmbrs[prev_index + 1] = nmbrs[prev_index]; // перестановка элементов массива
+            nmbrs[prev_index] = clipboard;
+            prev_index--;
         }
-    }*/
+    }
+	showSorting(nmbrs,limit,1);
+	cout<<endl;
 }
 // быстрая сортировка
 void sortQuick()
@@ -444,8 +447,13 @@ void sortData()
 		if(choice==(i+1))
 		{
 			if(i) cout<<endl;
-			cout<<"Имя файла: "<<glob_files_names[i]<<endl;		
-			sortBubbling(i);
+			cout<<"Имя файла: "<<glob_files_names[i]<<endl;
+			cout<<endl<<"ПУЗЫРЬКОВАЯ СОРТИРОВКА"<<endl
+				<<"-----------------------"<<endl;
+			sortBubbling(i);	// пузырьковая сортировка
+			cout<<endl<<"СОРТИРОВКА ВСТАВКАМИ"<<endl
+				<<"-----------------------"<<endl;
+			sortByInserts(i);	// сортировка вставками
 		}
 		else break;
 	}
