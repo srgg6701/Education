@@ -16,6 +16,16 @@ using namespace std;
 // контейнер для сохранения имён сгенерированных файлов
 vector<string>glob_files_names;
 
+//-----------------------------------------------------------
+// ФУНКЦИИ СОРТИРОВКИ ДАННЫХ:
+// Пузырьковая сортировка....................................
+void sortBubbling();
+// Сортировка вставками......................................
+void sortByInserts();
+// Быстрая сортировка........................................
+void sortQuick();
+//-----------------------------------------------------------
+
 // отобразить процесс сортировки
 void showSorting(vector<int>nmbrs, int limit, int sorting_id){
 
@@ -130,9 +140,6 @@ void makeFiles()
 	srand(time(NULL));
 
 	bool run  = true;		// позволить процессу начаться
-	/*	если захотим уменьшить количество строк, разделим значения массива
-		glob_files_volumes на нижележащее значение: */
-	int decreaser = 100; //100	
 
 	setlocale(LC_ALL, "Russian");
 
@@ -152,7 +159,7 @@ void makeFiles()
 		int val;
 		int jLen = glob_files_volumes[i];
 		// для теста - если установили уменьшитель, используем его
-		if(decreaser>1) jLen/=decreaser;
+		if(glob_files_size_decreaser>1) jLen/=glob_files_size_decreaser;
 		
 		if(run)
 		{				
@@ -187,6 +194,149 @@ vector<int> getRowsArray(int i=0)
 		cout<<v<<" ";
 	}	cout<<endl;
 	return rowsArray;
+}
+
+// СОЗДАНИЕ ГРАФИКОВ .....................................
+// построить сетку для графа
+void setGrid(bool copier=false)
+{
+	/*	Установить индикатор вертикали, пересекающейся с маркером.
+		Нужен как инструмент для выделения каждой 4-й вертикали 
+		(20 вертикальдных линий / 5 маркеров) цветом, как места, 
+		где располагается маркер одного из 5-ти используемых файлов.		*/
+	int vCount=0; 
+	/*	Создать (и далее - установить) левую и правую границы для 
+		сеток графов; Пространство между ними будет заполняться 
+		вертикалями графа.	*/
+	float GridLeftEdge, GridRightEdge;  
+	/*	Рассчитать значения левой и правой границ сеток графа. 
+		Передавайемый параметр copier означает, что строим сетку
+		для правого графа. Если параметр не передан, то - для левого. 
+		.............................................................
+		См. параметры gluOrtho2D, на основе которых рассчитывается
+		расположение сеток графов - отступы углов от начала координат:
+		левый:	-50, правый: 875, 
+		нижний: -50, верхний: 450	*/
+	if(copier)
+	{
+		/*	Половина рабочего пространства окна 
+			+ пространство для создания визуального отступа */
+		GridLeftEdge	= globSceneWidthHalf + glob_offset*2;	// 450
+		GridRightEdge	= globSceneWidth + glob_offset*2;		// 825
+	}
+	else
+	{
+		GridLeftEdge	= 0;				//   0
+		GridRightEdge	= globSceneWidthHalf;				// 400
+	}
+	const float grid_left_start		= GridLeftEdge;
+	const float grid_right_finish	= GridRightEdge;
+	//cout<<"Start grid"<<endl<<"........................."<<endl;
+	// установить по 20 вертикальных линий для сеток каждого графа
+	while(GridLeftEdge<=grid_right_finish)
+	{	// cout<<"GridLeftEdge: "<<GridLeftEdge<<endl;
+		// установить вертикали	
+		// выделим цветом каждую 4-ю вертикаль (там, где размещается маркер нового файла):
+		if( vCount>0 && vCount%4==0 ) 
+			glColor3f(1.0,0.0,0.5);
+		else
+			glColor3f(0.4,0.4,0.4);
+		vCount++;
+		// линии
+		glVertex2f(GridLeftEdge, 0); // 
+		glVertex2f(GridLeftEdge, globSceneHeight);		// 
+		GridLeftEdge+=glob_grid_step;
+	}
+	glColor3f(0.4,0.4,0.4);
+	// установить горизонтали
+	for ( float offsetBottom  = 0;	// 
+				offsetBottom <= globSceneHeight;		// <= 400
+				offsetBottom += glob_grid_step )
+	{   //cout<<"offsetBottom: "<<offsetBottom<<"\t";
+		glVertex2f(grid_left_start,offsetBottom);
+		glVertex2f(grid_right_finish,offsetBottom);
+	}	//cout<<endl;
+}
+// построить граф
+void Draw()
+{
+	/*	Сгенерировать файлы с набором случайных чисел.
+		--------------------------------------------------
+	ВНИМАНИЕ! 
+	В тестовом режиме целесооборазно уменьшить размер 
+	генерируемых файлов. Для этого достаточно указать
+	значение пер. glob_files_size_decreaser,  
+	являющееся делителем для определяющих его значений 
+	элементов массива glob_files_volumes в файле vars.h. */
+	//makeFiles();
+	sortBubbling(); // отсортировать пузырьковым методом
+	glClear(GL_COLOR_BUFFER_BIT);
+	glEnable(GL_LINE_STIPPLE); // включить шаблон пунктирной линии
+	glLineWidth (1.0); // указать толщину линий сетки
+	glLineStipple(1,0xAAAA); // указать тип пунктирной линии для сетки графа
+	glBegin(GL_LINES);
+		// построить первую (левую) сетку
+		setGrid();
+		// построить вторую (правую) сетку
+		setGrid(true);
+	glEnd();
+	glDisable(GL_LINE_STIPPLE);
+		// построить маркеры файлов
+		// на левой сетке
+		setMarkers();
+		// на правой сетке
+		setMarkers(true);
+	glFlush();
+}
+// инициализировать процесс
+void Initialize()
+{
+	glClearColor(1.0,1.0,1.0,1.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	// сетка - left-bottom / right-top
+	// построить ортографическую проекцию
+	gluOrtho2D(-glob_offset*2,		// -50	левый, x	
+				globSceneWidth+glob_offset*3,	// 875	правый, x	
+			   -glob_offset*2,		// -50	нижний, y	
+				globSceneHeight+glob_offset		// 450	верхний, y	
+			  ); 
+}
+// обработать события клавиатуры
+void Keyboard(unsigned char key, int x, int y)
+{
+	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
+	{
+		// Закрыть окно по нажатию кл. "Пробел":
+		case 32: exit(0);
+			break;
+	}
+	if(key!=32) glutPostRedisplay(); // перерисовать окно  
+}
+//
+int _tmain(int argc, char** argv)
+{
+	// сгенеирировать/перезаписать файлы
+	makeFiles();
+	bool run = false;
+	if(run)
+	{
+		// инициализация
+		glutInit(&argc, argv); 
+		// 3 нижележащие функции можно располагать в любом порядке
+		glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
+		glutInitWindowSize(globSceneWidth,globSceneHeight);
+		glutInitWindowPosition(450,200);
+		glutCreateWindow("Grid");
+		// регистрация
+		glutDisplayFunc(Draw);
+		glutKeyboardFunc(Keyboard);
+		Initialize();
+		glutMainLoop();
+	}
+	else
+		sortBubbling(); // отсортировать пузырьковым методом
+	return 0;
 }
 
 // СОРТИРОВКА ............................................
@@ -287,148 +437,6 @@ void sortQuick()
 {
 }
 
-// СОЗДАНИЕ ГРАФИКОВ .....................................
-// построить сетку для графа
-void setGrid(bool copier=false)
-{
-	/*	Установить индикатор вертикали, пересекающейся с маркером.
-		Нужен как инструмент для выделения каждой 4-й вертикали 
-		(20 вертикальдных линий / 5 маркеров) цветом, как места, 
-		где располагается маркер одного из 5-ти используемых файлов.		*/
-	int vCount=0; 
-	/*	Создать (и далее - установить) левую и правую границы для 
-		сеток графов; Пространство между ними будет заполняться 
-		вертикалями графа.	*/
-	float GridLeftEdge, GridRightEdge;  
-	/*	Рассчитать значения левой и правой границ сеток графа. 
-		Передавайемый параметр copier означает, что строим сетку
-		для правого графа. Если параметр не передан, то - для левого. 
-		.............................................................
-		См. параметры gluOrtho2D, на основе которых рассчитывается
-		расположение сеток графов - отступы углов от начала координат:
-		левый:	-50, правый: 875, 
-		нижний: -50, верхний: 450	*/
-	if(copier)
-	{
-		/*	Половина рабочего пространства окна 
-			+ пространство для создания визуального отступа */
-		GridLeftEdge	= globSceneWidthHalf + glob_offset*2;	// 450
-		GridRightEdge	= globSceneWidth + glob_offset*2;		// 825
-	}
-	else
-	{
-		GridLeftEdge	= 0;				//   0
-		GridRightEdge	= globSceneWidthHalf;				// 400
-	}
-	const float grid_left_start		= GridLeftEdge;
-	const float grid_right_finish	= GridRightEdge;
-	//cout<<"Start grid"<<endl<<"........................."<<endl;
-	// установить по 20 вертикальных линий для сеток каждого графа
-	while(GridLeftEdge<=grid_right_finish)
-	{	// cout<<"GridLeftEdge: "<<GridLeftEdge<<endl;
-		// установить вертикали	
-		// выделим цветом каждую 4-ю вертикаль (там, где размещается маркер нового файла):
-		if( vCount>0 && vCount%4==0 ) 
-			glColor3f(1.0,0.0,0.5);
-		else
-			glColor3f(0.4,0.4,0.4);
-		vCount++;
-		// линии
-		glVertex2f(GridLeftEdge, 0); // 
-		glVertex2f(GridLeftEdge, globSceneHeight);		// 
-		GridLeftEdge+=glob_grid_step;
-	}
-	glColor3f(0.4,0.4,0.4);
-	// установить горизонтали
-	for ( float offsetBottom  = 0;	// 
-				offsetBottom <= globSceneHeight;		// <= 400
-				offsetBottom += glob_grid_step )
-	{   //cout<<"offsetBottom: "<<offsetBottom<<"\t";
-		glVertex2f(grid_left_start,offsetBottom);
-		glVertex2f(grid_right_finish,offsetBottom);
-	}	//cout<<endl;
-}
-// построить граф
-void Draw()
-{
-	/*	Сгенерировать файлы с набором случайных чисел.
-		--------------------------------------------------
-	ВНИМАНИЕ! 
-	В тестовом режиме целесооборазно уменьшить размер 
-	генерируемых файлов. Для этого достаточно указать
-	значение пер. decreaser в вызываемой функции,  
-	являющееся делителем для определяющих его значений 
-	элементов массива glob_files_volumes в файле vars.h. */
-	//makeFiles();
-	sortBubbling(); // отсортировать пузырьковым методом
-	glClear(GL_COLOR_BUFFER_BIT);
-	glEnable(GL_LINE_STIPPLE); // включить шаблон пунктирной линии
-	glLineWidth (1.0); // указать толщину линий сетки
-	glLineStipple(1,0xAAAA); // указать тип пунктирной линии для сетки графа
-	glBegin(GL_LINES);
-		// построить первую (левую) сетку
-		setGrid();
-		// построить вторую (правую) сетку
-		setGrid(true);
-	glEnd();
-	glDisable(GL_LINE_STIPPLE);
-		// построить маркеры файлов
-		// на левой сетке
-		setMarkers();
-		// на правой сетке
-		setMarkers(true);
-	glFlush();
-}
-// инициализировать процесс
-void Initialize()
-{
-	glClearColor(1.0,1.0,1.0,1.0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	// сетка - left-bottom / right-top
-	// построить ортографическую проекцию
-	gluOrtho2D(-glob_offset*2,		// -50	левый, x	
-				globSceneWidth+glob_offset*3,	// 875	правый, x	
-			   -glob_offset*2,		// -50	нижний, y	
-				globSceneHeight+glob_offset		// 450	верхний, y	
-			  ); 
-}
-// обработать события клавиатуры
-void Keyboard(unsigned char key, int x, int y)
-{
-	switch(key) // см. справочник клавиатурных кодов ASCII здесь: http://www.theasciicode.com.ar/
-	{
-		// Закрыть окно по нажатию кл. "Пробел":
-		case 32: exit(0);
-			break;
-	}
-	if(key!=32) glutPostRedisplay(); // перерисовать окно  
-}
-//
-int _tmain(int argc, char** argv)
-{
-	// сгенеирировать/перезаписать файлы
-	makeFiles();
-	bool run = false;
-	if(run)
-	{
-		// инициализация
-		glutInit(&argc, argv); 
-		// 3 нижележащие функции можно располагать в любом порядке
-		glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
-		glutInitWindowSize(globSceneWidth,globSceneHeight);
-		glutInitWindowPosition(450,200);
-		glutCreateWindow("Grid");
-		// регистрация
-		glutDisplayFunc(Draw);
-		glutKeyboardFunc(Keyboard);
-		Initialize();
-		glutMainLoop();
-	}
-	else
-		sortBubbling(); // отсортировать пузырьковым методом
-	return 0;
-}
 /*	Материалы:
 	- Оценка эффективности алгорима по времени: http://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC#.D0.92.D1.80.D0.B5.D0.BC.D1.8F_.D1.80.D0.B0.D0.B1.D0.BE.D1.82.D1.8B
 	- vector: http://ru.cppreference.com/w/cpp/container/vector
