@@ -24,10 +24,15 @@ void sortBubbling(vector<int> *,int);
 void sortByInserts();
 // Быстрая сортировка........................................
 void sortQuick();
+	/*	рекурсивная функция-обёртка, определяющая, нужно ли
+		переставлять элементы массива.	*/
 	void quickSort(vector<int>&, int, int);
+	/*	вызывает функцию (swap()) перестановки элементов местами
+		и возвращает новую опорную точку.	*/
 	 int pivot(vector<int>&, int, int);
+	/*	переставляет местами элементы массива и сохраняет новые 
+		значения по ссылкам.	*/
 	void swap(int&, int&);
-	void swapNoTemp(int&, int&);
 //-----------------------------------------------------------
 // Сортировка данных:
 void sortData();
@@ -426,12 +431,15 @@ void sortByInserts(int i)
 // быстрая сортировка
 void sortQuick(int i)
 {
-	// получить массив строк из файла
-	vector<int> nmbrs = getRowsArray(i);
-	vector<int> &numbers = nmbrs;
+	/* получить массив строк из файла
+	ВНИМАНИЕ!	В данном случае создаём НЕ массив,
+				как таковой, а ссылку на полученные данные,
+				т.к. во вложенной функции сортировки работаем
+				именно со ссылками на элементы массива	*/
+	vector<int> &nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
-	quickSort(numbers, 0, nmbrs.size()-1);
-	showSorting(numbers,limit);
+	quickSort(nmbrs, 0, nmbrs.size()-1);
+	showSorting(nmbrs,limit);
 	cout<<endl;
 }
 // реализация механизма быстрой сортировки
@@ -440,7 +448,7 @@ void quickSort(vector<int> &nmbrs, int first, int last)
 	int pivotElement;
 
     if(first < last)
-    {   //cout<<endl<<"first: "<<first<<", last: "<<last;
+    {   
         pivotElement = pivot(nmbrs, first, last); //cout<<"pivotElement = "<<pivotElement<<endl;
         quickSort(nmbrs, first, pivotElement-1);
         quickSort(nmbrs, pivotElement+1, last);
@@ -454,12 +462,11 @@ int pivot( vector<int> &nmbrs,		// массив значений
 {
     int  p = first; // "опорная точка" - индекс первого элемента массива
     int pivotElement = nmbrs[first];
-	cout<<"pivotElement = "<<pivotElement<<endl;
-    for(int i = first+1 ; i <= last ; i++)
+	for(int i = first+1 ; i <= last ; i++)
     {
         /* Для изменения порядка сортировки заменить "<=" на ">" */
         if(nmbrs[i] <= pivotElement)
-        {   cout<<"\tswap "<<nmbrs[i]<<" <> "<<pivotElement<<endl;
+        {   //cout<<"\tswap "<<nmbrs[i]<<" <> "<<pivotElement<<endl;
             p++;
             swap(nmbrs[i], nmbrs[p]);
         }
@@ -477,16 +484,6 @@ void swap( int& a,	// первый параметр
     int temp = a;
     a = b;
     b = temp;
-}
-/*	Переключает параметры без временной переменной
-	ВНИМАНИЕ! Проконтролировать (за|пере)полнение	*/ 
-void swapNoTemp( int& a, 	// первый параметр
-				 int& b		// последний параметр
-			   )
-{
-    a -= b;
-    b += a;// b gets the original value of a
-    a = (b - a);// a gets the original value of b
 }
 //-----------------------------------------------------------
 // отсортировать всеми указанными способами
