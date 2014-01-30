@@ -15,6 +15,10 @@ using namespace std;
 
 // контейнер для сохранения имён сгенерированных файлов
 vector<string>glob_files_names;
+/*	определяет, показывать ли детали выполнения сортировки;
+	может быть присвоено true внутри каждой соотвествующей
+	функции.	*/
+bool show_details=false;
 
 //-----------------------------------------------------------
 // ФУНКЦИИ СОРТИРОВКИ ДАННЫХ:
@@ -90,6 +94,7 @@ void showSorting(vector<int> nmbrs, int limit, int sorting_id=1){
 		case 4: break;
 		case 5: break;
 	}
+	cout<<endl;
 }
 
 // СОЗДАНИЕ МАРКЕРОВ ФАЙЛОВ ..............................
@@ -455,8 +460,7 @@ void sortBubbling(int i)
 	}
 	// сохранить в массиве колич. шагов для каждого файла
 	glob_alg_steps[0][i]=steps;
-	showSorting(nmbrs,limit);
-	cout<<endl;
+	if (show_details) showSorting(nmbrs,limit);
 }
 // сортировка вставками
 void sortByInserts(int i)
@@ -492,8 +496,7 @@ void sortByInserts(int i)
     }
 	// сохранить в массиве колич. шагов для каждого файла
 	glob_alg_steps[1][i]=steps;
-	showSorting(nmbrs,limit);
-	cout<<endl;
+	if (show_details) showSorting(nmbrs,limit);
 }
 // быстрая сортировка
 void sortQuick(int i)
@@ -506,8 +509,7 @@ void sortQuick(int i)
 	vector<int> &nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
 	quickSort(nmbrs, 0, nmbrs.size()-1, i);
-	showSorting(nmbrs,limit);
-	cout<<endl;
+	if (show_details) showSorting(nmbrs,limit);
 }
 // реализация механизма быстрой сортировки
 void quickSort(vector<int> &nmbrs, int first, int last, int i)
@@ -528,7 +530,7 @@ void quickSort(vector<int> &nmbrs, int first, int last, int i)
 		steps+=3;
     }
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_steps[2][i]=steps;
+	glob_alg_steps[2][i]+=steps;
 }
 // возвращает опорную точку сортировки
 int pivot( vector<int> &nmbrs,		// массив значений
@@ -564,7 +566,7 @@ int pivot( vector<int> &nmbrs,		// массив значений
     swap(nmbrs[p], nmbrs[first]);
 		steps+=3;
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_steps[2][i]=steps;
+	glob_alg_steps[2][i]+=steps;
     return p; // возвращает опорную точку
 }
 // переключает параметры сортировки
@@ -602,6 +604,7 @@ void sortData()
 			sortByInserts(i);
 			sortQuick(i);
 		}
+		// показать статистику
 		showResults();
 	}
 	if(choice==0) exit(0);
