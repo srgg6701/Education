@@ -19,17 +19,17 @@ vector<string>glob_files_names;
 //-----------------------------------------------------------
 // ФУНКЦИИ СОРТИРОВКИ ДАННЫХ:
 // Пузырьковая сортировка....................................
-void sortBubbling(vector<int> *,int);
+void sortBubbling(int);
 // Сортировка вставками......................................
-void sortByInserts();
+void sortByInserts(int);
 // Быстрая сортировка........................................
-void sortQuick();
+void sortQuick(int);
 	/*	рекурсивная функция-обёртка, определяющая, нужно ли
 		переставлять элементы массива.	*/
 	void quickSort(vector<int>&, int, int, int);
 	/*	вызывает функцию (swap()) перестановки элементов местами
 		и возвращает новую опорную точку.	*/
-	 int pivot(vector<int>&, int, int);
+	 int pivot(vector<int>&, int, int, int);
 	/*	переставляет местами элементы массива и сохраняет новые 
 		значения по ссылкам.	*/
 	void swap(int&, int&);
@@ -39,63 +39,56 @@ void sortData();
 //-----------------------------------------------------------
 
 // вывести информацию по каждому выполненному алгоритму 
-void showResults(int algo_index, string algo_name)
+void showResults()
 {
 	setlocale(LC_ALL, "Russian");
-	// 1(-5). Имя_алгоритма 
-	cout<<algo_index+1<<". "<<algo_name<<":"<<endl;
-	for (int i = 0; i < glob_files; i++)
-	{   // 
-		// glob_alg_steps[glob_algos][i] - индекс алгоритма, файл
-		cout<<"Файл "<<i+1<<": "<<glob_alg_steps[algo_index][i]<<endl;
+	cout<<"Количество шагов."<<endl;
+	for (int algo_index = 0; algo_index < glob_algos; algo_index++)
+	{
+		cout<<algo_index+1<<". "; // 1(-5). Имя_алгоритма 
+		switch(algo_index)
+		{
+			case 0:
+				cout<<"Пузырьковая сортировка"; //cout<<"1. Пузырьковая сортировка:"<<endl;
+				break;
+			case 1:
+				cout<<"Сортировка вставками";
+				break;
+			case 2:
+				cout<<"Быстрая сортировка";
+				break;
+			default: 
+				return;
+		}		
+		cout<<":"<<endl;
+		for (int file_index = 0; file_index < glob_files; file_index++)
+		{   // 
+			// glob_alg_steps[glob_algos][file_index] - индекс алгоритма, файл
+			cout<<"Файл "<<file_index+1<<": "<<glob_alg_steps[algo_index][file_index]<<endl;
+		}
+		cout<<"---------------------"<<endl;
 	}
-	cout<<"---------------------"<<endl;
 }
 // отобразить процесс сортировки
 void showSorting(vector<int> nmbrs, int limit, int sorting_id=1){
 
 	setlocale(LC_ALL, "Russian");
-	// переключаетль вывода информации в консоль для тестового/рабочего режимов
-	int mode=1;
-	// 
-	if(mode==1)
+	cout<<endl<<"После сортировки: "
+		<<endl<<"................";
+	switch(sorting_id)
 	{
-		cout<<"Количество шагов."<<endl;
-		for (int i = 0; i < glob_algos; i++)
-		{
-			switch(i)
-			{
-				case 0:
-					showResults(i, "Пузырьковая сортировка"); //cout<<"1. Пузырьковая сортировка:"<<endl;
-					break;
-				case 1:
-					showResults(i, "Сортировка вставками");
-					break;
-				case 2:
-					showResults(i, "Быстрая сортировка");
-					break;
+		case 1:
+			for (int i=0; i<limit; i++){
+				if(nmbrs[i]) cout<<endl<<i+1<<" : "<<nmbrs[i];
+				else cout<<"Элемент с индексом "<<i<<" не найден...";
 			}
-		}
-	}
-	if(mode==2)
-	{
-		cout<<endl<<"После сортировки: "
-			<<endl<<"................";
-		switch(sorting_id)
-		{
-			case 1:
-				for (int i=0; i<limit; i++){
-					if(nmbrs[i]) cout<<endl<<i+1<<" : "<<nmbrs[i];
-					else cout<<"Элемент с индексом "<<i<<" не найден...";
-				}
-				break;
-			/*	оставим как заготовку, на случай, если захотим выводить 
-				данные по каждому сортируемому файлу отдельно:	*/
-			case 2: break;
-			case 3: break;
-			case 4: break;
-			case 5: break;
-		}
+			break;
+		/*	оставим как заготовку, на случай, если захотим выводить 
+			данные по каждому сортируемому файлу отдельно:	*/
+		case 2: break;
+		case 3: break;
+		case 4: break;
+		case 5: break;
 	}
 }
 
@@ -405,10 +398,10 @@ void sortBubbling(int i)
 		steps+=4;
 	// не будем считать вход в цикл шагом
 	// пройтись по массиву строк
-	for (int i=0; i<limit; i++)
+	for (int cnt=0; cnt<limit; cnt++)
 	{
 		// шаг 1
-		lmt = limit-i;
+		lmt = limit-cnt;
 		// шаг 2
 		innerCounter = 0;
 			steps+=2;
@@ -478,12 +471,12 @@ void sortByInserts(int i)
 	// шаг 2
 	int prev_index; // индекс предыдущего элемента
 		steps+=2;
-	for (int current_index = 1; current_index < limit; current_index++)
+	for (int cnt = 1; cnt < limit; cnt++)
     {
         // шаг 1
-		clipboard = nmbrs[current_index]; // инициализируем временную переменную текущим значением элемента массива
+		clipboard = nmbrs[cnt]; // инициализируем временную переменную текущим значением элемента массива
         // шаг 2
-		prev_index = current_index-1; // запоминаем индекс предыдущего элемента массива
+		prev_index = cnt-1; // запоминаем индекс предыдущего элемента массива
         // шаг 3 - считаем условие входа в цикл
 			steps+=3;
 		while(prev_index >= 0 && nmbrs[prev_index] > clipboard) // пока индекс не равен 0 и предыдущий элемент массива больше текущего
@@ -588,26 +581,57 @@ void swap( int& a,	// первый параметр
 void sortData()
 {
 	setlocale(LC_ALL, "Russian");
-	
-	for (int i = 0; i < glob_files_names.size(); i++)
+	// выбор юзера:
+	int choice;
+		
+	cout<<"Сделайте выбор:"
+	<<endl<<"Показать процесс сортировки - введите 8."
+	<<endl<<"Перейти к результатам анализа алгоритмов - введите 9."
+	<<endl<<"Выход - введите 0."<<endl
+	<<"......................................................"<<endl;
+	cin>>choice;
+	if(choice==9) 
 	{
-		cout<<"Итерация "<<i+1<<". Если хотите продолжить, введите "<<i+1<<". Выход - 0."<<endl
-			<<"......................................................"<<endl;
-		int choice;
-		cin>>choice;
-		if(choice==0) exit(0);
-		if(choice==(i+1))
+		for (int i = 0; i < glob_algos; i++)
 		{
-			if(i) cout<<endl;
-			cout<<"Имя файла: "<<glob_files_names[i]<<endl;
-			cout<<endl<<"ПУЗЫРЬКОВАЯ СОРТИРОВКА"<<endl<<"-----------------------"<<endl;
-			sortBubbling(i);	// пузырьковая сортировка
-			cout<<endl<<"СОРТИРОВКА ВСТАВКАМИ"<<endl<<"-----------------------"<<endl;
-			sortByInserts(i);	// сортировка вставками
-			cout<<endl<<"БЫСТРАЯ СОРТИРОВКА"<<endl<<"-----------------------"<<endl;
-			sortQuick(i);	// быстрая сортировка
+			/*  порядок вызова функций не имеет значения, поскольку 
+				для сохранения данных в массиве glob_alg_steps каждая 
+				использует статический индекс своего алгоритма:
+				glob_alg_steps[индекс_алгоритма][индекс_файла] */
+			sortBubbling(i);
+			sortByInserts(i);
+			sortQuick(i);
 		}
-		else break;
+		showResults();
+	}
+	if(choice==0) exit(0);
+	if(choice==8)
+	{
+		for (int i = 0; i < glob_files_names.size(); i++)
+		{
+			cout<<"Итерация "<<i+1<<". Чтобы продолжить, введите "<<i+1
+				<<endl<<"Чтобы выйти - введите 0."<<endl
+				<<"......................................................"<<endl;
+			cin>>choice;
+			if(choice==0) exit(0);
+			if(choice==(i+1))
+			{
+				if(i) cout<<endl;
+				cout<<"Имя файла: "<<glob_files_names[i]<<endl;
+				cout<<endl<<"ПУЗЫРЬКОВАЯ СОРТИРОВКА"<<endl<<"-----------------------"<<endl;
+				sortBubbling(i);	// пузырьковая сортировка
+				cout<<endl<<"СОРТИРОВКА ВСТАВКАМИ"<<endl<<"-----------------------"<<endl;
+				sortByInserts(i);	// сортировка вставками
+				cout<<endl<<"БЫСТРАЯ СОРТИРОВКА"<<endl<<"-----------------------"<<endl;
+				sortQuick(i);	// быстрая сортировка
+			}
+			else break;
+		}
+		cout<<"Перейти к результатам анализа алгоритмов - введите 9."
+		<<endl<<"Выход - введите 0."<<endl
+		<<"......................................................"<<endl;
+		if(choice==9) showResults();
+		if(choice==0) exit(0);
 	}
 }
 /*	Материалы:
