@@ -16,7 +16,7 @@ using namespace std;
 // контейнер для сохранения имён сгенерированных файлов
 vector<string>glob_files_names;
 /*	определяет, показывать ли детали выполнения сортировки;
-	может быть присвоено true внутри каждой соотвествующей
+	может быть присвоено true внутри каждой соответствующей
 	функции.	*/
 bool show_details=false;
 
@@ -135,8 +135,12 @@ void buildMarkerRow( int &arrayNumbersRow,
 	arrayNumbersRow++;
 }
 // создать маркеры загружаемых файлов
-void setMarkers(bool copier=false)
+vector<float> setMarkers(bool copier=false)
 {
+	/*	создать векторный массив для сохраненения x-координат 
+		(вертикали для откладывания данных с резульататами 
+		анализов алгоритмов).	*/
+	vector<float> xPos;
 	// создать внутреннюю 2-D матрицу для построения цифр от 1 до 5. 
 	// См. схему здесь: http://www.canstockphoto.com/pixel-art-globNumbers-and-mathematical-signs-12800261.html
 	// Нарисовать маркеры файлов
@@ -144,6 +148,7 @@ void setMarkers(bool copier=false)
 		int arrayNumbersRow=0;
 		float LeftEdge = (copier)? globSceneWidthHalf+glob_offset*2 : 0;	// 400 : 0
 		int files_count=glob_files_names.size();
+		
 		for (int i = 1; i <= files_count; i++)
 		{	
 			// установить левый отступ маркера
@@ -151,6 +156,11 @@ void setMarkers(bool copier=false)
                              globSceneWidthHalf/files_count	// 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
 							 *i				// общая текущая длина отрезков
 							 -15;			// смещение маркера влево для визуального центрирования с выделенной вертикалью сетки
+			/*	добавить x-координату в векторный массив.
+				Далее будем использовать её для установки
+				горизонтальной координаты вершины, визуализирующей
+				значение параметра анализируемого алгоритма.	*/
+			xPos.push_back(currentX+15);
 			// построить блок с маркером (сетка 5х4)
 			for (int row = 1; row <= globMrxRows; row++)
 			{
@@ -167,6 +177,7 @@ void setMarkers(bool copier=false)
 			}
 		}
 	glEnd();
+	return xPos;
 }
 
 // ГЕНЕРАЦИЯ ФАЙЛОВ ......................................
@@ -299,7 +310,6 @@ void setGrid(bool copier=false)
 // построить граф
 void Draw()
 {
-	sortData(); // отсортировать содержание файлов
 	glClear(GL_COLOR_BUFFER_BIT);
 	glEnable(GL_LINE_STIPPLE); // включить шаблон пунктирной линии
 	glLineWidth (1.0); // указать толщину линий сетки
@@ -313,9 +323,75 @@ void Draw()
 	glDisable(GL_LINE_STIPPLE);
 		// построить маркеры файлов
 		// на левой сетке
-		setMarkers();
+		vector<float> xPosLeft1 = setMarkers();
 		// на правой сетке
 		setMarkers(true);
+	/*	Получим максимальное рассчётное значение шагов для калибровки сетки.
+		Для этого выберем наибольшее значение из glob_alg_steps (выбираем 
+		среди последних элементов, как естественно наибольших). */
+	int biggestNumber = 0;
+	int lastIndex = glob_files-1;
+	for (int i = 0; i < glob_algos; i++)
+	{
+		if(glob_alg_steps[i][lastIndex] > biggestNumber)
+			biggestNumber = glob_alg_steps[i][lastIndex];
+	}
+	// откалибровать! 
+	float yRatio = globSceneHeight*0.9/float(biggestNumber);
+	/*	Далее для построения графа будем уножать все значения 
+		массива glob_alg_steps на калибровочное значение yRatio	*/
+	glEnable(GL_LINE_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+	glLineWidth(2.0);
+	glBegin(GL_LINES);
+		
+	// задать цвета для линий анализируемых алгоритмов
+	float vColors[glob_algos][3]={
+			{0.0,0.0,1.0},
+			{1.0,0.0,0.0},
+			{1.0,0.0,1.0},
+			{1.0,0.5,0.0},
+			{0.0,1.0,0.0}
+	};
+	/*	вывести результат анализа алгоритмов СОРТИРОВКИ (алгоритмы
+		поиска будут визуализированы далее, на другом графе) на график; 
+		как мы помним, по горизонтали у нас отложено 5 маркеров (по 
+		количеству подопытных файлов), x-позиции каждого из которых 
+		будут передаваться в качестве координаты (первый параметр) в 
+		glVertex2d(); по вертикали (второй параметр, передаваемый 
+		glVertex2d()) устанавливаем значение количества шагов для 
+		каждого из них по каждому алгоритму сортировки. */
+	for ( int index_algo = 0; 
+			  /*	выбираем только значения алгоритмов сортировки (3 первых из 5-ти);
+					данные анализа алгоритмов поиска будем выводить на другом графе*/
+			  index_algo < glob_algos-2;
+			  index_algo++
+		)
+	{	cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<vColors[index_algo][0]<<","<<vColors[index_algo][1]<<","<<vColors[index_algo][2]<<endl;
+		
+		glColor3f(	vColors[index_algo][0], // R
+					vColors[index_algo][1], // G
+					vColors[index_algo][2]  // B
+				 );
+		for (int index_file = 0; index_file < glob_files; index_file++)
+		{
+			if(index_file>1) glVertex2d(xPosLeft1[index_file-1], glob_alg_steps[index_algo][index_file-1]*yRatio);
+			
+			glVertex2d( /*	позиция текущего маркера, символизирующего
+						один из обрабатываемых сгенерированных файлов.
+						Также устанавливает помеченной цветом вертикальной
+						осли графа.	*/
+						xPosLeft1[index_file],
+						/*	откалиброванное значение количества шагов, 
+						выполненных программой при сортировке файла
+						текущим алгоритмом. */
+						glob_alg_steps[index_algo][index_file]*yRatio
+					  );
+			
+			cout<<"x: "<<xPosLeft1[index_file]<<", y: "<<glob_alg_steps[index_algo][index_file]*yRatio<<endl;
+		}		
+	}
+	glEnd();
 	glFlush();
 }
 // инициализировать процесс
@@ -357,7 +433,7 @@ int _tmain(int argc, char** argv)
 	makeFiles();
 	// отсортировать содержание файлов
 	sortData(); 
-	bool run = false;
+	bool run = true;
 	if(run)
 	{
 		// инициализация
@@ -366,7 +442,7 @@ int _tmain(int argc, char** argv)
 		glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
 		glutInitWindowSize(globSceneWidth,globSceneHeight);
 		glutInitWindowPosition(450,200);
-		glutCreateWindow("Grid");
+		glutCreateWindow("Graph");
 		// регистрация
 		glutDisplayFunc(Draw);
 		glutKeyboardFunc(Keyboard);

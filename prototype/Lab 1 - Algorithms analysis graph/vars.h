@@ -7,15 +7,19 @@
 	* количество генерируемых программно файлов, алгоритмы сортировки_контента/поиска_в_содержании
 	  которых будут анализироваться программой.	*/
 // ширина рабочего пространства (сцены)
-const float globSceneWidth=800.0;
+const float globSceneWidth=1200.0;
 // половина ширины (принимает участие в рассчётах
 const float globSceneWidthHalf=globSceneWidth/2;
 // высота сцены
-const float globSceneHeight=400.0;
+const float globSceneHeight=800.0;
+// количество вертикалей/горизонталей сетки
+const float gridPass=20.0;
 // шаг сетки (в пикселах)
-const float glob_grid_step = 20.0;
+const float glob_grid_step = globSceneHeight/gridPass;
+// относительный отступ
+const float offset_ratio = 32.0;
 // единица визуального отступа
-const float glob_offset = 25.0;
+const float glob_offset = globSceneWidth/offset_ratio;
 /*	объём (колич. строк) генерируемых файлов 
 	ВНИМАНИЕ! 
 	В тестовом режиме целесооборазно уменьшить размер 
