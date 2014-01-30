@@ -26,7 +26,7 @@ void sortByInserts();
 void sortQuick();
 	/*	рекурсивная функция-обёртка, определяющая, нужно ли
 		переставлять элементы массива.	*/
-	void quickSort(vector<int>&, int, int);
+	void quickSort(vector<int>&, int, int, int);
 	/*	вызывает функцию (swap()) перестановки элементов местами
 		и возвращает новую опорную точку.	*/
 	 int pivot(vector<int>&, int, int);
@@ -38,27 +38,64 @@ void sortQuick();
 void sortData();
 //-----------------------------------------------------------
 
+// вывести информацию по каждому выполненному алгоритму 
+void showResults(int algo_index, string algo_name)
+{
+	setlocale(LC_ALL, "Russian");
+	// 1(-5). Имя_алгоритма 
+	cout<<algo_index+1<<". "<<algo_name<<":"<<endl;
+	for (int i = 0; i < glob_files; i++)
+	{   // 
+		// glob_alg_steps[glob_algos][i] - индекс алгоритма, файл
+		cout<<"Файл "<<i+1<<": "<<glob_alg_steps[algo_index][i]<<endl;
+	}
+	cout<<"---------------------"<<endl;
+}
 // отобразить процесс сортировки
 void showSorting(vector<int> nmbrs, int limit, int sorting_id=1){
 
 	setlocale(LC_ALL, "Russian");
-
-	cout<<endl<<"После сортировки: "
-		<<endl<<"................";
-	switch(sorting_id)
+	// переключаетль вывода информации в консоль для тестового/рабочего режимов
+	int mode=1;
+	// 
+	if(mode==1)
 	{
-		case 1:
-			for (int i=0; i<limit; i++){
-				if(nmbrs[i]) cout<<endl<<i+1<<" : "<<nmbrs[i];
-				else cout<<"Элемент с индексом "<<i<<" не найден...";
+		cout<<"Количество шагов."<<endl;
+		for (int i = 0; i < glob_algos; i++)
+		{
+			switch(i)
+			{
+				case 0:
+					showResults(i, "Пузырьковая сортировка"); //cout<<"1. Пузырьковая сортировка:"<<endl;
+					break;
+				case 1:
+					showResults(i, "Сортировка вставками");
+					break;
+				case 2:
+					showResults(i, "Быстрая сортировка");
+					break;
 			}
-			break;
-		/*	оставим как заготовку, на случай, если захотим выводить 
-			данные по каждому сортируемому файлу отдельно:	*/
-		case 2: break;
-		case 3: break;
-		case 4: break;
-		case 5: break;
+		}
+	}
+	if(mode==2)
+	{
+		cout<<endl<<"После сортировки: "
+			<<endl<<"................";
+		switch(sorting_id)
+		{
+			case 1:
+				for (int i=0; i<limit; i++){
+					if(nmbrs[i]) cout<<endl<<i+1<<" : "<<nmbrs[i];
+					else cout<<"Элемент с индексом "<<i<<" не найден...";
+				}
+				break;
+			/*	оставим как заготовку, на случай, если захотим выводить 
+				данные по каждому сортируемому файлу отдельно:	*/
+			case 2: break;
+			case 3: break;
+			case 4: break;
+			case 5: break;
+		}
 	}
 }
 
@@ -348,22 +385,33 @@ void sortBubbling(int i)
 	// получить массив строк из файла
 	vector<int> nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
+	// установим счётчики шагов и времени:
+	int steps=0;
+	// шаг 1
 	int clipboard;// временная переменная для хранения значения элемента сортируемого массива
+	// шаг 2
 	/*	the variable that will define the inner loop 
 		iterations number; (see the 'while' loop) we 
 		need it because constants can't be changed! */
 	int lmt;
+	// шаг 3
 	/*	we need this variable just to avoid keeping to repeat an expression 
 		like innerCounter+1	*/
 	int nextIndex;	
 	/*	it will be used as an element's index to compare the array's elements 
 		within an inner loop */
+	// шаг 4
 	int innerCounter;
+		steps+=4;
+	// не будем считать вход в цикл шагом
 	// пройтись по массиву строк
 	for (int i=0; i<limit; i++)
 	{
+		// шаг 1
 		lmt = limit-i;
+		// шаг 2
 		innerCounter = 0;
+			steps+=2;
 		/*	Go to the inner loop;
 			its length should be decreased while every 
 			new iteration (see video).
@@ -378,12 +426,16 @@ void sortBubbling(int i)
 			*/
 		while(lmt>1)
 		{ 
+			// шаг 1
 			nextIndex = innerCounter+1;
+			// шаг 2
+				steps+=2;
 			if(nmbrs[innerCounter]>nmbrs[nextIndex]) // 5 < 3
 			{
 				/*	cout<< "\nA permutation is needed!\ncurrent elemen's value: " 
 						<< nmbrs[innerCounter] << "\nnext element's value: "
 						<< nmbrs[nextIndex]; */
+				// шаг 1
 				// store the array's element value
 				clipboard = nmbrs[nextIndex];
 				/*	cout<< "\nclipboard = nmbrs["<<innerCounter<<"+1] = "
@@ -392,17 +444,24 @@ void sortBubbling(int i)
 					but it was stored in the clipboard variable earlier */
 				/*	cout<< "\nnmbrs["<<innerCounter<<"+1] = nmbrs["<<innerCounter<<"] = "
 						<< nmbrs[innerCounter]<<"\n"; */
+				// шаг 2
 				nmbrs[nextIndex] = nmbrs[innerCounter]; // 3 -> 5 
 				/*	take out the value stored in the clipboard earlier 
 					and assign it to the current array's element */
+				// шаг 3
 				nmbrs[innerCounter] = clipboard;
+					steps+=3;
 				/*	cout<< "\nnmbrs["<<innerCounter<<"] = clipboard = "
 						<< clipboard<<"\n"; */
 			}
+			// шаг 1,2
 			lmt--;
 			innerCounter++;
+				steps+=2;
 		}
 	}
+	// сохранить в массиве колич. шагов для каждого файла
+	glob_alg_steps[0][i]=steps;
 	showSorting(nmbrs,limit);
 	cout<<endl;
 }
@@ -412,19 +471,34 @@ void sortByInserts(int i)
 	// получить массив строк из файла
 	vector<int> nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
+	// установим счётчики шагов и времени:
+		int steps=0;
+	// шаг 1
 	int clipboard; // временная переменная для хранения значения элемента сортируемого массива
+	// шаг 2
 	int prev_index; // индекс предыдущего элемента
+		steps+=2;
 	for (int current_index = 1; current_index < limit; current_index++)
     {
-        clipboard = nmbrs[current_index]; // инициализируем временную переменную текущим значением элемента массива
-        prev_index = current_index-1; // запоминаем индекс предыдущего элемента массива
-        while(prev_index >= 0 && nmbrs[prev_index] > clipboard) // пока индекс не равен 0 и предыдущий элемент массива больше текущего
+        // шаг 1
+		clipboard = nmbrs[current_index]; // инициализируем временную переменную текущим значением элемента массива
+        // шаг 2
+		prev_index = current_index-1; // запоминаем индекс предыдущего элемента массива
+        // шаг 3 - считаем условие входа в цикл
+			steps+=3;
+		while(prev_index >= 0 && nmbrs[prev_index] > clipboard) // пока индекс не равен 0 и предыдущий элемент массива больше текущего
         {
-            nmbrs[prev_index + 1] = nmbrs[prev_index]; // перестановка элементов массива
-            nmbrs[prev_index] = clipboard;
+            // шаг 1
+			nmbrs[prev_index + 1] = nmbrs[prev_index]; // перестановка элементов массива
+            // шаг 2
+			nmbrs[prev_index] = clipboard;
+			// шаг 3
             prev_index--;
+				steps+=3;
         }
     }
+	// сохранить в массиве колич. шагов для каждого файла
+	glob_alg_steps[1][i]=steps;
 	showSorting(nmbrs,limit);
 	cout<<endl;
 }
@@ -438,42 +512,66 @@ void sortQuick(int i)
 				именно со ссылками на элементы массива	*/
 	vector<int> &nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
-	quickSort(nmbrs, 0, nmbrs.size()-1);
+	quickSort(nmbrs, 0, nmbrs.size()-1, i);
 	showSorting(nmbrs,limit);
 	cout<<endl;
 }
 // реализация механизма быстрой сортировки
-void quickSort(vector<int> &nmbrs, int first, int last)
+void quickSort(vector<int> &nmbrs, int first, int last, int i)
 {
+	// установим счётчики шагов и времени:
+		int steps=0;
+	// шаг 1
 	int pivotElement;
-
+	// шаг 2 (условие)
+		steps+=2;
     if(first < last)
     {   
-        pivotElement = pivot(nmbrs, first, last); //cout<<"pivotElement = "<<pivotElement<<endl;
-        quickSort(nmbrs, first, pivotElement-1);
-        quickSort(nmbrs, pivotElement+1, last);
+        // шаг 1
+		pivotElement = pivot(nmbrs, first, last, i); //cout<<"pivotElement = "<<pivotElement<<endl;
+        // шаг 2,3
+		quickSort(nmbrs, first, pivotElement-1, i);
+        quickSort(nmbrs, pivotElement+1, last, i);
+		steps+=3;
     }
+	// сохранить в массиве колич. шагов для каждого файла
+	glob_alg_steps[2][i]=steps;
 }
 // возвращает опорную точку сортировки
 int pivot( vector<int> &nmbrs,		// массив значений
 		   int first,   // индекс первого элемента массива
-		   int last		// индекс последнего элемента массива
+		   int last,	// индекс последнего элемента массива
+		   int i		// индекс файла для счётчика
 		 ) 
 {
-    int  p = first; // "опорная точка" - индекс первого элемента массива
-    int pivotElement = nmbrs[first];
-	for(int i = first+1 ; i <= last ; i++)
+    // установим счётчики шагов и времени:
+		int steps=0;
+	// шаг 1
+	int  p = first; // "опорная точка" - индекс первого элемента массива
+	// шаг 2
+	int pivotElement = nmbrs[first];
+	/*	шаг 3 - посчитаем условие входа в цикл, т.к. данный шаг 
+		специфичен для этого алгоритма */
+		steps+=3;
+	for(int cnt = first+1 ; cnt <= last ; cnt++)
     {
-        /* Для изменения порядка сортировки заменить "<=" на ">" */
-        if(nmbrs[i] <= pivotElement)
-        {   //cout<<"\tswap "<<nmbrs[i]<<" <> "<<pivotElement<<endl;
-            p++;
-            swap(nmbrs[i], nmbrs[p]);
+        // шаг 1
+			steps+=1;
+		/* Для изменения порядка сортировки заменить "<=" на ">" */
+        if(nmbrs[cnt] <= pivotElement)
+        {   //cout<<"\tswap "<<nmbrs[cnt]<<" <> "<<pivotElement<<endl;
+            // шаг 1
+			p++;
+			// шаги 2-4 (внутри swap()), 5 - вызов функции
+            swap(nmbrs[cnt], nmbrs[p]);			
+				steps+=5;
         }
     }
- 
+	// шаг 1-3
     swap(nmbrs[p], nmbrs[first]);
- 
+		steps+=3;
+	// сохранить в массиве колич. шагов для каждого файла
+	glob_alg_steps[2][i]=steps;
     return p; // возвращает опорную точку
 }
 // переключает параметры сортировки

@@ -19,21 +19,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Вспомогательн�
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1. Sort-bubbles", "..\..\Sorting\bubbles\bubbles.vcxproj", "{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "compoundSorting", "..\..\Sorting\compoundSorting\compoundSorting.vcxproj", "{32F2F25B-6438-48B3-AE02-1625F773AD66}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NumbersFileHandler", "..\..\Sorting\NumbersFileHandler\NumbersFileHandler.vcxproj", "{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuickSort", "..\..\Sorting\QuickSort\QuickSort\QuickSort.vcxproj", "{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3. Sort-quick_sort", "..\..\Sorting\QuickSort2\QuickSort2\QuickSort2.vcxproj", "{5B0EB61D-1CA5-4547-B239-B6640AD449C4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1. Sort-by_inserts", "..\..\Sorting\Sort_by_inserts\Sort_by_inserts.vcxproj", "{E89B10ED-F7AE-490A-9CE2-5904DC92878F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2. Sort-by_inserts", "..\..\Sorting\Sort_by_inserts\Sort_by_inserts.vcxproj", "{E89B10ED-F7AE-490A-9CE2-5904DC92878F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Сортировка вставками", "Сортировка вставками", "{5CB909BB-0DED-4BCF-8B47-31C1C6312262}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Сортировка вставками", "2. Сортировка вставками", "{5CB909BB-0DED-4BCF-8B47-31C1C6312262}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Пузырьковая сортировка", "Пузырьковая сортировка", "{C771F2E4-C23C-41D6-BB93-A12F8689B2CD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Пузырьковая сортировка", "1. Пузырьковая сортировка", "{C771F2E4-C23C-41D6-BB93-A12F8689B2CD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Быстрая сортировка", "Быстрая сортировка", "{10B18B63-C765-4E08-ADF4-F7B3D97CD57D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Быстрая сортировка", "3. Быстрая сортировка", "{10B18B63-C765-4E08-ADF4-F7B3D97CD57D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Задания к лабораторным", "Задания к лабораторным", "{CB60DEA5-A41C-45FD-A3FC-F8E54478E15A}"
 	ProjectSection(SolutionItems) = preProject
@@ -65,18 +59,6 @@ Global
 		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Debug|Win32.Build.0 = Debug|Win32
 		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Release|Win32.ActiveCfg = Release|Win32
 		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5}.Release|Win32.Build.0 = Release|Win32
-		{32F2F25B-6438-48B3-AE02-1625F773AD66}.Debug|Win32.ActiveCfg = Debug|Win32
-		{32F2F25B-6438-48B3-AE02-1625F773AD66}.Debug|Win32.Build.0 = Debug|Win32
-		{32F2F25B-6438-48B3-AE02-1625F773AD66}.Release|Win32.ActiveCfg = Release|Win32
-		{32F2F25B-6438-48B3-AE02-1625F773AD66}.Release|Win32.Build.0 = Release|Win32
-		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}.Debug|Win32.Build.0 = Debug|Win32
-		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}.Release|Win32.ActiveCfg = Release|Win32
-		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C}.Release|Win32.Build.0 = Release|Win32
-		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}.Debug|Win32.Build.0 = Debug|Win32
-		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}.Release|Win32.ActiveCfg = Release|Win32
-		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203}.Release|Win32.Build.0 = Release|Win32
 		{5B0EB61D-1CA5-4547-B239-B6640AD449C4}.Debug|Win32.ActiveCfg = Debug|Win32
 		{5B0EB61D-1CA5-4547-B239-B6640AD449C4}.Debug|Win32.Build.0 = Debug|Win32
 		{5B0EB61D-1CA5-4547-B239-B6640AD449C4}.Release|Win32.ActiveCfg = Release|Win32
@@ -95,9 +77,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C771F2E4-C23C-41D6-BB93-A12F8689B2CD} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
-		{32F2F25B-6438-48B3-AE02-1625F773AD66} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
-		{72CF98DB-5472-4BFE-B1DB-94A6B95B973C} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
-		{5D1D3A97-4FF4-4222-B8AE-98F8DD78B203} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{10B18B63-C765-4E08-ADF4-F7B3D97CD57D} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{5CB909BB-0DED-4BCF-8B47-31C1C6312262} = {2E449D41-0F08-432F-A810-D099DC9B3E90}
 		{FDFDCD6D-6AE7-446A-9CE0-0B55EEBAA1A5} = {C771F2E4-C23C-41D6-BB93-A12F8689B2CD}
