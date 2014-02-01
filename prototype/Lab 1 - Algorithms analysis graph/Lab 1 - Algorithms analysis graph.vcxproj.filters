@@ -24,10 +24,10 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vars.h">
+    <ClInclude Include="markers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="markers.h">
+    <ClInclude Include="api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

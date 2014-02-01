@@ -9,7 +9,7 @@
 #include <ctime> // если будем измерять время выполнения процедур. А ведь придётся!
 //----------------------------------------------------------------------------------
 #include <GL/glut.h>
-#include "vars.h"
+#include "api.h"
 #include "markers.h"
 using namespace std;
 
@@ -146,14 +146,14 @@ vector<float> setMarkers(bool copier=false)
 	// Нарисовать маркеры файлов
 	glBegin(GL_QUADS);
 		int arrayNumbersRow=0;
-		float LeftEdge = (copier)? globSceneWidthHalf+glob_offset*2 : 0;	// 400 : 0
+		float LeftEdge = (copier)? globGraphSpace+glob_offset*2 : 0;	// 400 : 0
 		int files_count=glob_files_names.size();
 		
 		for (int i = 1; i <= files_count; i++)
 		{	
 			// установить левый отступ маркера
 			float currentX = LeftEdge +		// левый край сетки (0-400)
-                             globSceneWidthHalf/files_count	// 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
+                             globGraphSpace/files_count	// 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
 							 *i				// общая текущая длина отрезков
 							 -15;			// смещение маркера влево для визуального центрирования с выделенной вертикалью сетки
 			/*	добавить x-координату в векторный массив.
@@ -248,7 +248,7 @@ vector<int> getRowsArray(int i=0)
 
 // СОЗДАНИЕ ГРАФИКОВ .....................................
 // построить сетку для графа
-void setGrid(int copier=0)
+void setGrid(int graph_number)
 {
 	/*	Установить индикатор вертикали, пересекающейся с маркером.
 		Нужен как инструмент для выделения каждой 4-й вертикали 
@@ -258,47 +258,100 @@ void setGrid(int copier=0)
 	/*	Создать (и далее - установить) левую и правую границы для 
 		сеток графов; Пространство между ними будет заполняться 
 		вертикалями графа.	*/
-	float GridLeftEdge, GridRightEdge;  
-	/*	Рассчитать значения левой и правой границ сеток графа. 
-		Передаваемый параметр copier означает, что строим сетку
-		для правого графа. Если параметр не передан, то - для левого. 
+	float GridLeftEdge, GridRightEdge, GridTopEdge, GridBottomEdge;  
+	/*	Рассчитать значения координат сеток графа. 
 		.............................................................
 		См. параметры gluOrtho2D, на основе которых рассчитывается
-		расположение сеток графов - отступы углов от начала координат:
-		левый:	-50, правый: 875, 
-		нижний: -50, верхний: 450	*/
-	if(copier)
+		расположение сеток графов - отступы углов от начала координат:	
+		Left:	-50
+		Right:	875
+		Bottom	-50
+		Top		825	
+		.................................................................
+		ВНИМАНИЕ!
+		1. НИЖНЯЯ/ЛЕВАЯ граница графов соответствует началу координат;
+		2. МАРКЕРЫ ФАЙЛОВ располагаются ПОД нижними линиями сеток графов.
+		См. схему в .xslx-файле.		*/
+	/*	установим абсолютные значения углов, которые будут использоваться 
+		различными графами, чтобы избежать повторений рассчётов	*/
+	float Left1,Left2,Right1,Right2,Top1,Top2,Bottom1,Bottom2;
+	/*	левая граница для 1-го и 3-го графов */
+	Left1	= 0;
+	/*	левая граница для 2-го и 4-го графов - 
+		ширина сетки предыдущего графа + визуальный отступ */
+	Left2	= globGraphSpace + glob_offset*2;
+	/*	правая граница для 1-го и 3-го графов*/
+	Right1	= globGraphSpace;
+	/*	правая граница для 2-го и 4-го графов - 
+		левая граница + ширина */
+	Right2	= globSceneWidth + glob_offset;
+	/*	верхняя граница графов в первом (нижнем) ряду */
+	Top1	= globSceneHeight/rowsNumber-glob_offset*2; // 
+	/*	верхняя граница графов во втором (верхнем) ряду */
+	Top2	= globSceneHeight+glob_offset*2;
+	/*	нижняя граница графов в первом (нижнем) ряду */
+	Bottom1	= 0;
+	/*	нижняя граница графов во втором (верхнем) ряду */
+	Bottom2	= Top1+glob_offset*2;
+
+	switch(graph_number)
 	{
-		/*	Часть рабочего пространства окна, выделяемая для сетки
-			графа + пространство для создания визуального отступа */
-		GridLeftEdge	= globSceneWidthHalf + glob_offset*copier*2;	// 450
-		GridRightEdge	= globSceneWidth + glob_offset*copier*2;		// 825
+		case 1:
+			GridLeftEdge	= Left1;
+			GridRightEdge	= Right1;
+			GridTopEdge		= Top1;
+			GridBottomEdge	= Bottom1;
+			break;
+		case 2:
+			GridLeftEdge	= Left2; 
+			GridRightEdge	= Right2;
+			GridTopEdge		= Top1;
+			GridBottomEdge	= Bottom1;
+			break;
+		case 3:
+			GridLeftEdge	= Left1;
+			GridRightEdge	= Right1;
+			GridTopEdge		= Top2;
+			GridBottomEdge	= Bottom2;
+			break;
+		case 4:
+			GridLeftEdge	= Left2;
+			GridRightEdge	= Right2;
+			GridTopEdge		= Top2;
+			GridBottomEdge	= Bottom2;
+			break;
 	}
-	else
-	{
-		GridLeftEdge	= 0;				//   0
-		GridRightEdge	= globSceneWidthHalf;				// 400
-	}
+
 	const float grid_left_start		= GridLeftEdge;
 	const float grid_right_finish	= GridRightEdge;
 	//cout<<"Start grid"<<endl<<"........................."<<endl;
+	
+	/*	установить количество вертикалей для каждого отрезка файла как 
+		колич. вертикалей одного графа / количество файлов	*/
+	int vBunch = glob_grid_value/glob_files; 
 	// установить по 20 вертикальных линий для сеток каждого графа
 	while(GridLeftEdge<=grid_right_finish)
 	{	// cout<<"GridLeftEdge: "<<GridLeftEdge<<endl;
 		// установить вертикали	
+		// -------------------------------------------------------------------------------
 		// выделим цветом каждую 4-ю вертикаль (там, где размещается маркер нового файла):
-		if( vCount>0 && vCount%4==0 ) 
-			glColor3f(1.0,0.0,0.5);
+		if( vCount>0 
+			&& vCount%vBunch==0 // если нет остатка от деления, значит - номер вертикали кратен 4
+		  ) 
+			glColor3f(1.0,0.0,0.5); // установить специфический цвет для вертикали файла
 		else
 			glColor3f(0.4,0.4,0.4);
 		vCount++;
 		// линии
-		glVertex2f(GridLeftEdge, 0); // 
-		glVertex2f(GridLeftEdge, globSceneHeight);		// 
+		glVertex2f(GridLeftEdge, GridBottomEdge); // 0
+		glVertex2f(GridLeftEdge, GridTopEdge);		// 
 		GridLeftEdge+=glob_grid_step;
 	}
-	glColor3f(0.4,0.4,0.4);
 	// установить горизонтали
+	// -------------------------------------------------------------------------------
+	// назначить цвет
+	glColor3f(0.4,0.4,0.4);
+	// построить всё
 	for ( float offsetBottom  = 0;	// 
 				offsetBottom <= globSceneHeight;		// <= 400
 				offsetBottom += glob_grid_step )
@@ -314,18 +367,24 @@ void Draw()
 	glEnable(GL_LINE_STIPPLE); // включить шаблон пунктирной линии
 	glLineWidth (1.0); // указать толщину линий сетки
 	glLineStipple(1,0xAAAA); // указать тип пунктирной линии для сетки графа
-	glBegin(GL_LINES);
-		// построить первую (левую) сетку
-		setGrid();
-		// построить вторую (правую) сетку
-		setGrid(1);
+	glBegin(GL_LINES);	
+	/*	построить сетки графов. i определяет номер графа.
+		Порядок: 
+		1. нижний-левый 
+		2. нижний-правый
+		3. верхний-левый
+		4. верхний-правый
+		*/
+	for (int i = 1; i <= 4; i++)
+		setGrid(i);
 	glEnd();
 	glDisable(GL_LINE_STIPPLE);
-		// построить маркеры файлов
-		// на левой сетке
-		vector<float> xPosLeft1 = setMarkers();
-		// на правой сетке
-		setMarkers(true);
+
+	// построить маркеры файлов
+	// на левой сетке
+	vector<float> xPosLeft1 = setMarkers();
+	// на правой сетке
+	setMarkers(true);
 	/*	Получим максимальное рассчётное значение шагов для калибровки сетки.
 		Для этого выберем наибольшее значение из glob_alg_steps (выбираем 
 		среди последних элементов, как естественно наибольших). */
@@ -353,21 +412,17 @@ void Draw()
 			{1.0,0.5,0.0},
 			{0.0,1.0,0.0}
 	};
-	/*	вывести результат анализа алгоритмов СОРТИРОВКИ (алгоритмы
-		поиска будут визуализированы далее, на другом графе) на график; 
-		как мы помним, по горизонтали у нас отложено 5 маркеров (по 
-		количеству подопытных файлов), x-позиции каждого из которых 
-		будут передаваться в качестве координаты (первый параметр) в 
-		glVertex2d(); по вертикали (второй параметр, передаваемый 
-		glVertex2d()) устанавливаем значение количества шагов для 
-		каждого из них по каждому алгоритму сортировки. */
-	for ( int index_algo = 0; 
-			  /*	выбираем только значения алгоритмов сортировки (3 первых из 5-ти);
-					данные анализа алгоритмов поиска будем выводить на другом графе*/
-			  index_algo < glob_algos-2;
-			  index_algo++
+	// построить все 4 графа:
+	for ( int i = 0, 
+		  int index_algo = 0,	// индекс алгоритма в vColors - нужен для выбора цвета построения кривой анализа текущего алгоритма
+		  grphx = globColsNumber*globRowsNumber; // 4
+		  i < grphx; 
+		  i++
 		)
-	{	cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<vColors[index_algo][0]<<","<<vColors[index_algo][1]<<","<<vColors[index_algo][2]<<endl;
+	{
+		//cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<vColors[index_algo][0]<<","<<vColors[index_algo][1]<<","<<vColors[index_algo][2]<<endl;
+		if(i==grphx/2) 
+			index_algo = 0; // сбросить счётчик алгоритмов после построения графов для сортировки
 		
 		// установить цвет для
 		glColor3f(	vColors[index_algo][0], // R
@@ -378,7 +433,8 @@ void Draw()
 		for (int index_file = 0; index_file < glob_files; index_file++)
 		{
 			if(index_file>1) 
-				glVertex2d(xPosLeft1[index_file-1], glob_alg_steps[index_algo][index_file-1]*yRatio);
+				glVertex2d( xPosLeft1[index_file-1], 
+							glob_alg_steps[index_algo][index_file-1]*yRatio);
 			
 			glVertex2d( /*	позиция текущего маркера, символизирующего
 						один из обрабатываемых сгенерированных файлов.
@@ -392,7 +448,8 @@ void Draw()
 					  );
 			
 			cout<<"x: "<<xPosLeft1[index_file]<<", y: "<<glob_alg_steps[index_algo][index_file]*yRatio<<endl;
-		}		
+		}
+		index_algo++;
 	}
 	glEnd();
 	glFlush();
@@ -405,10 +462,10 @@ void Initialize()
 	glLoadIdentity();
 	// сетка - left-bottom / right-top
 	// построить ортографическую проекцию
-	gluOrtho2D(-glob_offset*2,		// -50	левый, x	
+	gluOrtho2D(-glob_offset*2,					// -50	левый, x	
 				globSceneWidth+glob_offset*3,	// 875	правый, x	
-			   -glob_offset*2,		// -50	нижний, y	
-				globSceneHeight+glob_offset		// 450	верхний, y	
+			   -glob_offset*2,					// -50	нижний, y	
+				globSceneHeight+glob_offset		// 825	верхний, y	
 			  ); 
 }
 // обработать события клавиатуры
