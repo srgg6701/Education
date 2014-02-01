@@ -248,7 +248,7 @@ vector<int> getRowsArray(int i=0)
 
 // СОЗДАНИЕ ГРАФИКОВ .....................................
 // построить сетку для графа
-void setGrid(bool copier=false)
+void setGrid(int copier=0)
 {
 	/*	Установить индикатор вертикали, пересекающейся с маркером.
 		Нужен как инструмент для выделения каждой 4-й вертикали 
@@ -260,7 +260,7 @@ void setGrid(bool copier=false)
 		вертикалями графа.	*/
 	float GridLeftEdge, GridRightEdge;  
 	/*	Рассчитать значения левой и правой границ сеток графа. 
-		Передавайемый параметр copier означает, что строим сетку
+		Передаваемый параметр copier означает, что строим сетку
 		для правого графа. Если параметр не передан, то - для левого. 
 		.............................................................
 		См. параметры gluOrtho2D, на основе которых рассчитывается
@@ -269,10 +269,10 @@ void setGrid(bool copier=false)
 		нижний: -50, верхний: 450	*/
 	if(copier)
 	{
-		/*	Половина рабочего пространства окна 
-			+ пространство для создания визуального отступа */
-		GridLeftEdge	= globSceneWidthHalf + glob_offset*2;	// 450
-		GridRightEdge	= globSceneWidth + glob_offset*2;		// 825
+		/*	Часть рабочего пространства окна, выделяемая для сетки
+			графа + пространство для создания визуального отступа */
+		GridLeftEdge	= globSceneWidthHalf + glob_offset*copier*2;	// 450
+		GridRightEdge	= globSceneWidth + glob_offset*copier*2;		// 825
 	}
 	else
 	{
@@ -318,7 +318,7 @@ void Draw()
 		// построить первую (левую) сетку
 		setGrid();
 		// построить вторую (правую) сетку
-		setGrid(true);
+		setGrid(1);
 	glEnd();
 	glDisable(GL_LINE_STIPPLE);
 		// построить маркеры файлов
@@ -342,7 +342,7 @@ void Draw()
 		массива glob_alg_steps на калибровочное значение yRatio	*/
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-	glLineWidth(2.0);
+	glLineWidth(1.0);
 	glBegin(GL_LINES);
 		
 	// задать цвета для линий анализируемых алгоритмов
@@ -369,13 +369,16 @@ void Draw()
 		)
 	{	cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<vColors[index_algo][0]<<","<<vColors[index_algo][1]<<","<<vColors[index_algo][2]<<endl;
 		
+		// установить цвет для
 		glColor3f(	vColors[index_algo][0], // R
 					vColors[index_algo][1], // G
 					vColors[index_algo][2]  // B
 				 );
+		
 		for (int index_file = 0; index_file < glob_files; index_file++)
 		{
-			if(index_file>1) glVertex2d(xPosLeft1[index_file-1], glob_alg_steps[index_algo][index_file-1]*yRatio);
+			if(index_file>1) 
+				glVertex2d(xPosLeft1[index_file-1], glob_alg_steps[index_algo][index_file-1]*yRatio);
 			
 			glVertex2d( /*	позиция текущего маркера, символизирующего
 						один из обрабатываемых сгенерированных файлов.
