@@ -444,10 +444,25 @@ void Draw()
 		   (см. массив glob_alg_analysis_steps)*/
 		biggestNumber = 0; // сбросить предыдущее
 		// получить текущее
-		for (int b = 0; b < glob_algos; b++)
+		/*for (int b = 0; b < glob_algos; b++)
 		{
 			if(glob_alg_analysis_steps[b][lastIndex] > biggestNumber)
 				biggestNumber = glob_alg_analysis_steps[b][lastIndex];
+		}*/
+		for (int b = 0; b < glob_algos; b++)
+		{
+			//  1  3 
+			if(i%2==0)
+			{
+				if(glob_alg_analysis_steps[b][lastIndex] > biggestNumber)
+					biggestNumber = glob_alg_analysis_steps[b][lastIndex];
+			}
+			//  2  4 
+			else
+			{
+				if(glob_alg_analysis_time[b][lastIndex] > biggestNumber)
+					biggestNumber = glob_alg_analysis_time[b][lastIndex];
+			}
 		}
 		/*  если начался второй ряд графов, скорректируем показатель верхней точки 
 			для калибровки точек графа, добавив двойнойй оступ и высоту графа
