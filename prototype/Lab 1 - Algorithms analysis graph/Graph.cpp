@@ -145,7 +145,7 @@ vector<float> setMarkers(bool copier=false)
 	// Нарисовать маркеры файлов
 	glBegin(GL_QUADS);
 		int arrayNumbersRow=0;
-		float LeftEdge = (copier)? globGraphSpace+glob_offset*2 : 0;	// 400 : 0
+		float LeftEdge = (copier)? globGraphSpace+globDoubleOffset : 0;	// 400 : 0
 		int files_count=glob_files_names.size();
 		
 		for (int i = 1; i <= files_count; i++)
@@ -249,11 +249,6 @@ vector<int> getRowsArray(int i=0)
 // построить сетку для графа
 void setGrid(int graph_number)
 {
-	/*	Установить индикатор вертикали, пересекающейся с маркером.
-		Нужен как инструмент для выделения каждой 4-й вертикали 
-		(20 вертикальдных линий / 5 маркеров) цветом, как места, 
-		где располагается маркер одного из 5-ти используемых файлов.		*/
-	int vCount=0; 
 	/*	Создать (и далее - установить) левую и правую границы для 
 		сеток графов; Пространство между ними будет заполняться 
 		вертикалями графа.	*/
@@ -277,21 +272,22 @@ void setGrid(int graph_number)
 	/*	левая граница для 1-го и 3-го графов */
 	Left1	= 0;
 	/*	левая граница для 2-го и 4-го графов - 
-		ширина сетки предыдущего графа + визуальный отступ */
-	Left2	= globGraphSpace + glob_offset*2;
-	/*	правая граница для 1-го и 3-го графов*/
+		ширина сетки предыдущего графа + двойной визуальный отступ */
+	Left2	= globGraphSpace + globDoubleOffset;
+	/*	правая граница для 1-го и 3-го графов - 
+		ширина сетки графа */
 	Right1	= globGraphSpace;
 	/*	правая граница для 2-го и 4-го графов - 
 		левая граница + ширина */
-	Right2	= globSceneWidth + glob_offset;
+	Right2	= Left2 + globGraphSpace;
 	/*	верхняя граница графов в первом (нижнем) ряду */
-	Top1	= globSceneHeight/globRowsNumber-glob_offset*2; // 
+	Top1	= globGraphSpace; // 
 	/*	верхняя граница графов во втором (верхнем) ряду */
-	Top2	= globSceneHeight+glob_offset*2;
+	Top2	= Top1+globDoubleOffset+globGraphSpace;
 	/*	нижняя граница графов в первом (нижнем) ряду */
 	Bottom1	= 0;
 	/*	нижняя граница графов во втором (верхнем) ряду */
-	Bottom2	= Top1+glob_offset*2;
+	Bottom2	= Top1+globDoubleOffset;
 
 	switch(graph_number)
 	{
@@ -321,14 +317,23 @@ void setGrid(int graph_number)
 			break;
 	}
 
+	// назначить x-координаты для горизонтальных линий, генерируемых далее:
+	// ЛЕВАЯ
 	const float grid_left_start		= GridLeftEdge;
+	// ПРАВАЯ
 	const float grid_right_finish	= GridRightEdge;
-	//cout<<"Start grid"<<endl<<"........................."<<endl;
+	cout<<endl<<"GRAPH "<<graph_number<<endl<<"........................."<<endl;
 	
+	/*	Установить индикатор вертикали, пересекающейся с маркером.
+		Нужен как инструмент для выделения каждой 4-й вертикали 
+		(20 вертикальдных линий / 5 маркеров) цветом, как места, 
+		где располагается маркер одного из 5-ти используемых файлов.		*/
+	int vCount=0; 
 	/*	установить количество вертикалей для каждого отрезка файла как 
 		колич. вертикалей одного графа / количество файлов	*/
-	int vBunch = glob_grid_value/glob_files; 
-	// установить по 20 вертикальных линий для сеток каждого графа
+	int vBunch = glob_grid_value/glob_files;
+	cout<<"Set verticals:"<<endl;
+	// установить по 20 ВЕРТИКАЛЬНЫХ линий для сеток каждого графа
 	while(GridLeftEdge<=grid_right_finish)
 	{	// cout<<"GridLeftEdge: "<<GridLeftEdge<<endl;
 		// установить вертикали	
@@ -340,21 +345,31 @@ void setGrid(int graph_number)
 			glColor3f(1.0,0.0,0.5); // установить специфический цвет для вертикали файла
 		else
 			glColor3f(0.4,0.4,0.4);
-		vCount++;
+		vCount++; 
+		cout<<"\t"<<vCount<<": "<<"bottom(x,y) = "<<GridLeftEdge<<", "<<GridBottomEdge
+			<<"\ttop(x,y) = "<<GridLeftEdge<<", "<<GridTopEdge<<endl;
 		// линии
 		glVertex2f(GridLeftEdge, GridBottomEdge); // 0
 		glVertex2f(GridLeftEdge, GridTopEdge);		// 
 		GridLeftEdge+=glob_grid_step;
 	}
-	// установить горизонтали
+	// установить ГОРИЗОНТАЛИ
 	// -------------------------------------------------------------------------------
 	// назначить цвет
 	glColor3f(0.4,0.4,0.4);
+	int cnt=0; cout<<"Set horizontals:"<<endl;
 	// построить всё
-	for ( float offsetBottom  = 0;	// 
-				offsetBottom <= globSceneHeight;		// <= 400
-				offsetBottom += glob_grid_step )
-	{   //cout<<"offsetBottom: "<<offsetBottom<<"\t";
+	for ( /* установить начальное нижнее значение горизонтали
+			 как эквивалентное нижней точки вертикалей сетки */
+		  float offsetBottom  = GridBottomEdge;
+				/* значение y-точки коризонтали будет увеличиваться
+				   до значения верхней границы сетки текущего графа */
+				offsetBottom <= GridTopEdge;
+				/* увеличиваем на установленный ранее шаг сетки */
+				offsetBottom += glob_grid_step  //
+		)
+	{   cnt++;cout<<"\t"<<cnt<<": "<<"left(x,y) = "<<grid_left_start<<", "<<offsetBottom
+			<<"\tright(x,y) = "<<grid_right_finish<<", "<<offsetBottom<<endl;
 		glVertex2f(grid_left_start,offsetBottom);
 		glVertex2f(grid_right_finish,offsetBottom);
 	}	//cout<<endl;
@@ -446,7 +461,7 @@ void Draw()
 						glob_alg_steps[index_algo][index_file]*yRatio
 					  );
 			
-			cout<<"x: "<<xPosLeft1[index_file]<<", y: "<<glob_alg_steps[index_algo][index_file]*yRatio<<endl;
+			//cout<<"x: "<<xPosLeft1[index_file]<<", y: "<<glob_alg_steps[index_algo][index_file]*yRatio<<endl;
 		}
 		index_algo++;
 	}
@@ -461,9 +476,13 @@ void Initialize()
 	glLoadIdentity();
 	// сетка - left-bottom / right-top
 	// построить ортографическую проекцию
-	gluOrtho2D(-glob_offset*2,					// -50	левый, x	
-				globSceneWidth+glob_offset*3,	// 875	правый, x	
-			   -glob_offset*2,					// -50	нижний, y	
+	gluOrtho2D(-globDoubleOffset,					// -50	левый, x	
+				/* установить правый край проекции как
+				   ширина левого графа +
+				   промежуток между графами +
+				   визуальный отступ справа от правого графа */
+				globSceneWidth+globDoubleOffset+glob_offset,	// 875	= 400 + 50 + 400 + 25 правый, x	
+			   -globDoubleOffset,					// -50	нижний, y	
 				globSceneHeight+glob_offset		// 825	верхний, y	
 			  ); 
 }
@@ -499,7 +518,13 @@ int _tmain(int argc, char** argv)
 		glutInit(&argc, argv); 
 		// 3 нижележащие функции можно располагать в любом порядке
 		glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
-		glutInitWindowSize(globSceneWidth,globSceneHeight);
+		/*	рассчитать и установить размер окна (см. установки glOrtho2d())
+			50 - отступ влево от начала координат
+		*/
+		float wSizeX = globDoubleOffset+globSceneWidth+globDoubleOffset+glob_offset;
+		float wSizeY = globDoubleOffset+globSceneHeight;
+		cout<<"WINDOW size: "<<wSizeX<<" x "<<wSizeY<<endl;
+		glutInitWindowSize(wSizeX,wSizeY);
 		glutInitWindowPosition(450,100);
 		glutCreateWindow("Graph");
 		// регистрация

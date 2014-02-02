@@ -19,7 +19,6 @@ const int globRowsNumber = 2;
 const float globGraphSpace=globSceneWidth/float(globColsNumber);
 /*	высота сцены устанавливается ниже, после определения величины 
 	отступа (glob_offset), рассчитываемого динамически  */
-
 // количество вертикальных линий в одном графе
 const int glob_grid_value = 20;
 /*	для рассчёта шага сетки и единицы визуального отступа будем отталкиваться 
@@ -32,16 +31,16 @@ const float glob_grid_step = globSceneWidth/globColsNumber/float(glob_grid_value
 //	единица визуального отступа
 /*	рассчитываем аналогично - как часть ширины рабочего пространства	*/
 const float glob_offset = globSceneWidth/32.0;
+const float globDoubleOffset = glob_offset*2;
+/*	высота сцены, начиная от 0 по оси Y 
+	(400+50+400+25) */
+const float globSceneHeight=globSceneWidth+globDoubleOffset+glob_offset;
+
 /*	объём (колич. строк) генерируемых файлов 
 	ВНИМАНИЕ! 
 	В тестовом режиме целесооборазно уменьшить размер 
 	генерируемых файлов. Для этого достаточно указать
 	значение пер. glob_files_size_decreaser (см. далее). */
-
-/*	высота сцены, включая отступ для визуального разделения
-	рядов графов (не путать с рабочим пространством!). */
-const float globSceneHeight=globSceneWidth+glob_offset*2;
-// установить объёмы (колич. строк) файлов
 const int glob_files_volumes[]={
 	1000, 20000, 100000, 250000, 380000
 };
