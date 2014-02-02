@@ -322,7 +322,9 @@ void setGrid(int graph_number)
 	const float grid_left_start		= GridLeftEdge;
 	// ПРАВАЯ
 	const float grid_right_finish	= GridRightEdge;
-	cout<<endl<<"GRAPH "<<graph_number<<endl<<"........................."<<endl;
+	
+	bool test=true;
+	//if (test) cout<<endl<<"GRAPH "<<graph_number<<endl<<"........................."<<endl;
 	
 	/*	Установить индикатор вертикали, пересекающейся с маркером.
 		Нужен как инструмент для выделения каждой 4-й вертикали 
@@ -332,7 +334,7 @@ void setGrid(int graph_number)
 	/*	установить количество вертикалей для каждого отрезка файла как 
 		колич. вертикалей одного графа / количество файлов	*/
 	int vBunch = glob_grid_value/glob_files;
-	cout<<"Set verticals:"<<endl;
+	//if (test) cout<<"Set verticals:"<<endl;
 	// установить по 20 ВЕРТИКАЛЬНЫХ линий для сеток каждого графа
 	while(GridLeftEdge<=grid_right_finish)
 	{	// cout<<"GridLeftEdge: "<<GridLeftEdge<<endl;
@@ -346,8 +348,7 @@ void setGrid(int graph_number)
 		else
 			glColor3f(0.4,0.4,0.4);
 		vCount++; 
-		cout<<"\t"<<vCount<<": "<<"bottom(x,y) = "<<GridLeftEdge<<", "<<GridBottomEdge
-			<<"\ttop(x,y) = "<<GridLeftEdge<<", "<<GridTopEdge<<endl;
+		//if (test) cout<<"\t"<<vCount<<": "<<"bottom(x,y) = "<<GridLeftEdge<<", "<<GridBottomEdge<<"\ttop(x,y) = "<<GridLeftEdge<<", "<<GridTopEdge<<endl;
 		// линии
 		glVertex2f(GridLeftEdge, GridBottomEdge); // 0
 		glVertex2f(GridLeftEdge, GridTopEdge);		// 
@@ -357,7 +358,7 @@ void setGrid(int graph_number)
 	// -------------------------------------------------------------------------------
 	// назначить цвет
 	glColor3f(0.4,0.4,0.4);
-	int cnt=0; cout<<"Set horizontals:"<<endl;
+	//if (test) int cnt=0; cout<<"Set horizontals:"<<endl;
 	// построить всё
 	for ( /* установить начальное нижнее значение горизонтали
 			 как эквивалентное нижней точки вертикалей сетки */
@@ -368,8 +369,7 @@ void setGrid(int graph_number)
 				/* увеличиваем на установленный ранее шаг сетки */
 				offsetBottom += glob_grid_step  //
 		)
-	{   cnt++;cout<<"\t"<<cnt<<": "<<"left(x,y) = "<<grid_left_start<<", "<<offsetBottom
-			<<"\tright(x,y) = "<<grid_right_finish<<", "<<offsetBottom<<endl;
+	{   //if (test) cnt++;cout<<"\t"<<cnt<<": "<<"left(x,y) = "<<grid_left_start<<", "<<offsetBottom<<"\tright(x,y) = "<<grid_right_finish<<", "<<offsetBottom<<endl;
 		glVertex2f(grid_left_start,offsetBottom);
 		glVertex2f(grid_right_finish,offsetBottom);
 	}	//cout<<endl;
@@ -482,8 +482,8 @@ void Initialize()
 				   промежуток между графами +
 				   визуальный отступ справа от правого графа */
 				globSceneWidth+globDoubleOffset+glob_offset,	// 875	= 400 + 50 + 400 + 25 правый, x	
-			   -globDoubleOffset,					// -50	нижний, y	
-				globSceneHeight+glob_offset		// 825	верхний, y	
+			   -globDoubleOffset,	// -50	нижний, y	
+				globSceneHeight		// 875	верхний, y	
 			  ); 
 }
 // обработать события клавиатуры
