@@ -424,7 +424,7 @@ void Draw()
 		Для этого выберем наибольшее полученное значение (колич. операций/время
 		сортировки), ранее сохранённое в массиве glob_alg_analysis_steps (выбираем среди 
 		последних элементов вложенных массивов, как естественно наибольших) */
-	int biggestNumber;
+	float biggestNumber;
 	/* индекс последнего значения текущего вложенного массива (4)	*/ 
 	int lastIndex = glob_files-1;
 	/* множитель для установки максимально верхней позиции точки графа;
@@ -442,8 +442,8 @@ void Draw()
 	float posY = 0.0, posYprev = 0.0;
 	// построить все 4 графа:
 	for ( int i = 0, 
-			  b = 0,
-			  algLimit = 3;
+			  algIndex,
+			  algLimit;
 			  //index_algo = 0;	// индекс алгоритма в globalAlgosColors - нужен для выбора цвета построения кривой анализа текущего алгоритма
 		  // цикл отрабатывает для каждого из графов
 		  i < globGraphsCount; 
@@ -451,26 +451,32 @@ void Draw()
 		)
 	{
 		graphNumberMultiplier=i*glob_files;
-		
 		// Построить график анализа каждого алгоритма
 		//----------------------------------------------------------------------------------
 		/* извлечь максимальное значение, полученное в результате анализа текущего алгоритма
 		   (см. массив glob_alg_analysis_steps)*/
 		biggestNumber = 0; // сбросить предыдущее
 		
-		if(i==2) // 2 последних графа
+		if(i<2)
 		{
-			b = algLimit;			// 3
+			algIndex = 0;
+			algLimit = 3;
+		}
+		else // 2 последних графа (алгоритма)
+		{
+			algIndex = 3;			// 3
 			algLimit=glob_algos;	// 5
+			
 			/*  скорректируем показатель верхней границы для калибровки точек графа, 
 				добавив двойной оступ и высоту графа (см. схему в .xslx-файле)	*/
 			yRatioCurrentTopBase += globGraphSpace + globDoubleOffset; 			
 		}
+		
+		cout<<endl<<"i = "<<i<<", i%2 = "<<(i%2)<<", algIndex = "<<algIndex<<", algLimit = "<<algLimit
+			<<", yRatioCurrentTopBase = "<<yRatioCurrentTopBase<<endl;
+		
 		// выбрать текущий алгоритм - блоки 3 и 2 алгоритма соответственно
-		for ( ; // уже инициализирована - или 0 или 3
-			  b < algLimit; // 0<3 (0,1,2) или 3<5 (3,4)
-			  b++
-			)
+		while(algIndex<algLimit)
 		{
 			/*	получить текущее максимальное из имеющихся значений.
 				ВНИМАНИЕ! Зависит НЕ от типа алгоритма, а от типа АНАЛИЗА - 
@@ -481,26 +487,36 @@ void Draw()
 				if(i%2==0) // анализируем количество шагов - 1-й и 3-й графы
 				{
 					if(glob_alg_analysis_steps[f][lastIndex] > biggestNumber)
+					{
 						biggestNumber = glob_alg_analysis_steps[f][lastIndex];
+						// откалибровать!
+						yRatio = yRatioCurrentTopBase/biggestNumber;				
+					}
 				}
 				//  2  4 
 				else // анализируем время - 2-й и 4-й графы
-				{
+				{   //cout<<"Time analysis. glob_alg_analysis_time["<<f<<"]["<<lastIndex<<"] = "
+						//<<glob_alg_analysis_time[f][lastIndex]<<endl;
 					if(glob_alg_analysis_time[f][lastIndex] > biggestNumber)
+					{
+						(double)biggestNumber;
+						cout<<"time biggest number = "<<biggestNumber<<endl;
 						biggestNumber = glob_alg_analysis_time[f][lastIndex];
+						// откалибровать!
+						yRatio = float(double(yRatioCurrentTopBase)/biggestNumber);	
+					}
 				}
+				/*	Далее для построения графа будем умножать все значения 
+					массива glob_alg_analysis_steps на калибровочное значение yRatio	*/
+				
 			}			
 			// если есть проанализированные значения 
 			if(biggestNumber) 
 			{
-				// откалибровать!
-				yRatio = yRatioCurrentTopBase/float(biggestNumber);
-				/*	Далее для построения графа будем умножать все значения 
-					массива glob_alg_analysis_steps на калибровочное значение yRatio	*/
 				// установить цвет для линии алгоритма
-				glColor3f(	globalAlgosColors[b][0], // R
-							globalAlgosColors[b][1], // G
-							globalAlgosColors[b][2]  // B
+				glColor3f(	globalAlgosColors[algIndex][0], // R
+							globalAlgosColors[algIndex][1], // G
+							globalAlgosColors[algIndex][2]  // algIndex
 						 );
 		
 				for (int index_file = 0; index_file < glob_files; index_file++)
@@ -512,21 +528,21 @@ void Draw()
 					// шаги (1 и 3-й графы)
 					if(i%2==0)
 					{						
-						posY=glob_alg_analysis_steps[b][index_file]*yRatio;
+						posY=glob_alg_analysis_steps[algIndex][index_file]*yRatio;
 						cout<<"Steps, i%2 = "<<(i%2)<<endl;						
 					}
 					// время (2 и 4-й графы)
 					else
 					{
-						posY=glob_alg_analysis_time[b][index_file]*yRatio;
+						posY=glob_alg_analysis_time[algIndex][index_file]*yRatio;
 						cout<<"Time, i%2 = "<<(i%2)<<endl;
 					}
 
 					if(index_file>1)
 					{
 						posYprev=(i%2==0)?
-							glob_alg_analysis_steps[b][index_file-1]*yRatio
-							: glob_alg_analysis_time[b][index_file-1]*yRatio;
+							glob_alg_analysis_steps[algIndex][index_file-1]*yRatio
+							: glob_alg_analysis_time[algIndex][index_file-1]*yRatio;
 
 						glVertex2d(posX[index_file-1+graphNumberMultiplier],posYprev);
 						cout<<"\tprevious positions - x: "<<posX[index_file-1+graphNumberMultiplier]
@@ -544,8 +560,9 @@ void Draw()
 			}
 			else
 			{
-				cout<<endl<<"NO biggestNumber. Graph: "<<i+1<<", Algorithm: "<<b+1<<endl;
+				cout<<endl<<"NO biggestNumber. Graph: "<<i+1<<", Algorithm: "<<algIndex+1<<endl;
 			}
+			algIndex++;
 		}
 	}
 	glEnd();
@@ -845,12 +862,12 @@ int pivot( vector<int> &nmbrs,		// массив значений
 }
 // переключает параметры сортировки
 void swap( int& a,	// первый параметр 
-		   int& b	// последний параметр
+		   int& algIndex	// последний параметр
 		 )
 {
     int temp = a;
-    a = b;
-    b = temp;
+    a = algIndex;
+    algIndex = temp;
 }
 //-----------------------------------------------------------
 // отсортировать всеми указанными способами
