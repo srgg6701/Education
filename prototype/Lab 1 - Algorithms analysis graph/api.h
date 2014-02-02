@@ -14,7 +14,8 @@ const float globSceneWidth=800.0;
 const int globColsNumber = 2;
 // количество строк (т.е., рядов с графами)
 const int globRowsNumber = 2;
-
+// количество графов
+const int globGraphsCount = globColsNumber*globRowsNumber;
 // рабочее пространство для одного графа
 const float globGraphSpace=globSceneWidth/float(globColsNumber);
 /*	высота сцены устанавливается ниже, после определения величины 

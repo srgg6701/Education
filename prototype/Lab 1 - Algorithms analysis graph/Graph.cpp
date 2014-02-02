@@ -104,7 +104,8 @@ void buildMarkerRow( int &arrayNumbersRow,
 					 float currentLeft
 				   )
 {
-	//cout<<"Bottom: "<<Bottom<<endl;
+	//cout<<"currentLeft: "<<currentLeft<<", Bottom: "<<Bottom<<endl;
+	//cout<<"buildMarkerRow"<<endl;
 	for (int col = 1; col <= globMrxCols; col++)
 	{   
 		// Позиции текущей ячейки в строке сетки маркера
@@ -115,12 +116,12 @@ void buildMarkerRow( int &arrayNumbersRow,
 		/*cout<<"\tleft/bottom -\t"<<Left<<":"<<Bottom<<endl
 			<<"\tleft/top -\t"<<Left<<":"<<Top<<endl
 			<<"\tright/top -\t"<<Right<<":"<<Top<<endl
-			<<"\tright/bottom -\t"<<Right<<":"<<Bottom<<endl<<endl; */
+			<<"\tright/bottom -\t"<<Right<<":"<<Bottom<<endl<<endl;*/
 		// 
 		if(globNumbers[arrayNumbersRow][col-1]>0)
-			glColor3f(1.0,0.0,0.5);
+			glColor3f(0.3,0.3,0.5); // цвет маркеров
 		else
-			glColor3f(1.0,1.0,1.0);
+			glColor3f(1.0,1.0,1.0); // цвет фона
 		// создать ячейки сетки маркера:
 		// левая-нижняя
 		glVertex2f(Left,Bottom);
@@ -134,18 +135,23 @@ void buildMarkerRow( int &arrayNumbersRow,
 	arrayNumbersRow++;
 }
 // создать маркеры загружаемых файлов
-vector<float> setMarkers(bool copier=false)
+void setMarkers(int graph_number, vector<float> &xPos)
 {
 	/*	создать векторный массив для сохраненения x-координат 
 		(вертикали для откладывания данных с резульататами 
 		анализов алгоритмов).	*/
-	vector<float> xPos;
+	//vector<float> xPos;
 	// создать внутреннюю 2-D матрицу для построения цифр от 1 до 5. 
 	// См. схему здесь: http://www.canstockphoto.com/pixel-art-globNumbers-and-mathematical-signs-12800261.html
 	// Нарисовать маркеры файлов
 	glBegin(GL_QUADS);
 		int arrayNumbersRow=0;
-		float LeftEdge = (copier)? globGraphSpace+globDoubleOffset : 0;	// 400 : 0
+		
+		//float LeftEdge = (copier)? globGraphSpace+globDoubleOffset : 0;	// 400 : 0
+		float LeftEdge = (graph_number%2)? globGraphSpace+globDoubleOffset : 0;
+
+		float mrkBottomPos;
+
 		int files_count=glob_files_names.size();
 		
 		for (int i = 1; i <= files_count; i++)
@@ -155,6 +161,7 @@ vector<float> setMarkers(bool copier=false)
                              globGraphSpace/files_count	// 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
 							 *i				// общая текущая длина отрезков
 							 -15;			// смещение маркера влево для визуального центрирования с выделенной вертикалью сетки
+			cout<<"currentX = "<<currentX<<endl;
 			/*	добавить x-координату в векторный массив.
 				Далее будем использовать её для установки
 				горизонтальной координаты вершины, визуализирующей
@@ -163,20 +170,22 @@ vector<float> setMarkers(bool copier=false)
 			// построить блок с маркером (сетка 5х4)
 			for (int row = 1; row <= globMrxRows; row++)
 			{
+				mrkBottomPos= globMrxTopLine-globMrxRowHeight*row;
+				if(graph_number>1)
+					mrkBottomPos+=globGraphSpace+globDoubleOffset;
 				// построить маркеры
 				buildMarkerRow( /*	текущий индекс массива с цифрами globNumbers
 									(внутри функции по нему определяется индекс 
 									текущей строки в сетке маркера) */
 								arrayNumbersRow,
 								/*	нижняя позиция текущей строки в сетке маркера */
-								globMrxTopLine-globMrxRowHeight*row,
+								mrkBottomPos,
 								/*	левая граница текущей ячейки в строке блока маркера */
 								currentX	
 							  );
 			}
 		}
-	glEnd();
-	return xPos;
+	glEnd(); //return xPos;
 }
 
 // ГЕНЕРАЦИЯ ФАЙЛОВ ......................................
@@ -395,7 +404,7 @@ void Draw()
 		3. верхний-левый
 		4. верхний-правый
 		*/
-	for (int i = 1; i <= 4; i++)
+	for (int i = 1; i <= globGraphsCount; i++)
 		setGrid(i);
 	glEnd();
 	glDisable(GL_LINE_STIPPLE);
@@ -404,9 +413,9 @@ void Draw()
 	
 	// построить маркеры файлов
 	// на левой сетке
-	vector<float> xPosLeft1 = setMarkers();
-	// на правой сетке
-	setMarkers(true);
+	vector<float> xPosLeft;
+	for (int i = 0; i < globGraphsCount; i++)
+		setMarkers(i,xPosLeft);
 	
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
@@ -429,28 +438,28 @@ void Draw()
 	   графов 1-2 и 3-4. В первом случае используются координаты сеток графов первого ряда,
 	   во втором, соответственно, - второго. */
 	float yRatioCurrentTopBase = globGraphSpace*0.9;
-	
+	// увеличитель индекса позиции маркера в зависимости от текущего графа
+	int graphNumberMultiplier=0;
+
 	// построить все 4 графа:
 	for ( int i = 0, 
-			  index_algo = 0,	// индекс алгоритма в globalAlgosColors - нужен для выбора цвета построения кривой анализа текущего алгоритма
-			  // получим количество графов, как произведение колич. строк и столбцов сцены
-			  grphx = globColsNumber*globRowsNumber; // 4
+			  index_algo = 0;	// индекс алгоритма в globalAlgosColors - нужен для выбора цвета построения кривой анализа текущего алгоритма
 		  // цикл отрабатывает для каждого из графов
-		  i < grphx; 
+		  i < globGraphsCount; 
 		  i++
 		)
 	{
+		graphNumberMultiplier=i*glob_files;
+		
+		// Построить график анализа каждого алгоритма
+		//----------------------------------------------------------------------------------
 		/* извлечь максимальное значение, полученное в результате анализа текущего алгоритма
 		   (см. массив glob_alg_analysis_steps)*/
 		biggestNumber = 0; // сбросить предыдущее
-		// получить текущее
-		/*for (int b = 0; b < glob_algos; b++)
-		{
-			if(glob_alg_analysis_steps[b][lastIndex] > biggestNumber)
-				biggestNumber = glob_alg_analysis_steps[b][lastIndex];
-		}*/
+		
 		for (int b = 0; b < glob_algos; b++)
 		{
+			// получить текущее максимальное из имеющихся значений
 			//  1  3 
 			if(i%2==0)
 			{
@@ -463,43 +472,45 @@ void Draw()
 				if(glob_alg_analysis_time[b][lastIndex] > biggestNumber)
 					biggestNumber = glob_alg_analysis_time[b][lastIndex];
 			}
-		}
-		/*  если начался второй ряд графов, скорректируем показатель верхней точки 
-			для калибровки точек графа, добавив двойнойй оступ и высоту графа
-			(см. схему в .xslx-файле)	*/
-		if(i==globRowsNumber-1) yRatioCurrentTopBase += globGraphSpace + globDoubleOffset; 
-		// откалибровать! 
-		if(!biggestNumber) biggestNumber=1; // на случай, если он почему-то оказался нулём.
-		yRatio = yRatioCurrentTopBase/float(biggestNumber);
-		/*	Далее для построения графа будем уножать все значения 
-			массива glob_alg_analysis_steps на калибровочное значение yRatio	*/
-		//cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<globalAlgosColors[index_algo][0]<<","<<globalAlgosColors[index_algo][1]<<","<<globalAlgosColors[index_algo][2]<<endl;	
-		// установить цвет для
-		glColor3f(	globalAlgosColors[index_algo][0], // R
-					globalAlgosColors[index_algo][1], // G
-					globalAlgosColors[index_algo][2]  // B
-				 );
+			/*  если начался второй ряд графов, скорректируем показатель верхней точки 
+				для калибровки точек графа, добавив двойнойй оступ и высоту графа
+				(см. схему в .xslx-файле)	*/
+			if(i==globRowsNumber-1) yRatioCurrentTopBase += globGraphSpace + globDoubleOffset; 
+				// откалибровать! 
+			if(biggestNumber) 
+			{
+				yRatio = yRatioCurrentTopBase/float(biggestNumber);
+				/*	Далее для построения графа будем умножать все значения 
+					массива glob_alg_analysis_steps на калибровочное значение yRatio	*/
+				//cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<globalAlgosColors[index_algo][0]<<","<<globalAlgosColors[index_algo][1]<<","<<globalAlgosColors[index_algo][2]<<endl;	
+				// установить цвет для
+				glColor3f(	globalAlgosColors[index_algo][0], // R
+							globalAlgosColors[index_algo][1], // G
+							globalAlgosColors[index_algo][2]  // B
+						 );
 		
-		for (int index_file = 0; index_file < glob_files; index_file++)
-		{
-			if(index_file>1) 
-				glVertex2d( xPosLeft1[index_file-1], 
-							glob_alg_analysis_steps[index_algo][index_file-1]*yRatio);
+				for (int index_file = 0; index_file < glob_files; index_file++)
+				{
+					if(index_file>1) 
+						glVertex2d( xPosLeft[index_file-1+graphNumberMultiplier], 
+									glob_alg_analysis_steps[index_algo][index_file-1]*yRatio);
 			
-			glVertex2d( /*	позиция текущего маркера, символизирующего
-						один из обрабатываемых сгенерированных файлов.
-						Также устанавливает помеченной цветом вертикальной
-						осли графа.	*/
-						xPosLeft1[index_file],
-						/*	откалиброванное значение количества шагов, 
-						выполненных программой при сортировке файла
-						текущим алгоритмом. */
-						glob_alg_analysis_steps[index_algo][index_file]*yRatio
-					  );
+					glVertex2d( /*	позиция текущего маркера, символизирующего
+								один из обрабатываемых сгенерированных файлов.
+								Также устанавливает помеченной цветом вертикальной
+								осли графа.	*/
+								xPosLeft[index_file+graphNumberMultiplier],
+								/*	откалиброванное значение количества шагов, 
+								выполненных программой при сортировке файла
+								текущим алгоритмом. */
+								glob_alg_analysis_steps[index_algo][index_file]*yRatio
+							  );
 			
-			//cout<<"x: "<<xPosLeft1[index_file]<<", y: "<<glob_alg_analysis_steps[index_algo][index_file]*yRatio<<endl;
+					//cout<<"x: "<<xPosLeft[index_file+graphNumberMultiplier]<<", y: "<<glob_alg_analysis_steps[index_algo][index_file]*yRatio<<endl;
+				}
+			}
+			index_algo++;
 		}
-		index_algo++;
 	}
 	glEnd();
 	glFlush();
