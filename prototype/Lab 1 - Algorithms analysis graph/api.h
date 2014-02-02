@@ -1,3 +1,5 @@
+#ifndef API_H
+#define API_H
 /*	Здесь установлены: 
 	* пространственные параметры сцены - 
 		 - ширина 
@@ -67,3 +69,5 @@ int glob_alg_time[glob_algos][glob_files]={
 	{0,0,0,0,0},
 	{0,0,0,0,0}
 };
+
+#endif;
