@@ -161,7 +161,7 @@ void setMarkers(int graph_number, vector<float> &xPos)
                              globGraphSpace/files_count	// 400/5 = 80 длина отрезка для одного (всего 5, по количеству файлов) маркера
 							 *i				// общая текущая длина отрезков
 							 -15;			// смещение маркера влево для визуального центрирования с выделенной вертикалью сетки
-			cout<<"currentX = "<<currentX<<endl;
+			//cout<<"currentX = "<<currentX<<endl;
 			/*	добавить x-координату в векторный массив.
 				Далее будем использовать её для установки
 				горизонтальной координаты вершины, визуализирующей
@@ -213,7 +213,7 @@ void makeFiles()
 		// если добавить в начало, заменить на -   
 		//.insert(glob_files_names.begin(),file_full_name);		
 		
-		cout<<"Полное имя файла: "<<file_full_name<<endl;
+		//cout<<"Полное имя файла: "<<file_full_name<<endl;
 		ofstream f(file_full_name); // создать/пересоздать файл
 		int val;
 		int jLen = glob_files_volumes[i];
@@ -413,9 +413,10 @@ void Draw()
 	
 	// построить маркеры файлов
 	// на левой сетке
-	vector<float> xPosLeft;
+	vector<float> posX;
+	
 	for (int i = 0; i < globGraphsCount; i++)
-		setMarkers(i,xPosLeft);
+		setMarkers(i,posX);
 	
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
@@ -440,10 +441,13 @@ void Draw()
 	float yRatioCurrentTopBase = globGraphSpace*0.9;
 	// увеличитель индекса позиции маркера в зависимости от текущего графа
 	int graphNumberMultiplier=0;
-
+	// позиция точки графа по Y, текущая и предыдущая
+	float posY = 0.0, posYprev = 0.0;
 	// построить все 4 графа:
 	for ( int i = 0, 
-			  index_algo = 0;	// индекс алгоритма в globalAlgosColors - нужен для выбора цвета построения кривой анализа текущего алгоритма
+			  b = 0,
+			  algLimit = 3;
+			  //index_algo = 0;	// индекс алгоритма в globalAlgosColors - нужен для выбора цвета построения кривой анализа текущего алгоритма
 		  // цикл отрабатывает для каждого из графов
 		  i < globGraphsCount; 
 		  i++
@@ -457,59 +461,97 @@ void Draw()
 		   (см. массив glob_alg_analysis_steps)*/
 		biggestNumber = 0; // сбросить предыдущее
 		
-		for (int b = 0; b < glob_algos; b++)
+		if(i==2) // 2 последних графа
 		{
-			// получить текущее максимальное из имеющихся значений
-			//  1  3 
-			if(i%2==0)
+			b = algLimit;			// 3
+			algLimit=glob_algos;	// 5
+			/*  скорректируем показатель верхней границы для калибровки точек графа, 
+				добавив двойной оступ и высоту графа (см. схему в .xslx-файле)	*/
+			yRatioCurrentTopBase += globGraphSpace + globDoubleOffset; 			
+		}
+		// выбрать текущий алгоритм - блоки 3 и 2 алгоритма соответственно
+		for ( ; // уже инициализирована - или 0 или 3
+			  b < algLimit; // 0<3 (0,1,2) или 3<5 (3,4)
+			  b++
+			)
+		{
+			/*	получить текущее максимальное из имеющихся значений.
+				ВНИМАНИЕ! Зависит НЕ от типа алгоритма, а от типа АНАЛИЗА - 
+				по количеству операций или по времени	*/
+			for (int f = 0; f < glob_files; f++)
 			{
-				if(glob_alg_analysis_steps[b][lastIndex] > biggestNumber)
-					biggestNumber = glob_alg_analysis_steps[b][lastIndex];
+				//  1  3 
+				if(i%2==0) // анализируем количество шагов - 1-й и 3-й графы
+				{
+					if(glob_alg_analysis_steps[f][lastIndex] > biggestNumber)
+						biggestNumber = glob_alg_analysis_steps[f][lastIndex];
+				}
+				//  2  4 
+				else // анализируем время - 2-й и 4-й графы
+				{
+					if(glob_alg_analysis_time[f][lastIndex] > biggestNumber)
+						biggestNumber = glob_alg_analysis_time[f][lastIndex];
+				}
 			}
-			//  2  4 
-			else
-			{
-				if(glob_alg_analysis_time[b][lastIndex] > biggestNumber)
-					biggestNumber = glob_alg_analysis_time[b][lastIndex];
-			}
-			/*  если начался второй ряд графов, скорректируем показатель верхней точки 
-				для калибровки точек графа, добавив двойнойй оступ и высоту графа
-				(см. схему в .xslx-файле)	*/
-			if(i==globRowsNumber-1) yRatioCurrentTopBase += globGraphSpace + globDoubleOffset; 
-				// откалибровать! 
+			
+			// если есть проанализированные значения 
 			if(biggestNumber) 
 			{
+				// откалибровать!
 				yRatio = yRatioCurrentTopBase/float(biggestNumber);
 				/*	Далее для построения графа будем умножать все значения 
 					массива glob_alg_analysis_steps на калибровочное значение yRatio	*/
 				//cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<globalAlgosColors[index_algo][0]<<","<<globalAlgosColors[index_algo][1]<<","<<globalAlgosColors[index_algo][2]<<endl;	
 				// установить цвет для
-				glColor3f(	globalAlgosColors[index_algo][0], // R
-							globalAlgosColors[index_algo][1], // G
-							globalAlgosColors[index_algo][2]  // B
+				glColor3f(	globalAlgosColors[b][0], // R
+							globalAlgosColors[b][1], // G
+							globalAlgosColors[b][2]  // B
 						 );
 		
 				for (int index_file = 0; index_file < glob_files; index_file++)
 				{
-					if(index_file>1) 
-						glVertex2d( xPosLeft[index_file-1+graphNumberMultiplier], 
-									glob_alg_analysis_steps[index_algo][index_file-1]*yRatio);
-			
+					/*	откалиброванное проанализированное значение текущего алгоритма 
+						по ТИПУ ИЗМЕРЕНИЯ - колич. шагов или время выполнения. 
+						Устанавливает y-координату для текущего значения.
+						yRatio к этому моменту уже вычислен, исходя из номера текущего ряда	*/
+					// шаги (1 и 3-й графы)
+					if(i%2==0)
+					{						
+						posY=glob_alg_analysis_steps[b][index_file]*yRatio;
+						cout<<"Steps, i%2 = "<<(i%2)<<endl;						
+					}
+					// время (2 и 4-й графы)
+					else
+					{
+						posY=glob_alg_analysis_time[b][index_file]*yRatio;
+						cout<<"Time, i%2 = "<<(i%2)<<endl;
+					}
+
+					if(index_file>1)
+					{
+						posYprev=(i%2==0)?
+							glob_alg_analysis_steps[b][index_file-1]*yRatio
+							: glob_alg_analysis_time[b][index_file-1]*yRatio;
+
+						glVertex2d(posX[index_file-1+graphNumberMultiplier],posYprev);
+						cout<<"\tprevious positions - x: "<<posX[index_file-1+graphNumberMultiplier]
+							<<", y: "<<posYprev<<endl;
+					}
 					glVertex2d( /*	позиция текущего маркера, символизирующего
 								один из обрабатываемых сгенерированных файлов.
 								Также устанавливает помеченной цветом вертикальной
 								осли графа.	*/
-								xPosLeft[index_file+graphNumberMultiplier],
-								/*	откалиброванное значение количества шагов, 
-								выполненных программой при сортировке файла
-								текущим алгоритмом. */
-								glob_alg_analysis_steps[index_algo][index_file]*yRatio
-							  );
-			
-					//cout<<"x: "<<xPosLeft[index_file+graphNumberMultiplier]<<", y: "<<glob_alg_analysis_steps[index_algo][index_file]*yRatio<<endl;
+								posX[index_file+graphNumberMultiplier], posY);	
+					cout<<"current positions - x: "<<posX[index_file+graphNumberMultiplier]
+							<<", y: "<<posY;
+
 				}
 			}
-			index_algo++;
+			else
+			{
+				cout<<endl<<"NO biggestNumber. Graph: "<<i+1<<", Algorithm: "<<b+1<<endl;
+			}
+			//index_algo++;
 		}
 	}
 	glEnd();
@@ -570,7 +612,7 @@ int _tmain(int argc, char** argv)
 		*/
 		float wSizeX = globDoubleOffset+globSceneWidth+globDoubleOffset+glob_offset;
 		float wSizeY = globDoubleOffset+globSceneHeight;
-		cout<<"WINDOW size: "<<wSizeX<<" x "<<wSizeY<<endl;
+		//cout<<"WINDOW size: "<<wSizeX<<" x "<<wSizeY<<endl;
 		glutInitWindowSize(wSizeX,wSizeY);
 		glutInitWindowPosition(450,100);
 		glutCreateWindow("Graph");
