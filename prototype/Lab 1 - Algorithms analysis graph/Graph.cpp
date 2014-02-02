@@ -66,8 +66,8 @@ void showResults()
 		cout<<":"<<endl;
 		for (int file_index = 0; file_index < glob_files; file_index++)
 		{   // 
-			// glob_alg_analysis[glob_algos][file_index] - индекс алгоритма, файл
-			cout<<"Файл "<<file_index+1<<": "<<glob_alg_analysis[algo_index][file_index]<<endl;
+			// glob_alg_analysis_steps[glob_algos][file_index] - индекс алгоритма, файл
+			cout<<"Файл "<<file_index+1<<": "<<glob_alg_analysis_steps[algo_index][file_index]<<endl;
 		}
 		cout<<"---------------------"<<endl;
 	}
@@ -415,14 +415,14 @@ void Draw()
 		
 	/*	Получим максимальное рассчётное значение шагов для калибровки сетки.
 		Для этого выберем наибольшее полученное значение (колич. операций/время
-		сортировки), ранее сохранённое в массиве glob_alg_analysis (выбираем среди 
+		сортировки), ранее сохранённое в массиве glob_alg_analysis_steps (выбираем среди 
 		последних элементов вложенных массивов, как естественно наибольших) */
 	int biggestNumber;
 	/* индекс последнего значения текущего вложенного массива (4)	*/ 
 	int lastIndex = glob_files-1;
 	/* множитель для установки максимально верхней позиции точки графа;
 	   рассчитывается как соотношение максимального значения, полученного
-	   в результате анализа текущего алгоритма (сохраняется в массиве glob_alg_analysis)
+	   в результате анализа текущего алгоритма (сохраняется в массиве glob_alg_analysis_steps)
 	   и y-позиции верхней границы сетки графа.	*/
 	float yRatio;
 	/* базовое значение верхней точки для рассчёта предыдущего показателя - различно для 
@@ -441,13 +441,13 @@ void Draw()
 		)
 	{
 		/* извлечь максимальное значение, полученное в результате анализа текущего алгоритма
-		   (см. массив glob_alg_analysis)*/
+		   (см. массив glob_alg_analysis_steps)*/
 		biggestNumber = 0; // сбросить предыдущее
 		// получить текущее
 		for (int b = 0; b < glob_algos; b++)
 		{
-			if(glob_alg_analysis[b][lastIndex] > biggestNumber)
-				biggestNumber = glob_alg_analysis[b][lastIndex];
+			if(glob_alg_analysis_steps[b][lastIndex] > biggestNumber)
+				biggestNumber = glob_alg_analysis_steps[b][lastIndex];
 		}
 		/*  если начался второй ряд графов, скорректируем показатель верхней точки 
 			для калибровки точек графа, добавив двойнойй оступ и высоту графа
@@ -457,7 +457,7 @@ void Draw()
 		if(!biggestNumber) biggestNumber=1; // на случай, если он почему-то оказался нулём.
 		yRatio = yRatioCurrentTopBase/float(biggestNumber);
 		/*	Далее для построения графа будем уножать все значения 
-			массива glob_alg_analysis на калибровочное значение yRatio	*/
+			массива glob_alg_analysis_steps на калибровочное значение yRatio	*/
 		//cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<globalAlgosColors[index_algo][0]<<","<<globalAlgosColors[index_algo][1]<<","<<globalAlgosColors[index_algo][2]<<endl;	
 		// установить цвет для
 		glColor3f(	globalAlgosColors[index_algo][0], // R
@@ -469,7 +469,7 @@ void Draw()
 		{
 			if(index_file>1) 
 				glVertex2d( xPosLeft1[index_file-1], 
-							glob_alg_analysis[index_algo][index_file-1]*yRatio);
+							glob_alg_analysis_steps[index_algo][index_file-1]*yRatio);
 			
 			glVertex2d( /*	позиция текущего маркера, символизирующего
 						один из обрабатываемых сгенерированных файлов.
@@ -479,10 +479,10 @@ void Draw()
 						/*	откалиброванное значение количества шагов, 
 						выполненных программой при сортировке файла
 						текущим алгоритмом. */
-						glob_alg_analysis[index_algo][index_file]*yRatio
+						glob_alg_analysis_steps[index_algo][index_file]*yRatio
 					  );
 			
-			//cout<<"x: "<<xPosLeft1[index_file]<<", y: "<<glob_alg_analysis[index_algo][index_file]*yRatio<<endl;
+			//cout<<"x: "<<xPosLeft1[index_file]<<", y: "<<glob_alg_analysis_steps[index_algo][index_file]*yRatio<<endl;
 		}
 		index_algo++;
 	}
@@ -640,7 +640,7 @@ void sortBubbling(int i)
 		}
 	}
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_analysis[0][i]=steps;
+	glob_alg_analysis_steps[0][i]=steps;
 	if (show_details) showSorting(nmbrs,limit);
 }
 // сортировка вставками
@@ -676,7 +676,7 @@ void sortByInserts(int i)
         }
     }
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_analysis[1][i]=steps;
+	glob_alg_analysis_steps[1][i]=steps;
 	if (show_details) showSorting(nmbrs,limit);
 }
 // быстрая сортировка
@@ -711,7 +711,7 @@ void quickSort(vector<int> &nmbrs, int first, int last, int i)
 		steps+=3;
     }
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_analysis[2][i]+=steps;
+	glob_alg_analysis_steps[2][i]+=steps;
 }
 // возвращает опорную точку сортировки
 int pivot( vector<int> &nmbrs,		// массив значений
@@ -747,7 +747,7 @@ int pivot( vector<int> &nmbrs,		// массив значений
     swap(nmbrs[p], nmbrs[first]);
 		steps+=3;
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_analysis[2][i]+=steps;
+	glob_alg_analysis_steps[2][i]+=steps;
     return p; // возвращает опорную точку
 }
 // переключает параметры сортировки
@@ -778,9 +778,9 @@ void sortData()
 		for (int i = 0; i < glob_algos; i++)
 		{
 			/*  порядок вызова функций не имеет значения, поскольку 
-				для сохранения данных в массиве glob_alg_analysis каждая 
+				для сохранения данных в массиве glob_alg_analysis_steps каждая 
 				использует статический индекс своего алгоритма:
-				glob_alg_analysis[индекс_алгоритма][индекс_файла] */
+				glob_alg_analysis_steps[индекс_алгоритма][индекс_файла] */
 			sortBubbling(i);
 			sortByInserts(i);
 			sortQuick(i);
@@ -791,7 +791,7 @@ void sortData()
 	if(choice==0) exit(0);
 	if(choice==8)
 	{
-		for (int i = 0; i < glob_files_names.size(); i++)
+		for (unsigned int i = 0; i < glob_files_names.size(); i++)
 		{
 			cout<<"Итерация "<<i+1<<". Чтобы продолжить, введите "<<i+1
 				<<endl<<"Чтобы выйти - введите 0."<<endl

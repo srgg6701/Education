@@ -52,7 +52,7 @@ const int glob_files = 5; // количество файлов
 const int glob_files_size_decreaser = 100;	
 /*	Массив для сохранения колич. шагов при сортировке/поиске данных:
 	{алгоритм сортировки{ файл1, файл2, файл3, файл4, файл5 }}	*/
-int glob_alg_analysis[glob_algos][glob_files]={
+int glob_alg_analysis_steps[glob_algos][glob_files]={
 	{0,0,0,0,0},
 	{0,0,0,0,0},
 	{0,0,0,0,0},
@@ -61,7 +61,7 @@ int glob_alg_analysis[glob_algos][glob_files]={
 };
 /*	Массив для сохранения времени, потраченного на сортировку/поиске данных:
 	{алгоритм поиска{ файл1, файл2, файл3, файл4, файл5 }}	*/
-int glob_alg_time[glob_algos][glob_files]={
+int glob_alg_analysis_time[glob_algos][glob_files]={
 	{0,0,0,0,0},
 	{0,0,0,0,0},
 	{0,0,0,0,0},
