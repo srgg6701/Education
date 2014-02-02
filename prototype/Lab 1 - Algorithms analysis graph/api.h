@@ -64,7 +64,7 @@ int glob_alg_analysis_steps[glob_algos][glob_files]={
 /*	Массив для сохранения времени, потраченного на сортировку/поиске данных:
 	{алгоритм поиска{ файл1, файл2, файл3, файл4, файл5 }}	
 	Для алгоритмов 4-5	*/
-int glob_alg_analysis_time[glob_algos][glob_files]={
+double glob_alg_analysis_time[glob_algos][glob_files]={
 	{0,0,0,0,0},
 	{0,0,0,0,0},
 	{0,0,0,0,0},

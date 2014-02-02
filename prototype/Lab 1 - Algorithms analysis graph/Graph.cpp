@@ -137,19 +137,17 @@ void buildMarkerRow( int &arrayNumbersRow,
 // создать маркеры загружаемых файлов
 void setMarkers(int graph_number, vector<float> &xPos)
 {
-	/*	создать векторный массив для сохраненения x-координат 
-		(вертикали для откладывания данных с резульататами 
-		анализов алгоритмов).	*/
-	//vector<float> xPos;
 	// создать внутреннюю 2-D матрицу для построения цифр от 1 до 5. 
 	// См. схему здесь: http://www.canstockphoto.com/pixel-art-globNumbers-and-mathematical-signs-12800261.html
 	// Нарисовать маркеры файлов
 	glBegin(GL_QUADS);
+		/*	инициализировать пер. для сохранения первого аргумента вызываемой далее
+			функции построения маркеров buildMarkerRow() */
 		int arrayNumbersRow=0;
 		
-		//float LeftEdge = (copier)? globGraphSpace+globDoubleOffset : 0;	// 400 : 0
+		// установить левый край маркера
 		float LeftEdge = (graph_number%2)? globGraphSpace+globDoubleOffset : 0;
-
+		// инициализировать переменную для сохранения начального нижнего значения маркера 
 		float mrkBottomPos;
 
 		int files_count=glob_files_names.size();
@@ -185,7 +183,7 @@ void setMarkers(int graph_number, vector<float> &xPos)
 							  );
 			}
 		}
-	glEnd(); //return xPos;
+	glEnd();
 }
 
 // ГЕНЕРАЦИЯ ФАЙЛОВ ......................................
@@ -211,8 +209,7 @@ void makeFiles()
 		// сохранить имя сгенерированного файла в векторе
 		glob_files_names.push_back(file_full_name);
 		// если добавить в начало, заменить на -   
-		//.insert(glob_files_names.begin(),file_full_name);		
-		
+		//.insert(glob_files_names.begin(),file_full_name);				
 		//cout<<"Полное имя файла: "<<file_full_name<<endl;
 		ofstream f(file_full_name); // создать/пересоздать файл
 		int val;
@@ -220,7 +217,7 @@ void makeFiles()
 		// для теста - если установили уменьшитель, используем его
 		if(glob_files_size_decreaser>1) jLen/=glob_files_size_decreaser;
 		
-		if(run)
+		if(run) // если НЕ в тестовом режиме
 		{				
 			while(jLen)
 			{
@@ -492,8 +489,7 @@ void Draw()
 					if(glob_alg_analysis_time[f][lastIndex] > biggestNumber)
 						biggestNumber = glob_alg_analysis_time[f][lastIndex];
 				}
-			}
-			
+			}			
 			// если есть проанализированные значения 
 			if(biggestNumber) 
 			{
@@ -501,8 +497,7 @@ void Draw()
 				yRatio = yRatioCurrentTopBase/float(biggestNumber);
 				/*	Далее для построения графа будем умножать все значения 
 					массива glob_alg_analysis_steps на калибровочное значение yRatio	*/
-				//cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<globalAlgosColors[index_algo][0]<<","<<globalAlgosColors[index_algo][1]<<","<<globalAlgosColors[index_algo][2]<<endl;	
-				// установить цвет для
+				// установить цвет для линии алгоритма
 				glColor3f(	globalAlgosColors[b][0], // R
 							globalAlgosColors[b][1], // G
 							globalAlgosColors[b][2]  // B
@@ -551,7 +546,6 @@ void Draw()
 			{
 				cout<<endl<<"NO biggestNumber. Graph: "<<i+1<<", Algorithm: "<<b+1<<endl;
 			}
-			//index_algo++;
 		}
 	}
 	glEnd();
@@ -629,6 +623,10 @@ int _tmain(int argc, char** argv)
 // пузырьковая сортировка
 void sortBubbling(int i)
 {
+	clock_t begin, end;
+	double time_spent;
+	begin = clock();
+			
 	// получить массив строк из файла
 	vector<int> nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
@@ -709,11 +707,22 @@ void sortBubbling(int i)
 	}
 	// сохранить в массиве колич. шагов для каждого файла
 	glob_alg_analysis_steps[0][i]=steps;
+
+	end = clock();
+	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+	glob_alg_analysis_time[0][i]=time_spent;
+
+	cout<<"\tTime spent sortBubbling("<<i<<"): "<<glob_alg_analysis_time[0][i]<<endl;
+	
 	if (show_details) showSorting(nmbrs,limit);
 }
 // сортировка вставками
 void sortByInserts(int i)
 {
+	clock_t begin, end;
+	double time_spent;
+	begin = clock();
+	
 	// получить массив строк из файла
 	vector<int> nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
@@ -745,11 +754,21 @@ void sortByInserts(int i)
     }
 	// сохранить в массиве колич. шагов для каждого файла
 	glob_alg_analysis_steps[1][i]=steps;
+	end = clock();
+	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+	glob_alg_analysis_time[1][i]=time_spent;
+
+	cout<<"\tTime spent sortByInserts("<<i<<"): "<<glob_alg_analysis_time[1][i]<<endl;
+	
 	if (show_details) showSorting(nmbrs,limit);
 }
 // быстрая сортировка
 void sortQuick(int i)
 {
+	clock_t begin, end;
+	double time_spent;
+	begin = clock();
+	
 	/* получить массив строк из файла
 	ВНИМАНИЕ!	В данном случае создаём НЕ массив,
 				как таковой, а ссылку на полученные данные,
@@ -758,6 +777,12 @@ void sortQuick(int i)
 	vector<int> &nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
 	quickSort(nmbrs, 0, nmbrs.size()-1, i);
+	
+	end = clock();
+	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+	glob_alg_analysis_time[2][i]=time_spent;
+
+	cout<<"\tTime spent sortQuick("<<i<<"): "<<glob_alg_analysis_time[2][i]<<endl;
 	if (show_details) showSorting(nmbrs,limit);
 }
 // реализация механизма быстрой сортировки
