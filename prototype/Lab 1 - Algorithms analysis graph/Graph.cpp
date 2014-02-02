@@ -66,8 +66,8 @@ void showResults()
 		cout<<":"<<endl;
 		for (int file_index = 0; file_index < glob_files; file_index++)
 		{   // 
-			// glob_alg_steps[glob_algos][file_index] - индекс алгоритма, файл
-			cout<<"Файл "<<file_index+1<<": "<<glob_alg_steps[algo_index][file_index]<<endl;
+			// glob_alg_analysis[glob_algos][file_index] - индекс алгоритма, файл
+			cout<<"Файл "<<file_index+1<<": "<<glob_alg_analysis[algo_index][file_index]<<endl;
 		}
 		cout<<"---------------------"<<endl;
 	}
@@ -245,6 +245,12 @@ vector<int> getRowsArray(int i=0)
 	return rowsArray;
 }
 
+float getGridTops(float Top=0.0)
+{
+	float currentTop = globGraphSpace;
+	if (Top) currentTop+=globDoubleOffset+Top;
+	return currentTop;
+}
 // СОЗДАНИЕ ГРАФИКОВ .....................................
 // построить сетку для графа
 void setGrid(int graph_number)
@@ -281,9 +287,9 @@ void setGrid(int graph_number)
 		левая граница + ширина */
 	Right2	= Left2 + globGraphSpace;
 	/*	верхняя граница графов в первом (нижнем) ряду */
-	Top1	= globGraphSpace; // 
+	Top1	= getGridTops();//globGraphSpace; // 
 	/*	верхняя граница графов во втором (верхнем) ряду */
-	Top2	= Top1+globDoubleOffset+globGraphSpace;
+	Top2	= getGridTops(Top1);//Top1+globDoubleOffset+globGraphSpace;
 	/*	нижняя граница графов в первом (нижнем) ряду */
 	Bottom1	= 0;
 	/*	нижняя граница графов во втором (верхнем) ряду */
@@ -393,62 +399,77 @@ void Draw()
 		setGrid(i);
 	glEnd();
 	glDisable(GL_LINE_STIPPLE);
-
+	// определить режим тестирования (для вывода сообщений)
+	bool test=true;
+	
 	// построить маркеры файлов
 	// на левой сетке
 	vector<float> xPosLeft1 = setMarkers();
 	// на правой сетке
 	setMarkers(true);
-	/*	Получим максимальное рассчётное значение шагов для калибровки сетки.
-		Для этого выберем наибольшее значение из glob_alg_steps (выбираем 
-		среди последних элементов, как естественно наибольших). */
-	int biggestNumber = 0;
-	int lastIndex = glob_files-1;
-	for (int i = 0; i < glob_algos; i++)
-	{
-		if(glob_alg_steps[i][lastIndex] > biggestNumber)
-			biggestNumber = glob_alg_steps[i][lastIndex];
-	}
-	// откалибровать! 
-	float yRatio = globSceneHeight*0.9/float(biggestNumber);
-	/*	Далее для построения графа будем уножать все значения 
-		массива glob_alg_steps на калибровочное значение yRatio	*/
+	
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 	glLineWidth(1.0);
 	glBegin(GL_LINES);
 		
-	// задать цвета для линий анализируемых алгоритмов
-	float vColors[glob_algos][3]={
-			{0.0,0.0,1.0},
-			{1.0,0.0,0.0},
-			{1.0,0.0,1.0},
-			{1.0,0.5,0.0},
-			{0.0,1.0,0.0}
-	};
+	/*	Получим максимальное рассчётное значение шагов для калибровки сетки.
+		Для этого выберем наибольшее полученное значение (колич. операций/время
+		сортировки), ранее сохранённое в массиве glob_alg_analysis (выбираем среди 
+		последних элементов вложенных массивов, как естественно наибольших) */
+	int biggestNumber;
+	/* индекс последнего значения текущего вложенного массива (4)	*/ 
+	int lastIndex = glob_files-1;
+	/* множитель для установки максимально верхней позиции точки графа;
+	   рассчитывается как соотношение максимального значения, полученного
+	   в результате анализа текущего алгоритма (сохраняется в массиве glob_alg_analysis)
+	   и y-позиции верхней границы сетки графа.	*/
+	float yRatio;
+	/* базовое значение верхней точки для рассчёта предыдущего показателя - различно для 
+	   графов 1-2 и 3-4. В первом случае используются координаты сеток графов первого ряда,
+	   во втором, соответственно, - второго. */
+	float yRatioCurrentTopBase = globGraphSpace*0.9;
+	
 	// построить все 4 графа:
 	for ( int i = 0, 
-			  index_algo = 0,	// индекс алгоритма в vColors - нужен для выбора цвета построения кривой анализа текущего алгоритма
+			  index_algo = 0,	// индекс алгоритма в globalAlgosColors - нужен для выбора цвета построения кривой анализа текущего алгоритма
+			  // получим количество графов, как произведение колич. строк и столбцов сцены
 			  grphx = globColsNumber*globRowsNumber; // 4
+		  // цикл отрабатывает для каждого из графов
 		  i < grphx; 
 		  i++
 		)
 	{
-		//cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<vColors[index_algo][0]<<","<<vColors[index_algo][1]<<","<<vColors[index_algo][2]<<endl;
-		if(i==grphx/2) 
-			index_algo = 0; // сбросить счётчик алгоритмов после построения графов для сортировки
-		
+		/* извлечь максимальное значение, полученное в результате анализа текущего алгоритма
+		   (см. массив glob_alg_analysis)*/
+		biggestNumber = 0; // сбросить предыдущее
+		// получить текущее
+		for (int i = 0; i < glob_algos; i++)
+		{
+			if(glob_alg_analysis[i][lastIndex] > biggestNumber)
+				biggestNumber = glob_alg_analysis[i][lastIndex];
+		}
+		/*  если начался второй ряд графов, скорректируем показатель верхней точки 
+			для калибровки точек графа, добавив двойнойй оступ и высоту графа
+			(см. схему в .xslx-файле)	*/
+		if(i==globRowsNumber-1) yRatioCurrentTopBase += globGraphSpace + globDoubleOffset; 
+		// откалибровать! 
+		if(!biggestNumber) biggestNumber=1; // на случай, если он почему-то оказался нулём.
+		yRatio = yRatioCurrentTopBase/float(biggestNumber);
+		/*	Далее для построения графа будем уножать все значения 
+			массива glob_alg_analysis на калибровочное значение yRatio	*/
+		//cout<<endl<<"algorithm #: "<<index_algo+1<<";\nColors: "<<globalAlgosColors[index_algo][0]<<","<<globalAlgosColors[index_algo][1]<<","<<globalAlgosColors[index_algo][2]<<endl;	
 		// установить цвет для
-		glColor3f(	vColors[index_algo][0], // R
-					vColors[index_algo][1], // G
-					vColors[index_algo][2]  // B
+		glColor3f(	globalAlgosColors[index_algo][0], // R
+					globalAlgosColors[index_algo][1], // G
+					globalAlgosColors[index_algo][2]  // B
 				 );
 		
 		for (int index_file = 0; index_file < glob_files; index_file++)
 		{
 			if(index_file>1) 
 				glVertex2d( xPosLeft1[index_file-1], 
-							glob_alg_steps[index_algo][index_file-1]*yRatio);
+							glob_alg_analysis[index_algo][index_file-1]*yRatio);
 			
 			glVertex2d( /*	позиция текущего маркера, символизирующего
 						один из обрабатываемых сгенерированных файлов.
@@ -458,10 +479,10 @@ void Draw()
 						/*	откалиброванное значение количества шагов, 
 						выполненных программой при сортировке файла
 						текущим алгоритмом. */
-						glob_alg_steps[index_algo][index_file]*yRatio
+						glob_alg_analysis[index_algo][index_file]*yRatio
 					  );
 			
-			//cout<<"x: "<<xPosLeft1[index_file]<<", y: "<<glob_alg_steps[index_algo][index_file]*yRatio<<endl;
+			//cout<<"x: "<<xPosLeft1[index_file]<<", y: "<<glob_alg_analysis[index_algo][index_file]*yRatio<<endl;
 		}
 		index_algo++;
 	}
@@ -619,7 +640,7 @@ void sortBubbling(int i)
 		}
 	}
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_steps[0][i]=steps;
+	glob_alg_analysis[0][i]=steps;
 	if (show_details) showSorting(nmbrs,limit);
 }
 // сортировка вставками
@@ -655,7 +676,7 @@ void sortByInserts(int i)
         }
     }
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_steps[1][i]=steps;
+	glob_alg_analysis[1][i]=steps;
 	if (show_details) showSorting(nmbrs,limit);
 }
 // быстрая сортировка
@@ -690,7 +711,7 @@ void quickSort(vector<int> &nmbrs, int first, int last, int i)
 		steps+=3;
     }
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_steps[2][i]+=steps;
+	glob_alg_analysis[2][i]+=steps;
 }
 // возвращает опорную точку сортировки
 int pivot( vector<int> &nmbrs,		// массив значений
@@ -726,7 +747,7 @@ int pivot( vector<int> &nmbrs,		// массив значений
     swap(nmbrs[p], nmbrs[first]);
 		steps+=3;
 	// сохранить в массиве колич. шагов для каждого файла
-	glob_alg_steps[2][i]+=steps;
+	glob_alg_analysis[2][i]+=steps;
     return p; // возвращает опорную точку
 }
 // переключает параметры сортировки
@@ -757,9 +778,9 @@ void sortData()
 		for (int i = 0; i < glob_algos; i++)
 		{
 			/*  порядок вызова функций не имеет значения, поскольку 
-				для сохранения данных в массиве glob_alg_steps каждая 
+				для сохранения данных в массиве glob_alg_analysis каждая 
 				использует статический индекс своего алгоритма:
-				glob_alg_steps[индекс_алгоритма][индекс_файла] */
+				glob_alg_analysis[индекс_алгоритма][индекс_файла] */
 			sortBubbling(i);
 			sortByInserts(i);
 			sortQuick(i);
