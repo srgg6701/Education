@@ -60,6 +60,9 @@ void showResults()
 			case 2:
 				cout<<"Быстрая сортировка";
 				break;
+			case 3:
+				cout<<"Алгоритм прямого поиска";
+				break;
 			default: 
 				return;
 		}		
@@ -453,10 +456,6 @@ void Draw()
 		graphNumberMultiplier=i*glob_files;
 		// Построить график анализа каждого алгоритма
 		//----------------------------------------------------------------------------------
-		/* извлечь максимальное значение, полученное в результате анализа текущего алгоритма
-		   (см. массив glob_alg_analysis_steps)*/
-		biggestNumber = 0; // сбросить предыдущее
-		
 		if(i<2)
 		{
 			algIndex = 0;
@@ -472,44 +471,71 @@ void Draw()
 			yRatioCurrentTopBase += globGraphSpace + globDoubleOffset; 			
 		}
 		
-		cout<<endl<<"i = "<<i<<", i%2 = "<<(i%2)<<", algIndex = "<<algIndex<<", algLimit = "<<algLimit
-			<<", yRatioCurrentTopBase = "<<yRatioCurrentTopBase<<endl;
+		cout<<endl<<"==========================================="
+			<<endl<<"i = "<<i<<", i%2 = "<<(i%2)<<", algIndex = "<<algIndex<<", algLimit = "<<algLimit
+			<<", yRatioCurrentTopBase = "<<yRatioCurrentTopBase<<endl
+			<<"==========================================="<<endl;
 		
+		if(i%2==0) // анализируем количество шагов - 1-й и 3-й графы
+		{
+			(float)biggestNumber;
+			biggestNumber = glob_alg_analysis_steps[algIndex][lastIndex];
+			// откалибровать!
+			yRatio = yRatioCurrentTopBase/biggestNumber;
+		}
+		else
+		{
+			cout<<"TIME :: biggest number = "<<biggestNumber<<endl;
+			(double)biggestNumber;
+			biggestNumber = glob_alg_analysis_time[algIndex][lastIndex];
+			// откалибровать!
+			yRatio = float(double(yRatioCurrentTopBase)/biggestNumber);
+		}
+
 		// выбрать текущий алгоритм - блоки 3 и 2 алгоритма соответственно
 		while(algIndex<algLimit)
 		{
 			/*	получить текущее максимальное из имеющихся значений.
 				ВНИМАНИЕ! Зависит НЕ от типа алгоритма, а от типа АНАЛИЗА - 
 				по количеству операций или по времени	*/
-			for (int f = 0; f < glob_files; f++)
+			/* извлечь максимальное значение, полученное в результате анализа текущего алгоритма
+			(см. массив glob_alg_analysis_steps)*/
+			//biggestNumber = 0; // сбросить предыдущее
+		
+			/*for (int f = 0; f < glob_files; f++)
 			{
 				//  1  3 
 				if(i%2==0) // анализируем количество шагов - 1-й и 3-й графы
 				{
-					if(glob_alg_analysis_steps[f][lastIndex] > biggestNumber)
-					{
-						biggestNumber = glob_alg_analysis_steps[f][lastIndex];
+					//if(glob_alg_analysis_steps[f][lastIndex] > biggestNumber)
+					//{
+						(float)biggestNumber;
+						biggestNumber = glob_alg_analysis_steps[algIndex][lastIndex];
 						// откалибровать!
 						yRatio = yRatioCurrentTopBase/biggestNumber;				
-					}
+					//}
 				}
 				//  2  4 
 				else // анализируем время - 2-й и 4-й графы
-				{   //cout<<"Time analysis. glob_alg_analysis_time["<<f<<"]["<<lastIndex<<"] = "
-						//<<glob_alg_analysis_time[f][lastIndex]<<endl;
-					if(glob_alg_analysis_time[f][lastIndex] > biggestNumber)
-					{
+				{   cout<<"Time analysis. glob_alg_analysis_time["<<f<<"]["<<lastIndex<<"] = "
+						<<glob_alg_analysis_time[f][lastIndex]<<endl;
+					cout<<"\tcheck biggest: "<<glob_alg_analysis_time[f][lastIndex]
+						<<">"<<double(biggestNumber)<<" - "
+						<<(glob_alg_analysis_time[f][lastIndex] > double(biggestNumber))<<endl;
+					
+					//if(glob_alg_analysis_time[f][lastIndex] > double(biggestNumber))
+					//{
+						cout<<"TIME :: biggest number = "<<biggestNumber<<endl;
 						(double)biggestNumber;
-						cout<<"time biggest number = "<<biggestNumber<<endl;
-						biggestNumber = glob_alg_analysis_time[f][lastIndex];
+						biggestNumber = glob_alg_analysis_time[algIndex][lastIndex];
 						// откалибровать!
 						yRatio = float(double(yRatioCurrentTopBase)/biggestNumber);	
-					}
+					//}
 				}
-				/*	Далее для построения графа будем умножать все значения 
-					массива glob_alg_analysis_steps на калибровочное значение yRatio	*/
+					Далее для построения графа будем умножать все значения 
+					массива glob_alg_analysis_steps на калибровочное значение yRatio	
 				
-			}			
+			}			*/
 			// если есть проанализированные значения 
 			if(biggestNumber) 
 			{
@@ -554,7 +580,7 @@ void Draw()
 								осли графа.	*/
 								posX[index_file+graphNumberMultiplier], posY);	
 					cout<<"current positions - x: "<<posX[index_file+graphNumberMultiplier]
-							<<", y: "<<posY;
+							<<", y: "<<posY<<endl;
 
 				}
 			}
@@ -880,17 +906,12 @@ int searchDirect(int i)
 	vector<int> nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
 
-	//vector<int> rowsArray;
-	//ifstream nmbrs("file_10.txt");
-	
-	//string str_to_find = "2002";
-	//int l = str_to_find.length();
-	
 	// установим счётчики шагов и времени:
 	int steps=0;
 	/*  в качестве искомого значения возьмём то, что находится в самой середине
 		и сразу же конвертируем в строку */
-	string str_to_find=to_string(nmbrs[nmbrs.size()/2]);
+	int wmIndex = limit/2; cout<<__LINE__<<": the middle index of the array is "<<wmIndex<<endl;
+	string str_to_find=to_string(nmbrs[wmIndex]);
 	/*	получим длину искомой строки	*/
 	int len = str_to_find.length();
 	/*	создадим контейнер для значения массива, которое будем конвертировать в
@@ -924,10 +945,18 @@ int searchDirect(int i)
 				if(words_cnt==wl-1)
 				{   
 					steps++;
-					if(wl==len) 
+					if( wl==len 
+						/*	абсурдный трюк. Смысл в том, чтобы гарантированно перебрать 
+							не менее половины массива.  Поскольку значения генерируются
+							случайно, мы не можем знать заранее, где будет найден подходящий
+							элемент. Вследствие этого вполне вероятна ситуация, когда ресурсов
+							на получение результата для бОльших массивов тратится меньше, чем
+							для меньших. Т.о. формулировка задания относительно данного алгоритма
+							нуждается в уточнении. */
+						 && cnt>=wmIndex 
+					  ) 
 					{	
 						steps++;
-						cout<<endl<<" coincides (word_from_array/str_to_find) on step "<<steps<<": "<<word_from_array<<" | "<<str_to_find<<endl;
 						//cout<<endl<<"words_cnt = "<<words_cnt<<", len = "<<len<<endl<<"string # "<<w_counter<<endl;
 						// сохранить в массиве колич. шагов для каждого файла
 						glob_alg_analysis_steps[3][i]=steps;
@@ -936,6 +965,9 @@ int searchDirect(int i)
 						glob_alg_analysis_time[3][i]=time_spent;
 
 						cout<<"\tTime spent searchDirect("<<i<<"): "<<glob_alg_analysis_time[3][i]<<endl;
+						
+						cout<<__LINE__<<":\t\tcoincides (word_from_array/str_to_find) on step "<<steps<<": "<<word_from_array<<" | "<<str_to_find<<endl;
+						
 						if (show_details) showSorting(nmbrs,limit);
 	
 						return steps;
@@ -971,9 +1003,13 @@ void runAlgotitms()
 				для сохранения данных в массивах с результатами анализов 
 				каждая использует статический индекс своего алгоритма:
 				*array*[индекс_алгоритма][индекс_файла] */
+			//cout<<endl<<"......................"<<endl<<"run: "<<endl<<"sortBubbling("<<i<<")"<<endl;
 			sortBubbling(i);
+			//cout<<"sortByInserts("<<i<<")"<<endl;
 			sortByInserts(i);
+			//cout<<"sortQuick("<<i<<")"<<endl;
 			sortQuick(i);
+			//cout<<"searchDirect("<<i<<")"<<endl;
 			searchDirect(i);
 		}
 		// показать статистику

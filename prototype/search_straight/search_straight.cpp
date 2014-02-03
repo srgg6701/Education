@@ -61,7 +61,7 @@ int straightFind()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	int test = 2;
+	int test = 0;
 	if(test==1)
 	{
 		int nmb = 12345;
@@ -81,6 +81,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	if(test==2)
 		cout<<endl<<"Steps summary: "<<straightFind()<<endl;
 
+	int biggestNumber = 0;
+	double minNum = 0.03;
+	cout<<(double)biggestNumber<<", doubled biggestNumber is now "<<biggestNumber<<endl;
+	cout<<endl<<"compare them: "<<(minNum>biggestNumber)<<endl;
 	return 0;
 }
 
