@@ -744,7 +744,7 @@ void sortByInserts(int i)
 	vector<int> nmbrs = getRowsArray(i);
 	const int limit = nmbrs.size();
 	// установим счётчики шагов и времени:
-		int steps=0;
+	int steps=0;
 	// шаг 1
 	int clipboard; // временная переменная для хранения значения элемента сортируемого массива
 	// шаг 2
@@ -871,48 +871,73 @@ void swap( int& a,	// первый параметр
 }
 
 // алгоритм прямого поиска
-int straightFind()
+int searchDirect(int i)
 {
-    //vector<int> rowsArray;
-	ifstream text("file_10.txt");
+    clock_t begin, end;
+	double time_spent;
+	begin = clock();
+	// получить массив строк из файла
+	vector<int> nmbrs = getRowsArray(i);
+	const int limit = nmbrs.size();
+
+	//vector<int> rowsArray;
+	//ifstream nmbrs("file_10.txt");
 	
-	string str_to_find = "2002";
-	int l = str_to_find.length();
-	// включить кириллицу: setlocale(LC_ALL, "Russian");
+	//string str_to_find = "2002";
+	//int l = str_to_find.length();
+	
+	// установим счётчики шагов и времени:
+	int steps=0;
+	/*  в качестве искомого значения возьмём то, что находится в самой середине
+		и сразу же конвертируем в строку */
+	string str_to_find=to_string(nmbrs[nmbrs.size()/2]);
+	/*	получим длину искомой строки	*/
+	int len = str_to_find.length();
+	/*	создадим контейнер для значения массива, которое будем конвертировать в
+		строку для посимвольгого сравнения с искомым словом	*/
 	string word_from_array;
-	int steps = 0;
-	int v;
-	int w_counter=0;
+	
+	//int w_counter=0;
+	
+	steps+=3;
+	
 	//cout<<"str_to_find length = "<<str_to_find.length()<<endl;
-	while (text.good())
+	for (int cnt = 1; cnt < limit; cnt++)
 	{		
-		w_counter++; 
-		text >> v;
-		word_from_array = to_string(v);	
+		//w_counter++; 
+		word_from_array = to_string(nmbrs[cnt]);	
+			steps+=1;
 		//cout<<endl<<"WORD word_from_array is: "<<word_from_array<<endl;
 		// ABXD
-		for (unsigned i=0, wl=word_from_array.length(); i<wl; ++i)
+		for (unsigned words_cnt=0, wl=word_from_array.length(); words_cnt<wl; ++words_cnt)
 		{
 			// A
 			// B
 			// X
 			// D
-			//cout<<"Current character of the word from the ARRAY is: "<< word_from_array.at(i)<<endl;
-			steps++;
-			//cout<<"Current character of the searching word is "<<str_to_find.at(i)<<endl;
+			//cout<<"Current character of the word from the ARRAY is: "<< word_from_array.at(words_cnt)<<endl;
+			steps++; //cout<<"Current character of the searching word is "<<str_to_find.at(i)<<endl;
 			// A : <ABXD>
-			if(word_from_array.at(i)==str_to_find.at(i)) // A == A
+			if(word_from_array.at(words_cnt)==str_to_find.at(words_cnt)) // A == A
 			{
-				steps++;
-				//cout<<endl<<"("<<i<<")The same characters: "<<word_from_array.at(i)<<" | "<<str_to_find.at(i)<<endl;
-				if(i==wl-1)
+				steps++; //cout<<endl<<"("<<words_cnt<<")The same characters: "<<word_from_array.at(words_cnt)<<" | "<<str_to_find.at(words_cnt)<<endl;
+				if(words_cnt==wl-1)
 				{   
 					steps++;
-					if(wl==l) 
+					if(wl==len) 
 					{	
 						steps++;
 						cout<<endl<<" coincides (word_from_array/str_to_find) on step "<<steps<<": "<<word_from_array<<" | "<<str_to_find<<endl;
-						cout<<endl<<"i = "<<i<<", l = "<<l<<endl<<"string # "<<w_counter<<endl;
+						//cout<<endl<<"words_cnt = "<<words_cnt<<", len = "<<len<<endl<<"string # "<<w_counter<<endl;
+						// сохранить в массиве колич. шагов для каждого файла
+						glob_alg_analysis_steps[3][i]=steps;
+						end = clock();
+						time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+						glob_alg_analysis_time[3][i]=time_spent;
+
+						cout<<"\tTime spent searchDirect("<<i<<"): "<<glob_alg_analysis_time[3][i]<<endl;
+						if (show_details) showSorting(nmbrs,limit);
+	
 						return steps;
 					}
 				}
@@ -943,12 +968,13 @@ void runAlgotitms()
 		for (int i = 0; i < glob_algos; i++)
 		{
 			/*  порядок вызова функций не имеет значения, поскольку 
-				для сохранения данных в массиве glob_alg_analysis_steps каждая 
-				использует статический индекс своего алгоритма:
-				glob_alg_analysis_steps[индекс_алгоритма][индекс_файла] */
+				для сохранения данных в массивах с результатами анализов 
+				каждая использует статический индекс своего алгоритма:
+				*array*[индекс_алгоритма][индекс_файла] */
 			sortBubbling(i);
 			sortByInserts(i);
 			sortQuick(i);
+			searchDirect(i);
 		}
 		// показать статистику
 		showResults();
@@ -973,6 +999,8 @@ void runAlgotitms()
 				sortByInserts(i);	// сортировка вставками
 				cout<<endl<<"БЫСТРАЯ СОРТИРОВКА"<<endl<<"-----------------------"<<endl;
 				sortQuick(i);	// быстрая сортировка
+				cout<<endl<<"АЛГОРИТМ ПРЯМОГО ПОИСКА"<<endl<<"-----------------------"<<endl;
+				searchDirect(i);	// быстрая сортировка
 			}
 			else break;
 		}
