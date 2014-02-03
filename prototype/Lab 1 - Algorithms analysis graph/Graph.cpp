@@ -468,74 +468,53 @@ void Draw()
 			
 			/*  скорректируем показатель верхней границы для калибровки точек графа, 
 				добавив двойной оступ и высоту графа (см. схему в .xslx-файле)	*/
-			yRatioCurrentTopBase += globGraphSpace + globDoubleOffset; 			
+			//yRatioCurrentTopBase += globGraphSpace + globDoubleOffset; 			
 		}
 		
 		cout<<endl<<"==========================================="
 			<<endl<<"i = "<<i<<", i%2 = "<<(i%2)<<", algIndex = "<<algIndex<<", algLimit = "<<algLimit
-			<<", yRatioCurrentTopBase = "<<yRatioCurrentTopBase<<endl
+			//<<", yRatioCurrentTopBase = "<<yRatioCurrentTopBase<<endl
 			<<"==========================================="<<endl;
 		
-		if(i%2==0) // анализируем количество шагов - 1-й и 3-й графы
+		/*	получить текущее максимальное из имеющихся значений.
+			ВНИМАНИЕ! Выбирается по типу АНАЛИЗА - количеству операций 
+			или по времени, максимальное среди сравниваемых алгоримов;
+			будем выбирать последнее значение каждого вложенного массива	*/
+		/* извлечь максимальное значение, полученное в результате анализа текущего алгоритма
+			(см. массив glob_alg_analysis_[steps/time])*/
+		// 0,2
+		if(i%2==0) // анализируем количество ШАГОВ - 1-й и 3-й графы
 		{
-			(float)biggestNumber;
-			biggestNumber = glob_alg_analysis_steps[algIndex][lastIndex];
-			// откалибровать!
-			yRatio = yRatioCurrentTopBase/biggestNumber;
+			(float)biggestNumber=0.0;
+			for ( int algStepIndex = algIndex; // 0 
+					  algStepIndex < algLimit; // 0<3
+					  algStepIndex++ )
+			{
+				if(glob_alg_analysis_steps[algStepIndex][lastIndex] > biggestNumber)
+				{
+					biggestNumber = glob_alg_analysis_steps[algIndex][lastIndex];
+					// откалибровать!
+					yRatio = yRatioCurrentTopBase/biggestNumber;
+				}
+			}
 		}
 		else
 		{
 			cout<<"TIME :: biggest number = "<<biggestNumber<<endl;
 			(double)biggestNumber;
-			biggestNumber = glob_alg_analysis_time[algIndex][lastIndex];
-			// откалибровать!
-			yRatio = float(double(yRatioCurrentTopBase)/biggestNumber);
+			for ( int algTimeIndex = algIndex; // 3 
+					  algTimeIndex < algLimit; // 3<5
+					  algTimeIndex++ )
+			{
+				biggestNumber = glob_alg_analysis_time[algTimeIndex][lastIndex];
+				// откалибровать!
+				yRatio = float(double(yRatioCurrentTopBase)/biggestNumber);
+			}
 		}
 
 		// выбрать текущий алгоритм - блоки 3 и 2 алгоритма соответственно
 		while(algIndex<algLimit)
 		{
-			/*	получить текущее максимальное из имеющихся значений.
-				ВНИМАНИЕ! Зависит НЕ от типа алгоритма, а от типа АНАЛИЗА - 
-				по количеству операций или по времени	*/
-			/* извлечь максимальное значение, полученное в результате анализа текущего алгоритма
-			(см. массив glob_alg_analysis_steps)*/
-			//biggestNumber = 0; // сбросить предыдущее
-		
-			/*for (int f = 0; f < glob_files; f++)
-			{
-				//  1  3 
-				if(i%2==0) // анализируем количество шагов - 1-й и 3-й графы
-				{
-					//if(glob_alg_analysis_steps[f][lastIndex] > biggestNumber)
-					//{
-						(float)biggestNumber;
-						biggestNumber = glob_alg_analysis_steps[algIndex][lastIndex];
-						// откалибровать!
-						yRatio = yRatioCurrentTopBase/biggestNumber;				
-					//}
-				}
-				//  2  4 
-				else // анализируем время - 2-й и 4-й графы
-				{   cout<<"Time analysis. glob_alg_analysis_time["<<f<<"]["<<lastIndex<<"] = "
-						<<glob_alg_analysis_time[f][lastIndex]<<endl;
-					cout<<"\tcheck biggest: "<<glob_alg_analysis_time[f][lastIndex]
-						<<">"<<double(biggestNumber)<<" - "
-						<<(glob_alg_analysis_time[f][lastIndex] > double(biggestNumber))<<endl;
-					
-					//if(glob_alg_analysis_time[f][lastIndex] > double(biggestNumber))
-					//{
-						cout<<"TIME :: biggest number = "<<biggestNumber<<endl;
-						(double)biggestNumber;
-						biggestNumber = glob_alg_analysis_time[algIndex][lastIndex];
-						// откалибровать!
-						yRatio = float(double(yRatioCurrentTopBase)/biggestNumber);	
-					//}
-				}
-					Далее для построения графа будем умножать все значения 
-					массива glob_alg_analysis_steps на калибровочное значение yRatio	
-				
-			}			*/
 			// если есть проанализированные значения 
 			if(biggestNumber) 
 			{
@@ -563,6 +542,8 @@ void Draw()
 						posY=glob_alg_analysis_time[algIndex][index_file]*yRatio;
 						cout<<"Time, i%2 = "<<(i%2)<<endl;
 					}
+
+					if(i>1) posY+=globGraphSpace+globDoubleOffset;
 
 					if(index_file>1)
 					{
@@ -651,7 +632,7 @@ int _tmain(int argc, char** argv)
 		float wSizeY = globDoubleOffset+globSceneHeight;
 		//cout<<"WINDOW size: "<<wSizeX<<" x "<<wSizeY<<endl;
 		glutInitWindowSize(wSizeX,wSizeY);
-		glutInitWindowPosition(450,100);
+		glutInitWindowPosition(350,20);
 		glutCreateWindow("Graph");
 		// регистрация
 		glutDisplayFunc(Draw);
