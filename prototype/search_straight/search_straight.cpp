@@ -14,10 +14,8 @@ int straightFind()
 	string strs = "2002";
 	// включить кириллицу: setlocale(LC_ALL, "Russian");
 	string int2str;
-	cout<<"strs length = "<<strs.length()<<endl;
-	for (unsigned i=0; i<strs.length(); ++i)
-		cout<<" :: "<<strs.at(i)<<endl;
-	/*while (text.good())
+	//cout<<"strs length = "<<strs.length()<<endl;
+	while (text.good())
 	{
 		int v; 
 		text >> v;
@@ -26,13 +24,16 @@ int straightFind()
 		for (unsigned i=0; i<int2str.length(); ++i)
 		{
 			cout<<"Current character is: "<< int2str.at(i)<<endl;
-			if(int2str.at(i)==strs) 
-			{
-				cout<<endl<<" *found* character "<<int2str.at(i)<<endl;
-				break;
+			for (unsigned s=0; s<strs.length(); ++s){
+				//cout<<" :: "<<strs.at(s)<<endl;
+				if(int2str.at(i)==strs.at(s)) 
+				{
+					cout<<endl<<" coincides (int2str.at(i)/strs.at(s)): "<<int2str.at(i)<<" | "<<strs.at(s)<<endl;
+					break;
+				}
 			}
 		}
-	}*/	
+	}/**/	
 	
 
 	/*int i, j;
