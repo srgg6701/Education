@@ -1,4 +1,4 @@
-﻿Build started 03.02.2014 19:57:36.
+﻿Build started 03.02.2014 21:46:53.
      1>Project "B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\search_straight\search_straight.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          B:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\search_straight.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt search_straight.cpp
@@ -11,4 +11,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.36
+Time Elapsed 00:00:01.65

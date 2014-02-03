@@ -11,29 +11,59 @@ int straightFind()
     //vector<int> rowsArray;
 	ifstream text("file_10.txt");
 	
-	string strs = "2002";
+	string str_to_find = "2002";
+	int l = str_to_find.length();
 	// включить кириллицу: setlocale(LC_ALL, "Russian");
-	string int2str;
-	//cout<<"strs length = "<<strs.length()<<endl;
+	string word_from_array;
+	int steps = 0;
+	int v;
+	int w_counter=0;
+	//cout<<"str_to_find length = "<<str_to_find.length()<<endl;
 	while (text.good())
-	{
-		int v; 
+	{		
+		w_counter++; 
 		text >> v;
-		int2str = to_string(v);
-		cout<<"int2str: "<<int2str<<endl;
-		for (unsigned i=0; i<int2str.length(); ++i)
+		word_from_array = to_string(v);	
+		cout<<endl<<"WORD word_from_array is: "<<word_from_array<<endl;
+		// ABXD
+		for (unsigned i=0, wl=word_from_array.length(); i<wl; ++i)
 		{
-			cout<<"Current character is: "<< int2str.at(i)<<endl;
-			for (unsigned s=0; s<strs.length(); ++s){
-				//cout<<" :: "<<strs.at(s)<<endl;
-				if(int2str.at(i)==strs.at(s)) 
-				{
-					cout<<endl<<" coincides (int2str.at(i)/strs.at(s)): "<<int2str.at(i)<<" | "<<strs.at(s)<<endl;
-					break;
+			// A
+			// B
+			// X
+			// D
+			cout<<"Current character of the word from the ARRAY is: "<< word_from_array.at(i)<<endl;
+			
+			/*for (unsigned s=0, 
+						  l=str_to_find.length(); // <A><B><X><D> 
+						  s<l; // s<4
+						  s++
+				){*/
+
+			steps++;
+			cout<<"Current character of the searching word is "<<str_to_find.at(i)<<endl;
+			// A : <ABXD>
+			if(word_from_array.at(i)==str_to_find.at(i)) // A == A
+			{
+				steps++;
+				cout<<endl<<"("<<i<<")The same characters: "<<word_from_array.at(i)<<" | "<<str_to_find.at(i)<<endl;
+				if(i==wl-1)
+				{   
+					steps++;
+					if(wl==l) 
+					{	
+						steps++;
+						cout<<endl<<" coincides (word_from_array/str_to_find) on step "<<steps<<": "<<word_from_array<<" | "<<str_to_find<<endl;
+						cout<<endl<<"i = "<<i<<", l = "<<l<<endl<<"string # "<<w_counter<<endl;
+						return i;
+					}
 				}
-			}
+			}else 
+				break;
+			//}
+			steps++;
 		}
-	}/**/	
+	}	
 	
 
 	/*int i, j;
@@ -62,12 +92,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		int nmb = 12345;
 		string str = to_string(nmb);
-		char strs = '4';
+		char str_to_find = '4';
 		cout<<"My string now is "<<str<<endl;
 		for (unsigned i=0; i<str.length(); ++i)
 		{
 			cout<<"Current character is: "<< str.at(i)<<endl;
-			if(str.at(i)==strs) 
+			if(str.at(i)==str_to_find) 
 			{
 				cout<<endl<<" *found* character "<<str.at(i)<<endl;
 				break;
