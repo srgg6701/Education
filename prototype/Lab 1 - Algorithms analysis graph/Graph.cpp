@@ -497,7 +497,7 @@ void Draw()
 					yRatio = yRatioCurrentTopBase/biggestNumber;
 				}
 			}
-			cout<<__LINE__<<": STEPS :: biggest number = "<<biggestNumber<<endl;	
+			//cout<<__LINE__<<": STEPS :: biggest number = "<<biggestNumber<<endl;	
 		}
 		else
 		{
@@ -513,20 +513,32 @@ void Draw()
 					yRatio = float(double(yRatioCurrentTopBase)/biggestNumber);
 				}
 			}
-			cout<<__LINE__<<": TIME :: biggest number = "<<biggestNumber<<endl;			
+			//cout<<__LINE__<<": TIME :: biggest number = "<<biggestNumber<<endl;			
 		}
-		//float startX=0.0;
-		//float startY=0.0;
+		
 		// выбрать текущий алгоритм - блоки 3 и 2 алгоритма соответственно
 		while(algIndex<algLimit)
 		{
-			cout<<endl<<__LINE__<<": \tCurrent algorithm: "<<(algIndex+1)<<endl;
+			//cout<<endl<<__LINE__<<": \tCurrent algorithm: "<<(algIndex+1)<<endl;
 			
-			
-			//glVertex2d(startX,startY);
 			// если есть проанализированные значения 
 			if(biggestNumber && glob_alg_analysis_steps[algIndex][lastIndex]) 
 			{
+				float startX=0.0;
+				float startY=0.0;
+
+				if(i%2) 
+				{
+					startX+=globGraphSpace+globDoubleOffset;
+					cout<<endl<<__LINE__<<": i = "<<i<<", %2 = "<<(i%2)<<", startX = "<<startX<<endl;
+				}
+			
+				if(i>1) startY+=globGraphSpace+globDoubleOffset;
+
+				//
+				cout<<endl<<__LINE__<<": set start vertex: "<<startX<<", "<<startY<<endl;
+				glVertex2d(startX,startY);
+			
 				// установить цвет для линии алгоритма
 				glColor3f(	globalAlgosColors[algIndex][0], // R
 							globalAlgosColors[algIndex][1], // G
@@ -554,44 +566,44 @@ void Draw()
 
 					if(i>1) 
 					{
-						cout<<endl<<__LINE__<<": ";
-						if(i==2) cout<<glob_alg_analysis_steps[algIndex][index_file]<<" * "<<yRatio<<endl;
-						if(i>2)  cout<<glob_alg_analysis_time[algIndex][index_file]<<" * "<<yRatio<<endl;
+						//cout<<endl<<__LINE__<<": ";
+						//if(i==2) cout<<glob_alg_analysis_steps[algIndex][index_file]<<" * "<<yRatio<<endl;
+						//if(i>2)  cout<<glob_alg_analysis_time[algIndex][index_file]<<" * "<<yRatio<<endl;
 
 						posY+=globGraphSpace+globDoubleOffset;
 					}
 
-					if(index_file>1)
+					if(index_file)
 					{
-						cout<<endl<<__LINE__<<": prev Y element: ";
+						//cout<<endl<<__LINE__<<": prev Y element: ";
 						if(i%2==0)
 						{
 							posYprev=glob_alg_analysis_steps[algIndex][index_file-1]*yRatio;
 							
-							cout<<"glob_alg_analysis_steps["<<algIndex<<"]["<<(index_file-1)<<"] = "
-							<<glob_alg_analysis_steps[algIndex][index_file-1]<<endl;
+							//cout<<"glob_alg_analysis_steps["<<algIndex<<"]["<<(index_file-1)<<"] = "
+							//<<glob_alg_analysis_steps[algIndex][index_file-1]<<endl;
 						}
 						else
 						{
 							posYprev=glob_alg_analysis_time[algIndex][index_file-1]*yRatio;
 
-							cout<<"glob_alg_analysis_time["<<algIndex<<"]["<<(index_file-1)<<"] = "
-							<<glob_alg_analysis_time[algIndex][index_file-1]<<endl;
+							//cout<<"glob_alg_analysis_time["<<algIndex<<"]["<<(index_file-1)<<"] = "
+							//<<glob_alg_analysis_time[algIndex][index_file-1]<<endl;
 						}
 
 						if(i>1) posYprev+=globGraphSpace+globDoubleOffset;
 						
 						glVertex2d(posX[index_file-1+graphNumberMultiplier],posYprev);
-						cout<<endl<<__LINE__<<": previous positions - x: "<<posX[index_file-1+graphNumberMultiplier]
-							<<", y: "<<posYprev<<endl;
+						//cout<<endl<<__LINE__<<": previous positions - x: "<<posX[index_file-1+graphNumberMultiplier]
+							//<<", y: "<<posYprev<<endl;
 					}
 					glVertex2d( /*	позиция текущего маркера, символизирующего
 								один из обрабатываемых сгенерированных файлов.
 								Также устанавливает помеченной цветом вертикальной
 								осли графа.	*/
 								posX[index_file+graphNumberMultiplier], posY);	
-					cout<<__LINE__<<": current positions - x: "<<posX[index_file+graphNumberMultiplier]
-							<<", y: "<<posY<<endl;
+					//cout<<__LINE__<<": current positions - x: "<<posX[index_file+graphNumberMultiplier]
+							//<<", y: "<<posY<<endl;
 
 				}
 			}
