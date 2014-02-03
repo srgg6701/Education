@@ -1,0 +1,14 @@
+﻿Build started 03.02.2014 19:08:21.
+     1>Project "B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\search_straight\search_straight.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         B:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\search_straight.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt search_straight.cpp
+         search_straight.cpp
+       Link:
+         B:\Program Files\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\Debug\search_straight.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\Debug\search_straight.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\Debug\search_straight.lib" /MACHINE:X86 Debug\search_straight.obj
+         Debug\stdafx.obj
+         search_straight.vcxproj -> B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\Debug\search_straight.exe
+     1>Done Building Project "B:\Lisa\A-71\ИТ, Технология программирования\C++\code C++\OpenGL\prototype\search_straight\search_straight.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.39
