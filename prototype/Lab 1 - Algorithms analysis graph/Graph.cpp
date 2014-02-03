@@ -472,9 +472,9 @@ void Draw()
 		}
 		
 		cout<<endl<<"==========================================="
-			<<endl<<"i = "<<i<<", i%2 = "<<(i%2)<<", algIndex = "<<algIndex<<", algLimit = "<<algLimit
+			<<endl<<__LINE__<<": GRAPH "<<i+1<<", algIndex = "<<algIndex<<", algLimit = "<<algLimit
 			//<<", yRatioCurrentTopBase = "<<yRatioCurrentTopBase<<endl
-			<<"==========================================="<<endl;
+			<<endl<<"==========================================="<<endl;
 		
 		/*	получить текущее максимальное из имеющихся значений.
 			ВНИМАНИЕ! Выбирается по типу АНАЛИЗА - количеству операций 
@@ -483,9 +483,9 @@ void Draw()
 		/* извлечь максимальное значение, полученное в результате анализа текущего алгоритма
 			(см. массив glob_alg_analysis_[steps/time])*/
 		// 0,2
+		(float)biggestNumber=0.0;
 		if(i%2==0) // анализируем количество ШАГОВ - 1-й и 3-й графы
 		{
-			(float)biggestNumber=0.0;
 			for ( int algStepIndex = algIndex; // 0 
 					  algStepIndex < algLimit; // 0<3
 					  algStepIndex++ )
@@ -497,26 +497,35 @@ void Draw()
 					yRatio = yRatioCurrentTopBase/biggestNumber;
 				}
 			}
+			cout<<__LINE__<<": STEPS :: biggest number = "<<biggestNumber<<endl;	
 		}
 		else
 		{
-			cout<<"TIME :: biggest number = "<<biggestNumber<<endl;
 			(double)biggestNumber;
 			for ( int algTimeIndex = algIndex; // 3 
 					  algTimeIndex < algLimit; // 3<5
 					  algTimeIndex++ )
 			{
-				biggestNumber = glob_alg_analysis_time[algTimeIndex][lastIndex];
-				// откалибровать!
-				yRatio = float(double(yRatioCurrentTopBase)/biggestNumber);
+				if(glob_alg_analysis_time[algTimeIndex][lastIndex] > biggestNumber)
+				{
+					biggestNumber = glob_alg_analysis_time[algTimeIndex][lastIndex];
+					// откалибровать!
+					yRatio = float(double(yRatioCurrentTopBase)/biggestNumber);
+				}
 			}
+			cout<<__LINE__<<": TIME :: biggest number = "<<biggestNumber<<endl;			
 		}
-
+		//float startX=0.0;
+		//float startY=0.0;
 		// выбрать текущий алгоритм - блоки 3 и 2 алгоритма соответственно
 		while(algIndex<algLimit)
 		{
+			cout<<endl<<__LINE__<<": \tCurrent algorithm: "<<(algIndex+1)<<endl;
+			
+			
+			//glVertex2d(startX,startY);
 			// если есть проанализированные значения 
-			if(biggestNumber) 
+			if(biggestNumber && glob_alg_analysis_steps[algIndex][lastIndex]) 
 			{
 				// установить цвет для линии алгоритма
 				glColor3f(	globalAlgosColors[algIndex][0], // R
@@ -534,25 +543,46 @@ void Draw()
 					if(i%2==0)
 					{						
 						posY=glob_alg_analysis_steps[algIndex][index_file]*yRatio;
-						cout<<"Steps, i%2 = "<<(i%2)<<endl;						
+						//cout<<"Steps, i%2 = "<<(i%2)<<endl;						
 					}
 					// время (2 и 4-й графы)
 					else
 					{
 						posY=glob_alg_analysis_time[algIndex][index_file]*yRatio;
-						cout<<"Time, i%2 = "<<(i%2)<<endl;
+						//cout<<"Time, i%2 = "<<(i%2)<<endl;
 					}
 
-					if(i>1) posY+=globGraphSpace+globDoubleOffset;
+					if(i>1) 
+					{
+						cout<<endl<<__LINE__<<": ";
+						if(i==2) cout<<glob_alg_analysis_steps[algIndex][index_file]<<" * "<<yRatio<<endl;
+						if(i>2)  cout<<glob_alg_analysis_time[algIndex][index_file]<<" * "<<yRatio<<endl;
+
+						posY+=globGraphSpace+globDoubleOffset;
+					}
 
 					if(index_file>1)
 					{
-						posYprev=(i%2==0)?
-							glob_alg_analysis_steps[algIndex][index_file-1]*yRatio
-							: glob_alg_analysis_time[algIndex][index_file-1]*yRatio;
+						cout<<endl<<__LINE__<<": prev Y element: ";
+						if(i%2==0)
+						{
+							posYprev=glob_alg_analysis_steps[algIndex][index_file-1]*yRatio;
+							
+							cout<<"glob_alg_analysis_steps["<<algIndex<<"]["<<(index_file-1)<<"] = "
+							<<glob_alg_analysis_steps[algIndex][index_file-1]<<endl;
+						}
+						else
+						{
+							posYprev=glob_alg_analysis_time[algIndex][index_file-1]*yRatio;
 
+							cout<<"glob_alg_analysis_time["<<algIndex<<"]["<<(index_file-1)<<"] = "
+							<<glob_alg_analysis_time[algIndex][index_file-1]<<endl;
+						}
+
+						if(i>1) posYprev+=globGraphSpace+globDoubleOffset;
+						
 						glVertex2d(posX[index_file-1+graphNumberMultiplier],posYprev);
-						cout<<"\tprevious positions - x: "<<posX[index_file-1+graphNumberMultiplier]
+						cout<<endl<<__LINE__<<": previous positions - x: "<<posX[index_file-1+graphNumberMultiplier]
 							<<", y: "<<posYprev<<endl;
 					}
 					glVertex2d( /*	позиция текущего маркера, символизирующего
@@ -560,14 +590,14 @@ void Draw()
 								Также устанавливает помеченной цветом вертикальной
 								осли графа.	*/
 								posX[index_file+graphNumberMultiplier], posY);	
-					cout<<"current positions - x: "<<posX[index_file+graphNumberMultiplier]
+					cout<<__LINE__<<": current positions - x: "<<posX[index_file+graphNumberMultiplier]
 							<<", y: "<<posY<<endl;
 
 				}
 			}
 			else
 			{
-				cout<<endl<<"NO biggestNumber. Graph: "<<i+1<<", Algorithm: "<<algIndex+1<<endl;
+				cout<<endl<<"NO data to visualize. Graph: "<<i+1<<", Algorithm: "<<algIndex+1<<endl;
 			}
 			algIndex++;
 		}
