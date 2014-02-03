@@ -24,7 +24,7 @@ int straightFind()
 		w_counter++; 
 		text >> v;
 		word_from_array = to_string(v);	
-		cout<<endl<<"WORD word_from_array is: "<<word_from_array<<endl;
+		//cout<<endl<<"WORD word_from_array is: "<<word_from_array<<endl;
 		// ABXD
 		for (unsigned i=0, wl=word_from_array.length(); i<wl; ++i)
 		{
@@ -32,21 +32,14 @@ int straightFind()
 			// B
 			// X
 			// D
-			cout<<"Current character of the word from the ARRAY is: "<< word_from_array.at(i)<<endl;
-			
-			/*for (unsigned s=0, 
-						  l=str_to_find.length(); // <A><B><X><D> 
-						  s<l; // s<4
-						  s++
-				){*/
-
+			//cout<<"Current character of the word from the ARRAY is: "<< word_from_array.at(i)<<endl;
 			steps++;
-			cout<<"Current character of the searching word is "<<str_to_find.at(i)<<endl;
+			//cout<<"Current character of the searching word is "<<str_to_find.at(i)<<endl;
 			// A : <ABXD>
 			if(word_from_array.at(i)==str_to_find.at(i)) // A == A
 			{
 				steps++;
-				cout<<endl<<"("<<i<<")The same characters: "<<word_from_array.at(i)<<" | "<<str_to_find.at(i)<<endl;
+				//cout<<endl<<"("<<i<<")The same characters: "<<word_from_array.at(i)<<" | "<<str_to_find.at(i)<<endl;
 				if(i==wl-1)
 				{   
 					steps++;
@@ -55,35 +48,16 @@ int straightFind()
 						steps++;
 						cout<<endl<<" coincides (word_from_array/str_to_find) on step "<<steps<<": "<<word_from_array<<" | "<<str_to_find<<endl;
 						cout<<endl<<"i = "<<i<<", l = "<<l<<endl<<"string # "<<w_counter<<endl;
-						return i;
+						return steps;
 					}
 				}
 			}else 
 				break;
-			//}
 			steps++;
 		}
-	}	
-	
-
-	/*int i, j;
-    int n = (int) rowsArray.size();
-    int m = (int) find_str.size();
-    i = -1 + _start;
-    do
-    {
-        j = 0;
-        i++;
-        while( (j < m) && (rowsArray.at(i + j) == find_str.at(j)) ) j++;
-    } while( j<m && i<n-m );
- 
-    if (j == m)
-    {
-        return i;
-    }
-    else return -1;*/
+	}
 	return 0;
-}/**/
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -105,7 +79,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	}
 	if(test==2)
-		straightFind();
+		cout<<endl<<"Steps summary: "<<straightFind()<<endl;
 
 	return 0;
 }
