@@ -535,16 +535,16 @@ void Draw()
 			
 				if(i>1) startY+=globGraphSpace+globDoubleOffset;
 
-				//
-				cout<<endl<<__LINE__<<": set start vertex: "<<startX<<", "<<startY<<endl;
-				glVertex2d(startX,startY);
-			
 				// установить цвет для линии алгоритма
 				glColor3f(	globalAlgosColors[algIndex][0], // R
 							globalAlgosColors[algIndex][1], // G
 							globalAlgosColors[algIndex][2]  // algIndex
 						 );
 		
+				//
+				cout<<endl<<__LINE__<<": set start vertex: "<<startX<<", "<<startY<<endl;
+				glVertex2d(startX,startY);
+			
 				for (int index_file = 0; index_file < glob_files; index_file++)
 				{
 					/*	откалиброванное проанализированное значение текущего алгоритма 
