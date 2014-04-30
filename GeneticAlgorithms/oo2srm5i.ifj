@@ -1,0 +1,122 @@
+// http://ru.wikipedia.org/wiki/%D0%93%D0%B5%D0%BD%D0%B5%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC#.D0.9E.D0.BF.D0.B8.D1.81.D0.B0.D0.BD.D0.B8.D0.B5_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.B0
+/*
+Этапы генетического алгоритма:
+1. Задать целевую функцию (приспособленности) для особей популяции
+2. Создать начальную популяцию */
+/*	Начало цикла
+		( Отбор? )
+		e1. Размножение (скрещивание)
+		e2. Мутирование
+		e3. Вычислить значение целевой функции для всех особей
+		e4. Формирование нового поколения (селекция)
+		
+		ЕСЛИ выполняются условия остановки: 
+			Конец цикла
+		ИНАЧЕ 
+			Переход к началу цикла.	*/
+#include <iostream>
+#include <ctime>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// 1. Задать целевую функцию (приспособленности) для особей популяции
+int Fitness(const int *org, int cntGen)
+{
+	int fitness = 0;
+	for (int i = 0; i < cntGen; i++)
+	{
+		fitness += org[i];
+	}
+	return fitness;
+}
+// проверки наличия текущей особи среди скрестившихся
+/*  TODO: модифицировать функцию так, чтобы передавать ссылку на вектор 
+	и при этом защитить его от изменения через функцию.	*/
+int checkInBreeding(vector<int> crossovered, int orgIndexParent)
+{
+	// http://www.cplusplus.com/reference/algorithm/count/
+	return count(crossovered.begin(), crossovered.end(), orgIndexParent);
+}
+// проверка особи среди скрестившихся в цикле:
+int checkCross(int cntOrg, vector<int> &crossovered, int index=1)
+{
+	for (int k = 0; k < cntOrg; k++)
+	{
+		int orgIndexParent = rand() % cntOrg;
+		if (!checkInBreeding(crossovered, orgIndexParent))
+		{
+			cout << "Особь "<< index << " свободна для спаривания! index = " << orgIndexParent << endl;
+			crossovered.push_back(orgIndexParent);
+			return orgIndexParent;
+		}
+		else
+			checkCross(cntOrg, crossovered, index);
+	}
+	return 0;
+}
+
+void main()
+{
+	setlocale(LC_ALL, "Russian");
+	// http://stackoverflow.com/questions/7635580/why-do-i-get-a-warning-about-possible-loss-of-data-when-seeding-the-random-numbe
+	srand((unsigned int)time(NULL));
+
+	/* TODO: 
+		1. вынести процесс создания популяции в отдельную функцию
+		2. возможно, использовать вектор вместо массива */
+	// -----------------------------------------------------------
+	// 2. Создать начальную популяцию
+	// определиться с параметрами начальной популяции:
+	int const	cntOrg = 8,	// количество особей
+				cntGen = 9; // размер генома (количество генов)
+	// Создать начальную популяцию
+	const int Population[cntOrg][cntGen] = {
+		{ 1, 0, 1, 0, 1, 1, 0, 0, 0 },
+		{ 0, 0, 0, 0, 1, 1, 1, 1, 1 },
+		{ 1, 0, 1, 1, 1, 1, 1, 1, 1 },
+		{ 1, 0, 0, 0, 0, 0, 1, 0, 0 },
+		{ 1, 0, 1, 0, 1, 1, 1, 0, 1 },
+		{ 0, 0, 0, 1, 0, 0, 1, 0, 1 },
+		{ 1, 0, 1, 0, 1, 1, 1, 1, 0 },
+		{ 1, 0, 1, 0, 1, 1, 1, 1, 1 }
+	};
+	// вывести значение приспособленности особи:
+	for (size_t i = 0; i < cntOrg; i++)
+	{
+		cout << "Особь[" << i << "], fitness = " 
+			 << Fitness(Population[i], cntGen) 
+			 << endl;
+	}
+
+	// -----------------------------------------------------------
+	// e1. Размножение (скрещивание)
+	/*//bool breeding = true;
+	// контейнер (векторный массив) для скрестившихся особей:
+	vector <int> inBreeding2 = { 1, 4, 6, 8 };
+	int item = 6;
+
+	cout << "Есть ли " << item << " в векторе? - "
+		 // http://stackoverflow.com/questions/571394/how-to-find-an-item-in-a-stdvector
+		 << (find(inBreeding2.begin(), inBreeding2.end(), item) != inBreeding2.end())
+		 << endl; */
+
+	// создать конейнер для скрестившихся особей:
+	vector <int> crossovered;
+
+	for (int i = 0; i < cntOrg/2; i++)
+	{
+		if (i)
+		{
+			// получить случайный индекс особей (потенциального первого родителя) в популяции:
+			int orgIndexParent1 = checkCross(cntOrg, crossovered);
+		}
+		else
+		{
+			int orgIndexParent1 = rand() % cntOrg;
+			crossovered.push_back(orgIndexParent1);
+			cout << "Особь 1 свободна для спаривания! index = "<< orgIndexParent1 << endl;
+		}
+		int orgIndexParent2 = checkCross(cntOrg, crossovered, 2);
+	}
+}

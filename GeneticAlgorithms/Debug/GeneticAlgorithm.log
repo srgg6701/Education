@@ -1,0 +1,6 @@
+﻿  sharp.cpp
+  main.cpp
+  genetic_operators.cpp
+c:\users\srgg6701\documents\lisa\a-71\генетические алгоритмы\c++ codebase\geneticalgorithm\genetic_operators.cpp(30): warning C4018: '<' : signed/unsigned mismatch
+  Generating Code...
+  GeneticAlgorithm.vcxproj -> C:\Users\srgg6701\Documents\Lisa\A-71\Генетические алгоритмы\C++ codebase\GeneticAlgorithm\Debug\GeneticAlgorithm.exe
